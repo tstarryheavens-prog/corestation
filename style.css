@@ -1409,3 +1409,44 @@ a:hover {
   to { transform: rotate(360deg); }
 }
 
+/* ==========================================================================
+   A8.net Sponsor & Monetization Card Styles
+   ========================================================================== */
+.a8-sponsor-card {
+  border: 1px solid var(--border-color);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%);
+  border-radius: var(--radius);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.a8-sponsor-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.a8-pr-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(148, 163, 184, 0.15);
+  color: var(--text-muted);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  text-transform: uppercase;
+}
+
+.a8-slot-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.a8-ad-display {
+  transition: all 0.2s ease;
+}
+
+.a8-ad-display:hover {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: var(--primary);
+}
+
+
