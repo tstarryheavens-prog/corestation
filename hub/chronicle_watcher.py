@@ -172,6 +172,15 @@ def generate_article_with_gemini(raw_text, source_url, source_name):
         print(f"⚠️ Gemini API呼び出しエラー: {e}。テンプレートフォールバックを使用します。", file=sys.stderr)
         return None, None
 
+BANNER_HEADER_HTML = """
+<!-- CoreStation Official Brand Header Banner -->
+<div style="text-align: center; margin-bottom: 25px;">
+  <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;">
+    <img src="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg" alt="CoreStation - Core Blockchain Mining & Node Hub" style="width: 100%; max-width: 820px; height: auto; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); display: block; margin: 0 auto;">
+  </a>
+</div>
+"""
+
 def generate_rico_article(update_item):
     """Generate friendly Rico-style blog HTML from raw update."""
     raw_text = update_item["text"]
@@ -179,7 +188,8 @@ def generate_rico_article(update_item):
     # Try Gemini first
     ai_title, ai_body = generate_article_with_gemini(raw_text, update_item.get("url", ""), update_item.get("source", ""))
     if ai_title and ai_body:
-        return ai_title, ai_body
+        full_html = BANNER_HEADER_HTML + "\n" + ai_body
+        return ai_title, full_html
 
     lines = [line.strip() for line in raw_text.splitlines() if line.strip()]
     summary_title = lines[0][:40] if lines else "最新アップデート情報"
@@ -187,6 +197,8 @@ def generate_rico_article(update_item):
     today = datetime.now().strftime("%Y年%m月%d日")
     
     html = f"""<div style="line-height: 1.8; font-size: 16px; color: #333;">
+
+{BANNER_HEADER_HTML}
 
   <p style="font-size: 18px; font-weight: bold; color: #e65100;">
     どうも！みなさんこんにちは、リコです！✍🏻🎮
