@@ -31,4 +31,8 @@ hub/config/hatena_config.json
 hub/config/gemini_config.json
 hub/config/*_credentials.json
 
+# Server logs
+*.log
+nohup.out
+
 

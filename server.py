@@ -157,6 +157,15 @@ class CoreGeeksHandler(SimpleHTTPRequestHandler):
         self.path = "/index.html"
         return super().do_GET()
 
+    def do_POST(self):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path.rstrip("/")
+        parts = path.split("/")[1:]
+        if len(parts) >= 1 and parts[0] == "api":
+            self.handle_api(parts[1:], parsed.query)
+            return
+        self.send_json({"state": False, "error": "Not Found"}, 404)
+
     def handle_api(self, parts, query_str):
         if not parts:
             self.send_json({"state": False, "error": "Not Found"}, 404)
@@ -257,6 +266,14 @@ class CoreGeeksHandler(SimpleHTTPRequestHandler):
         # 6. /api/articles
         if category == "articles":
             self.handle_articles(parts[1] if len(parts) > 1 else None)
+            return
+
+        # 7. /api/watcher/status & /api/watcher/trigger
+        if category == "watcher":
+            if len(parts) >= 2 and parts[1] == "trigger":
+                self.handle_watcher_trigger()
+                return
+            self.handle_watcher_status()
             return
 
         # Fallback 404
@@ -614,19 +631,97 @@ class CoreGeeksHandler(SimpleHTTPRequestHandler):
         except Exception as e:
             self.send_json({"state": False, "error": str(e)}, 500)
 
+    def handle_watcher_status(self):
+        # Calculate time remaining until next run
+        next_run_epoch = WATCHER_STATE.get("next_run_epoch")
+        remaining_seconds = 0
+        if next_run_epoch:
+            remaining_seconds = max(0, int(next_run_epoch - time.time()))
+
+        response_data = dict(WATCHER_STATE)
+        response_data["remaining_seconds"] = remaining_seconds
+        response_data["server_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.send_json({"state": True, "data": response_data})
+
+    def handle_watcher_trigger(self):
+        if WATCHER_STATE.get("is_running", False):
+            self.send_json({"state": False, "error": "AI Watcher is already currently checking updates."}, 409)
+            return
+
+        def run_trigger():
+            do_watcher_check()
+
+        threading.Thread(target=run_trigger, daemon=True).start()
+        self.send_json({"state": True, "message": "Manual AI Chronicle check triggered successfully."})
+
+WATCHER_STATE = {
+    "status": "active",
+    "is_running": False,
+    "interval_seconds": 14400,
+    "last_checked": None,
+    "next_run": None,
+    "next_run_epoch": None,
+    "last_status": "standby",
+    "last_message": "AI Auto-Watcher 待機中 (次回巡回まで待機)",
+    "check_count": 0,
+    "ai_engine": "Google Gemini 2.5 Flash",
+    "persona": "リコ（@rico_game風 親しみやすい解説）",
+    "blog_url": "https://corestation.hatenadiary.com/",
+    "sources": [
+        "Core Blockchain 日本公式アナウンス (Telegram: @Core_Blockchain_Japan)",
+        "Core Chronicle (公式開発アップデート・技術進捗)"
+    ]
+}
+
+# Pre-fill last_checked from last_seen_chronicle.json if exists
+try:
+    seen_file = os.path.join(BASE_DIR, "hub", "config", "last_seen_chronicle.json")
+    if os.path.exists(seen_file):
+        with open(seen_file, "r", encoding="utf-8") as f:
+            _d = json.load(f)
+            if _d.get("last_checked"):
+                WATCHER_STATE["last_checked"] = _d["last_checked"]
+except Exception:
+    pass
+
+def do_watcher_check():
+    """Executes a single check pass and updates WATCHER_STATE."""
+    WATCHER_STATE["is_running"] = True
+    WATCHER_STATE["last_status"] = "checking"
+    WATCHER_STATE["last_message"] = "公式Telegram・コアクロニクルを巡回中..."
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    WATCHER_STATE["last_checked"] = now_str
+    try:
+        from hub.chronicle_watcher import check_and_publish
+        print(f"[Auto-Watcher] 🔍 Checking Core Chronicle updates at {now_str}...")
+        published = check_and_publish()
+        WATCHER_STATE["check_count"] += 1
+        WATCHER_STATE["last_status"] = "success"
+        if published:
+            WATCHER_STATE["last_message"] = "🎉 新着アップデートを検知！リコ風解説記事を執筆してはてなブログへ自動投稿しました。"
+        else:
+            WATCHER_STATE["last_message"] = "✅ 巡回完了：新着の未公開アップデートはありません（同期完了・最新状態）"
+    except Exception as e:
+        print(f"[Auto-Watcher] Error: {e}", file=sys.stderr)
+        WATCHER_STATE["last_status"] = "error"
+        WATCHER_STATE["last_message"] = f"⚠️ 巡回エラー: {str(e)}"
+    finally:
+        WATCHER_STATE["is_running"] = False
+        next_epoch = time.time() + WATCHER_STATE["interval_seconds"]
+        WATCHER_STATE["next_run_epoch"] = next_epoch
+        WATCHER_STATE["next_run"] = datetime.fromtimestamp(next_epoch).strftime("%Y-%m-%d %H:%M:%S")
+
 def chronicle_watcher_background_worker():
     """Background daemon thread to check Core Chronicle and publish via Gemini AI every 4 hours."""
-    # Initial sleep of 30 seconds after server boot
-    time.sleep(30)
+    # Set initial next_run
+    WATCHER_STATE["next_run_epoch"] = time.time() + 15
+    WATCHER_STATE["next_run"] = datetime.fromtimestamp(WATCHER_STATE["next_run_epoch"]).strftime("%Y-%m-%d %H:%M:%S")
+    # Initial sleep of 15 seconds after server boot to allow server to bind first
+    time.sleep(15)
     while True:
-        try:
-            from hub.chronicle_watcher import check_and_publish
-            print("[Auto-Watcher] 🔍 Checking Core Chronicle updates...")
-            check_and_publish()
-        except Exception as e:
-            print(f"[Auto-Watcher] Error: {e}", file=sys.stderr)
+        do_watcher_check()
         # Sleep for 4 hours (14,400 seconds)
-        time.sleep(14400)
+        time.sleep(WATCHER_STATE["interval_seconds"])
 
 def run():
     # Start live blocks background worker (refreshes every 10-12s)

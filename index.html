@@ -112,6 +112,10 @@
           <span class="pulse-dot"></span>
           <span>PoDE Live</span>
         </span>
+        <button id="navAiWatcherBtn" class="btn-ai-status" title="自立型AI監視・自動執筆エンジンステータス (クリックで詳細)">
+          <span class="pulse-dot pulse-ai"></span>
+          <span id="navAiWatcherText">🤖 AI Watcher 巡回中</span>
+        </button>
         <button id="navDbStatusBtn" class="btn-db-status" title="SQLiteデータベース状態">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
             <path d="M12 2C6.48 2 2 4.02 2 6.5v11C2 19.98 6.48 22 12 22s10-2.02 10-4.5v-11C22 4.02 17.52 2 12 2zm0 2c4.42 0 8 1.57 8 2.5S16.42 9 12 9 4 7.43 4 6.5 7.58 4 12 4zm0 16c-4.42 0-8-1.57-8-2.5V16.8c1.94 1.25 4.86 1.7 8 1.7s6.06-.45 8-1.7V17.5c0 .93-3.58 2.5-8 2.5zm0-4.5c-4.42 0-8-1.57-8-2.5v-2.7c1.94 1.25 4.86 1.7 8 1.7s6.06-.45 8-1.7V13c0 .93-3.58 2.5-8 2.5zm0-4.5c-4.42 0-8-1.57-8-2.5V8.8c1.94 1.25 4.86 1.7 8 1.7s6.06-.45 8-1.7V8.5c0 .93-3.58 2.5-8 2.5z"/>
@@ -130,6 +134,56 @@
          ========================================================================= -->
     <div id="view-dashboard" class="app-view active">
       
+      <!-- AI Auto-Watcher Status Banner (NAS Background System) -->
+      <div class="card ai-watcher-card" style="margin-bottom: 20px; border-left: 4px solid #8b5cf6; background: linear-gradient(135deg, rgba(139, 92, 246, 0.04) 0%, rgba(56, 189, 248, 0.04) 100%);">
+        <div class="card-content" style="padding: 14px 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div class="ai-avatar-icon" style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.25); flex-shrink: 0;">
+                🤖
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text-main);">
+                    AI Auto-Watcher ＆ 公式ニュース自動執筆システム
+                  </h3>
+                  <span class="badge-ai-status running" id="cardWatcherStatusBadge">
+                    <span class="pulse-dot pulse-ai"></span>
+                    <span id="cardWatcherStatusText">24h 常駐巡回中</span>
+                  </span>
+                </div>
+                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                  <span>🔄 巡回サイクル: <strong style="color: var(--text-main);">4時間毎</strong></span>
+                  <span>⏱️ 次回巡回予定: <strong id="cardWatcherNextRun" style="color: var(--primary);">計算中...</strong></span>
+                  <span>📝 最終巡回: <span id="cardWatcherLastRun">確認中...</span></span>
+                  <span>🧠 AI: <strong style="color: #8b5cf6;">Gemini 2.5 Flash</strong> (リコ口調)</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer" class="btn-secondary btn-sm" style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+                <span>🌐 はてなブログ</span>
+                <span style="font-size: 11px;">↗</span>
+              </a>
+              <button id="btnTriggerWatcherCheck" class="btn-primary btn-sm btn-watcher-trigger" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #8b5cf6, #6366f1); border: none;">
+                <span id="btnTriggerIcon">🔍</span>
+                <span id="btnTriggerText">今すぐ巡回チェック</span>
+              </button>
+              <button id="btnOpenWatcherModal" class="btn-secondary btn-sm" title="詳細ログと監視設定">
+                詳細 ⚙️
+              </button>
+            </div>
+          </div>
+
+          <!-- Watcher live notification line -->
+          <div id="cardWatcherMessageBox" style="margin-top: 10px; padding: 7px 12px; border-radius: 6px; background: var(--bg-surface); border: 1px solid var(--border-color); font-size: 12.5px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
+            <span id="cardWatcherMessage">✅ 状態: バックグラウンド常駐デーモンが稼働中（待機中）</span>
+            <span style="font-size: 11px; opacity: 0.75;" id="cardWatcherCheckCount">巡回回数: -- 回 | NAS PID稼働中</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Top Wallet Address Bar -->
       <div class="card" style="margin-bottom: 20px;">
         <div class="card-content" style="padding: 14px 20px;">
@@ -555,6 +609,33 @@
 
       <!-- SUBVIEW 2: マイニング・CPU設定 (Mining & Hardware) -->
       <div id="subview-mining" class="sub-view">
+
+        <!-- AI Watcher Mini Status in Mining Subview -->
+        <div class="card" style="margin-bottom: 20px; border-left: 4px solid #8b5cf6; background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(56, 189, 248, 0.05) 100%);">
+          <div class="card-content" style="padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 20px;">🤖</span>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <strong style="font-size: 14px; color: var(--text-main);">バックグラウンド自立システム: AI Auto-Watcher 稼働中</strong>
+                  <span class="badge-ai-status running">
+                    <span class="pulse-dot pulse-ai"></span>
+                    <span>24h 常駐監視</span>
+                  </span>
+                </div>
+                <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">
+                  Core Chronicle/Telegram公式更新を4時間周期で監視し、Gemini 2.5 Flashでリコ風解説記事をはてなブログへ自動投稿しています。
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button class="btn-secondary btn-sm" onclick="window.openAiWatcherModal();" style="display: inline-flex; align-items: center; gap: 4px;">
+                <span>⚙️ 稼働ログ・詳細確認</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- CPU Optimization & Recommended Presets -->
         <section class="card" style="margin-bottom: 24px;">
           <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -1149,10 +1230,83 @@
     </div>
   </div>
 
+  <!-- Modal 5: AI Watcher Details Modal -->
+  <div id="aiWatcherModal" class="modal-backdrop" style="display: none; z-index: 2000;">
+    <div class="modal-container" style="max-width: 680px;">
+      <div class="modal-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(56, 189, 248, 0.1) 100%);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 22px;">🤖</span>
+          <div>
+            <h3 class="modal-title" style="margin: 0; font-size: 17px;">自立型 AI Auto-Watcher 稼働ステータス</h3>
+            <span style="font-size: 12.5px; color: var(--text-muted);">Core Blockchain 公式監視 ＆ リコ風自動執筆エンジン</span>
+          </div>
+        </div>
+        <button id="closeAiWatcherModalBtn" class="modal-close-btn" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        
+        <!-- Live Status Bar in Modal -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 14px; font-weight: 700; color: var(--text-muted);">現在の稼働状態:</span>
+            <span class="badge-ai-status running" id="modalWatcherBadge">
+              <span class="pulse-dot pulse-ai"></span>
+              <span id="modalWatcherBadgeText">24時間自立監視中 (RUNNING)</span>
+            </span>
+          </div>
+          <div id="modalWatcherMessage" style="font-size: 13.5px; color: var(--text-main); line-height: 1.5; background: rgba(139, 92, 246, 0.08); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.2);">
+            ✅ 待機中: バックグラウンド常駐デーモンが正常稼働しています
+          </div>
+        </div>
+
+        <!-- Metric Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">⏱️ 次回巡回予定</div>
+            <div id="modalWatcherNextRun" style="font-size: 15px; font-weight: 700; color: var(--primary);">計算中...</div>
+            <div id="modalWatcherCountdown" style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">--</div>
+          </div>
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">📝 最終巡回実行</div>
+            <div id="modalWatcherLastRun" style="font-size: 15px; font-weight: 700; color: var(--text-main);">確認中...</div>
+            <div style="font-size: 11.5px; color: var(--success); margin-top: 2px;">4時間間隔 (14,400秒)</div>
+          </div>
+        </div>
+
+        <!-- System Architecture Details -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.7; margin-bottom: 16px;">
+          <div style="font-weight: 700; color: var(--text-main); margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">
+            ⚙️ 稼働パイプライン構成
+          </div>
+          <div><strong>🧠 AI執筆エンジン:</strong> Google Gemini 2.5 Flash (<span style="color: #8b5cf6;">@rico_game風 親しみやすいトーン</span>)</div>
+          <div><strong>📡 監視対象ソース:</strong>
+            <ul style="margin: 4px 0 6px 18px; padding: 0;">
+              <li>Core Blockchain 日本公式アナウンス (Telegram: @Core_Blockchain_Japan)</li>
+              <li>Core Chronicle 公式開発・PoDEアップデート</li>
+            </ul>
+          </div>
+          <div><strong>🚀 自動配信先:</strong>
+            <a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600; text-decoration: none;">
+              はてなブログ (corestation.hatenadiary.com) ↗
+            </a>
+          </div>
+          <div><strong>🔒 実行環境:</strong> Asustor NAS (Python 3 バックグラウンド・デーモンスレッド常駐)</div>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <button id="modalTriggerWatcherBtn" class="btn-primary btn-sm" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); border: none; display: inline-flex; align-items: center; gap: 6px;">
+          <span>🔍 今すぐ公式更新を巡回チェック</span>
+        </button>
+        <button class="btn-secondary btn-sm" onclick="document.getElementById('aiWatcherModal').style.display='none'; document.body.style.overflow='';">閉じる</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Application Script -->
-  <script src="app.js?v=20260912_4"></script>
+  <script src="app.js?v=20260912_5"></script>
 </body>
 </html>

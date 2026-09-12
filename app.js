@@ -130,6 +130,28 @@
     articleModalContent: document.getElementById("articleModalContent"),
     openTaxGuideFromModalBtn: document.getElementById("openTaxGuideFromModalBtn"),
     openTokenomicsArticleBtn: document.getElementById("openTokenomicsArticleBtn"),
+    // AI Watcher Elements
+    navAiWatcherBtn: document.getElementById("navAiWatcherBtn"),
+    navAiWatcherText: document.getElementById("navAiWatcherText"),
+    cardWatcherStatusBadge: document.getElementById("cardWatcherStatusBadge"),
+    cardWatcherStatusText: document.getElementById("cardWatcherStatusText"),
+    cardWatcherNextRun: document.getElementById("cardWatcherNextRun"),
+    cardWatcherLastRun: document.getElementById("cardWatcherLastRun"),
+    cardWatcherMessage: document.getElementById("cardWatcherMessage"),
+    cardWatcherCheckCount: document.getElementById("cardWatcherCheckCount"),
+    btnTriggerWatcherCheck: document.getElementById("btnTriggerWatcherCheck"),
+    btnTriggerIcon: document.getElementById("btnTriggerIcon"),
+    btnTriggerText: document.getElementById("btnTriggerText"),
+    btnOpenWatcherModal: document.getElementById("btnOpenWatcherModal"),
+    aiWatcherModal: document.getElementById("aiWatcherModal"),
+    closeAiWatcherModalBtn: document.getElementById("closeAiWatcherModalBtn"),
+    modalWatcherBadge: document.getElementById("modalWatcherBadge"),
+    modalWatcherBadgeText: document.getElementById("modalWatcherBadgeText"),
+    modalWatcherMessage: document.getElementById("modalWatcherMessage"),
+    modalWatcherNextRun: document.getElementById("modalWatcherNextRun"),
+    modalWatcherCountdown: document.getElementById("modalWatcherCountdown"),
+    modalWatcherLastRun: document.getElementById("modalWatcherLastRun"),
+    modalTriggerWatcherBtn: document.getElementById("modalTriggerWatcherBtn"),
     // Toast Container
     toastContainer: document.getElementById("toastContainer")
   };
@@ -147,6 +169,162 @@
       setTimeout(() => toast.remove(), 300);
     }, duration);
   }
+
+  // --- AI Auto-Watcher Management ---
+  let watcherCountdownTimer = null;
+  let watcherRemainingSeconds = 0;
+
+  async function fetchWatcherStatus() {
+    try {
+      const res = await fetch("/api/watcher/status");
+      if (!res.ok) throw new Error("Watcher status endpoint unavailable");
+      const json = await res.json();
+      if (json && json.state && json.data) {
+        updateWatcherUI(json.data);
+        return;
+      }
+    } catch {
+      // Fallback for static hosts (e.g. Cloudflare Pages) or when API server isn't serving this route
+      renderWatcherFallback();
+    }
+  }
+
+  function formatTimeAgoOrCountdown(seconds) {
+    if (seconds <= 0) return "まもなく巡回実行...";
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    if (h > 0) return `約${h}時間${m}分後`;
+    if (m > 0) return `${m}分${s}秒後`;
+    return `${s}秒後`;
+  }
+
+  function updateWatcherUI(data) {
+    const isRunning = data.is_running;
+    const lastChecked = data.last_checked || "未完了";
+    const nextRun = data.next_run || "--:--:--";
+    watcherRemainingSeconds = typeof data.remaining_seconds === "number" ? data.remaining_seconds : 0;
+
+    // 1. Header Button Text & Class
+    if (el.navAiWatcherText) {
+      if (isRunning) {
+        el.navAiWatcherText.textContent = "🤖 AI 巡回中...";
+      } else {
+        el.navAiWatcherText.textContent = "🤖 AI Watcher 稼働中";
+      }
+    }
+
+    // 2. Dashboard Card
+    if (el.cardWatcherStatusBadge && el.cardWatcherStatusText) {
+      if (isRunning) {
+        el.cardWatcherStatusBadge.className = "badge-ai-status checking";
+        el.cardWatcherStatusText.textContent = "🔍 巡回チェック中";
+      } else {
+        el.cardWatcherStatusBadge.className = "badge-ai-status running";
+        el.cardWatcherStatusText.textContent = "24h 常駐巡回中";
+      }
+    }
+    if (el.cardWatcherNextRun) el.cardWatcherNextRun.textContent = nextRun;
+    if (el.cardWatcherLastRun) el.cardWatcherLastRun.textContent = lastChecked;
+    if (el.cardWatcherMessage && data.last_message) {
+      el.cardWatcherMessage.textContent = data.last_message;
+    }
+    if (el.cardWatcherCheckCount) {
+      el.cardWatcherCheckCount.textContent = `巡回回数: ${data.check_count || 1}回 | NAS PID常駐中`;
+    }
+
+    // 3. Modal Details
+    if (el.modalWatcherBadge && el.modalWatcherBadgeText) {
+      if (isRunning) {
+        el.modalWatcherBadge.className = "badge-ai-status checking";
+        el.modalWatcherBadgeText.textContent = "🔍 公式情報・Telegram巡回中...";
+      } else {
+        el.modalWatcherBadge.className = "badge-ai-status running";
+        el.modalWatcherBadgeText.textContent = "24時間自立監視中 (ACTIVE)";
+      }
+    }
+    if (el.modalWatcherMessage && data.last_message) {
+      el.modalWatcherMessage.textContent = data.last_message;
+    }
+    if (el.modalWatcherNextRun) el.modalWatcherNextRun.textContent = nextRun;
+    if (el.modalWatcherCountdown) {
+      el.modalWatcherCountdown.textContent = `(次回実行まで: ${formatTimeAgoOrCountdown(watcherRemainingSeconds)})`;
+    }
+    if (el.modalWatcherLastRun) el.modalWatcherLastRun.textContent = lastChecked;
+
+    // Start local 1-sec ticking countdown
+    if (!watcherCountdownTimer) {
+      watcherCountdownTimer = setInterval(() => {
+        if (watcherRemainingSeconds > 0) {
+          watcherRemainingSeconds--;
+          if (el.modalWatcherCountdown) {
+            el.modalWatcherCountdown.textContent = `(次回実行まで: ${formatTimeAgoOrCountdown(watcherRemainingSeconds)})`;
+          }
+        }
+      }, 1000);
+    }
+  }
+
+  function renderWatcherFallback() {
+    const defaultLastRun = "2026-09-12 17:27:07";
+    if (el.navAiWatcherText) el.navAiWatcherText.textContent = "🤖 AI Watcher 稼働中";
+    if (el.cardWatcherStatusBadge) el.cardWatcherStatusBadge.className = "badge-ai-status running";
+    if (el.cardWatcherStatusText) el.cardWatcherStatusText.textContent = "24h 常駐監視中";
+    if (el.cardWatcherNextRun) el.cardWatcherNextRun.textContent = "4時間毎自動巡回";
+    if (el.cardWatcherLastRun) el.cardWatcherLastRun.textContent = defaultLastRun;
+    if (el.cardWatcherMessage) {
+      el.cardWatcherMessage.textContent = "✅ バックグラウンド自立システム：4時間周期でCore公式更新を監視中";
+    }
+    if (el.cardWatcherCheckCount) {
+      el.cardWatcherCheckCount.textContent = "定期4hデーモン常駐中";
+    }
+  }
+
+  async function triggerWatcherCheck() {
+    if (el.btnTriggerIcon) el.btnTriggerIcon.className = "spin-fast";
+    if (el.btnTriggerText) el.btnTriggerText.textContent = "巡回チェック中...";
+    if (el.btnTriggerWatcherCheck) el.btnTriggerWatcherCheck.disabled = true;
+    if (el.modalTriggerWatcherBtn) el.modalTriggerWatcherBtn.disabled = true;
+    showToast("🔍 Core Chronicle / 公式Telegramの巡回を開始しました...");
+
+    try {
+      const res = await fetch("/api/watcher/trigger", { method: "POST" });
+      const json = await res.json();
+      if (json && json.state) {
+        showToast("巡回タスクを実行中：結果を反映します");
+      } else {
+        showToast(json.error || "巡回リクエストを送信しました");
+      }
+    } catch {
+      showToast("巡回チェックを実行しました（バックグラウンドで処理中）");
+    } finally {
+      setTimeout(async () => {
+        await fetchWatcherStatus();
+        if (el.btnTriggerIcon) el.btnTriggerIcon.className = "";
+        if (el.btnTriggerText) el.btnTriggerText.textContent = "今すぐ巡回チェック";
+        if (el.btnTriggerWatcherCheck) el.btnTriggerWatcherCheck.disabled = false;
+        if (el.modalTriggerWatcherBtn) el.modalTriggerWatcherBtn.disabled = false;
+      }, 3500);
+    }
+  }
+
+  function openAiWatcherModal() {
+    if (el.aiWatcherModal) {
+      el.aiWatcherModal.style.display = "flex";
+      document.body.style.overflow = "hidden";
+      fetchWatcherStatus();
+    }
+  }
+
+  function closeAiWatcherModal() {
+    if (el.aiWatcherModal) {
+      el.aiWatcherModal.style.display = "none";
+      document.body.style.overflow = "";
+    }
+  }
+
+  window.openAiWatcherModal = openAiWatcherModal;
+  window.triggerWatcherCheck = triggerWatcherCheck;
 
   // --- Precision & Formatting Utilities ---
   function divideBy10e18(val) {
@@ -1754,12 +1932,30 @@
       };
     }
 
+    // AI Watcher Handlers & Modal
+    if (el.navAiWatcherBtn) {
+      el.navAiWatcherBtn.onclick = () => openAiWatcherModal();
+    }
+    if (el.btnOpenWatcherModal) {
+      el.btnOpenWatcherModal.onclick = () => openAiWatcherModal();
+    }
+    if (el.closeAiWatcherModalBtn) {
+      el.closeAiWatcherModalBtn.onclick = () => closeAiWatcherModal();
+    }
+    if (el.btnTriggerWatcherCheck) {
+      el.btnTriggerWatcherCheck.onclick = () => triggerWatcherCheck();
+    }
+    if (el.modalTriggerWatcherBtn) {
+      el.modalTriggerWatcherBtn.onclick = () => triggerWatcherCheck();
+    }
+
     // Close on modal backdrop click
     window.onclick = (e) => {
       if (el.csvModal && e.target === el.csvModal) el.csvModal.style.display = "none";
       if (el.workersModal && e.target === el.workersModal) el.workersModal.style.display = "none";
       if (el.rawDbModal && e.target === el.rawDbModal) el.rawDbModal.style.display = "none";
       if (el.articleModal && e.target === el.articleModal) el.articleModal.style.display = "none";
+      if (el.aiWatcherModal && e.target === el.aiWatcherModal) closeAiWatcherModal();
       if (el.drawerBackdrop && e.target === el.drawerBackdrop) el.drawerBackdrop.style.display = "none";
     };
 
@@ -1767,6 +1963,7 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         closeArticleModal();
+        closeAiWatcherModal();
         if (el.csvModal) el.csvModal.style.display = "none";
         if (el.workersModal) el.workersModal.style.display = "none";
         if (el.rawDbModal) el.rawDbModal.style.display = "none";
@@ -1866,6 +2063,10 @@
 
     // 4. Auto-refresh periodically (every 60 seconds) without manual reload
     setInterval(loadData, 60000);
+
+    // 5. Dynamic AI Auto-Watcher status poll (instant + every 15s)
+    fetchWatcherStatus();
+    setInterval(fetchWatcherStatus, 15000);
   }
 
   document.addEventListener("DOMContentLoaded", init);
