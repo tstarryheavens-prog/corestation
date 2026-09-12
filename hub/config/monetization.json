@@ -1,0 +1,105 @@
+{
+  "monetization": {
+    "nisa_and_investing": {
+      "category_name": "オルカン・新NISA・証券口座",
+      "items": [
+        {
+          "id": "sbi_securities",
+          "service_name": "SBI証券",
+          "provider": "A8.net",
+          "description": "国内株式・投資信託シェアNo.1。オルカン積立・新NISAに必須のネット証券。",
+          "affiliate_url": "https://px.a8.net/svt/ejp?a8mat=YOUR_A8_SBI_CODE",
+          "banner_html": "<a href=\"https://px.a8.net/svt/ejp?a8mat=YOUR_A8_SBI_CODE\" target=\"_blank\" rel=\"nofollow\">【SBI証券】新NISAでオルカンを始めるなら</a>",
+          "cta_text_ja": "👉 手数料最安クラス＆クレカ積立でお得にオルカンを始めるなら「SBI証券」"
+        },
+        {
+          "id": "rakuten_securities",
+          "service_name": "楽天証券",
+          "provider": "A8.net",
+          "description": "楽天ポイントで投資可能。見やすいUIで初心者にも人気。",
+          "affiliate_url": "https://px.a8.net/svt/ejp?a8mat=YOUR_A8_RAKUTEN_CODE",
+          "banner_html": "<a href=\"https://px.a8.net/svt/ejp?a8mat=YOUR_A8_RAKUTEN_CODE\" target=\"_blank\" rel=\"nofollow\">【楽天証券】楽天ポイントで新NISA・オルカン投資</a>",
+          "cta_text_ja": "👉 楽天経済圏でポイントを貯めながらオルカン投資するなら「楽天証券」"
+        }
+      ]
+    },
+    "crypto_and_tax": {
+      "category_name": "暗号資産取引所・税金計算ソフト",
+      "items": [
+        {
+          "id": "cryptact",
+          "service_name": "Cryptact (クリプタクト)",
+          "provider": "A8.net",
+          "description": "仮想通貨・マイニングの損益計算・確定申告サポートの国内シェアNo.1ツール。",
+          "affiliate_url": "https://px.a8.net/svt/ejp?a8mat=YOUR_A8_CRYPTACT_CODE",
+          "banner_html": "<a href=\"https://px.a8.net/svt/ejp?a8mat=YOUR_A8_CRYPTACT_CODE\" target=\"_blank\" rel=\"nofollow\">【Cryptact】仮想通貨・マイニングの確定申告を一発自動計算</a>",
+          "cta_text_ja": "👉 面倒なマイニングの確定申告・損益計算を自動化するなら「Cryptact（無料プランあり）」",
+          "cta_text_en": "👉 Easily automate crypto tax calculations with Cryptact."
+        },
+        {
+          "id": "bitflyer",
+          "service_name": "bitFlyer (ビットフライヤー)",
+          "provider": "A8.net",
+          "description": "ビットコイン取引量国内トップクラス。マイニングコインの換金にも便利。",
+          "affiliate_url": "https://px.a8.net/svt/ejp?a8mat=YOUR_A8_BITFLYER_CODE",
+          "banner_html": "<a href=\"https://px.a8.net/svt/ejp?a8mat=YOUR_A8_BITFLYER_CODE\" target=\"_blank\" rel=\"nofollow\">【bitFlyer】国内最大級の暗号資産取引所</a>",
+          "cta_text_ja": "👉 マイニング報酬の日本円出金・保管におすすめの「bitFlyer」"
+        }
+      ],
+      "global_exchanges": [
+        {
+          "id": "mexc_bybit",
+          "service_name": "Global Crypto Exchange (MEXC / Bybit)",
+          "provider": "Direct Affiliate",
+          "description": "XCBや新規アルトコインの取引に対応した海外大手取引所。",
+          "affiliate_url": "https://www.mexc.com/register?inviteCode=YOUR_CODE",
+          "cta_text_en": "👉 Trade XCB and altcoins with zero makers fees on MEXC / Bybit"
+        }
+      ],
+      "crypto_donation": {
+        "xcb_address": "cb00000000000000000000000000000000000000",
+        "eth_address": "0x0000000000000000000000000000000000000000",
+        "btc_address": "bc1q00000000000000000000000000000000000000",
+        "label_ja": "☕ 開発・情報発信の継続支援（寄付アドレス）",
+        "label_en": "☕ Support the Project / Donation Addresses"
+      }
+    },
+    "smart_home_and_gadgets": {
+      "category_name": "HEMS・スマートホーム・電力最適化",
+      "items": [
+        {
+          "id": "smart_plug_monitor",
+          "service_name": "消費電力測定スマートプラグ / Nature Remo E",
+          "provider": "Amazon Associates",
+          "affiliate_url": "https://amzn.to/YOUR_AMAZON_LINK",
+          "cta_text_ja": "👉 家計の電力を見える化！HEMS連動対応のスマートプラグ＆電力モニター",
+          "cta_text_en": "👉 Monitor real-time household energy usage with smart energy plugs"
+        }
+      ]
+    },
+    "health_and_life": {
+      "category_name": "闘病日記・ライフログ",
+      "items": [
+        {
+          "id": "note_support",
+          "service_name": "note サポート・メンバーシップ",
+          "provider": "note",
+          "affiliate_url": "https://note.com/your_account",
+          "cta_text_ja": "🌸 記事へのスキ・サポート（投げ銭）は、治療と執筆活動の大きな励みになります。"
+        }
+      ]
+    },
+    "ai_and_tech_skills": {
+      "category_name": "AI・開発ツール・スクール",
+      "items": [
+        {
+          "id": "ai_course",
+          "service_name": "Python/AIプログラミング学習",
+          "provider": "A8.net",
+          "affiliate_url": "https://px.a8.net/svt/ejp?a8mat=YOUR_A8_AI_CODE",
+          "cta_text_ja": "👉 未経験からPython・AI自動化をマスターする実践講座はこちら"
+        }
+      ]
+    }
+  }
+}

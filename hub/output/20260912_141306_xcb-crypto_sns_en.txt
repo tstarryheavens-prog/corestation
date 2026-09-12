@@ -1,0 +1,9 @@
+【Core Blockchain (XCB), Mining & Tax Station】Asustor NASによる自立型XCBノード運用の実際
+
+Sharing key findings and operational data from our latest test run.
+Automation and consistency are the game changers.
+
+Full breakdown & setup instructions here 👇
+(Link here)
+
+#Tech #Web3 #OpenSource

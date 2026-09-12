@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  coregeeks-nas:
+    build: .
+    container_name: coregeeks-nas
+    restart: unless-stopped
+    ports:
+      - "8088:80"
+    volumes:
+      - ./data:/app/data
+      - ./index.html:/app/index.html:ro
+      - ./style.css:/app/style.css:ro
+      - ./app.js:/app/app.js:ro
+      - ./assets:/app/assets:ro
+      - ./server.py:/app/server.py:ro
+      - ./sync.py:/app/sync.py:ro
+    environment:
+      - PYTHONUNBUFFERED=1

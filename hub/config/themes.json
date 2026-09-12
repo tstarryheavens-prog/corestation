@@ -1,0 +1,64 @@
+{
+  "themes": {
+    "health-journal": {
+      "id": "health-journal",
+      "name_ja": "闘病日記・ライフログ",
+      "name_en": "Health Journey & Life Log",
+      "description": "病気と向き合う日々の体験談、治療やリハビリの記録、前向きに生きるための心のケアや知恵。",
+      "primary_platforms": ["note", "x"],
+      "recommended_languages": ["ja"],
+      "tone_ja": "温かみがあり、共感と勇気を届ける語り口。誠実で丁寧な言葉遣い。",
+      "tone_en": "Empathetic, authentic, and inspiring storytelling.",
+      "monetization_category": "health_and_life",
+      "tags": ["闘病記", "健康", "ライフログ", "note", "体験談"]
+    },
+    "hems-smart-home": {
+      "id": "hems-smart-home",
+      "name_ja": "HEMS・スマートホーム・節電",
+      "name_en": "HEMS, Smart Home & Energy Efficiency",
+      "description": "電力モニタリング、HEMSアプリ開発、スマートホーム連携、家庭の電気代節約・エネルギー最適化。",
+      "primary_platforms": ["blog", "shorts", "x"],
+      "recommended_languages": ["ja", "en"],
+      "tone_ja": "論理的でデータ重視、実用的なDIY精神。分かりやすい図解や数値比較。",
+      "tone_en": "Technical, practical, data-driven smart home enthusiast tone.",
+      "monetization_category": "smart_home_and_gadgets",
+      "tags": ["HEMS", "スマートホーム", "節電", "IoT", "自作アプリ", "エネルギーマネジメント"]
+    },
+    "xcb-crypto": {
+      "id": "xcb-crypto",
+      "name_ja": "Core Blockchain (XCB)・マイニング・確定申告",
+      "name_en": "Core Blockchain (XCB), Mining & Tax Station",
+      "description": "Core Blockchain(XCB)の最新動向、マイニングノード構築、CoreStationでの資産管理、仮想通貨の確定申告。",
+      "primary_platforms": ["blog", "shorts", "hashnode", "x"],
+      "recommended_languages": ["ja", "en"],
+      "tone_ja": "先進的かつ技術的。コミュニティに貢献する実用ツール開発者の視点。",
+      "tone_en": "Crypto-native, innovative, open-source builder voice.",
+      "monetization_category": "crypto_and_tax",
+      "tags": ["CoreBlockchain", "XCB", "暗号資産", "マイニング", "確定申告", "Web3", "CoreStation"]
+    },
+    "ai-technology": {
+      "id": "ai-technology",
+      "name_ja": "最新AI・自動化・プログラミング",
+      "name_en": "Modern AI Tools & Workflow Automation",
+      "description": "生成AIの活用術、Pythonによる自動化スクリプト開発、生産性を10倍にするAI開発ワークフロー。",
+      "primary_platforms": ["blog", "shorts", "hashnode", "note", "x"],
+      "recommended_languages": ["ja", "en"],
+      "tone_ja": "スピーディで実践的。すぐにコピペで使えるコードや具体的な導入ステップを解説。",
+      "tone_en": "Fast-paced, actionable, developer-centric AI insights.",
+      "monetization_category": "ai_and_tech_skills",
+      "tags": ["生成AI", "AI活用", "Python", "業務効率化", "プログラミング", "自動化"]
+    },
+    "all-country-investing": {
+      "id": "all-country-investing",
+      "name_ja": "オルカン投資・新NISA・資産形成",
+      "name_en": "All-Country Index Investing & Wealth Building",
+      "description": "eMAXIS Slim 全世界株式（オール・カントリー）を中心とした長期・積立・分散投資、新NISAの最適戦略、インデックス投資論。",
+      "primary_platforms": ["blog", "shorts", "note", "x"],
+      "recommended_languages": ["ja"],
+      "tone_ja": "堅実で初心者にも親切。感情に流されない論理的な資産形成のアドバイス。",
+      "tone_en": "Long-term, evidence-based, disciplined index investing principles.",
+      "monetization_category": "nisa_and_investing",
+      "tags": ["オルカン", "全世界株式", "新NISA", "インデックス投資", "資産形成", "投資信託"]
+    }
+  }
+}

@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoreStation - Core Blockchain (XCB) ノード＆資産管理ステーション</title>
+  <link rel="icon" type="image/svg+xml" href="assets/core-icon.svg">
+  <link rel="stylesheet" href="style.css?v=20260912_1">
+  <!-- Chart.js CDN (with built-in pure Canvas fallback) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Pre-bundled local SQLite data for instant zero-latency loading -->
+  <script src="data/initial_data.js?v=20260912_1"></script>
+  <script src="data/local_articles.js?v=20260912_4"></script>
+</head>
+<body>
+  <!-- Sliding Drawer Navigation (Mobile / Full Menu) -->
+  <div id="drawerBackdrop" class="drawer-backdrop" style="display: none;">
+    <aside class="drawer">
+      <div class="drawer-header">
+        <div class="drawer-brand">
+          <img src="assets/core-icon.svg" alt="CoreStation Logo" class="drawer-logo">
+          <span class="drawer-title">CoreStation</span>
+        </div>
+        <button id="closeDrawerBtn" class="btn-close-drawer">&times;</button>
+      </div>
+      <nav class="drawer-nav">
+        <div class="nav-section-title">メインメニュー</div>
+        <a href="#dashboard" class="drawer-link active" data-target="view-dashboard">
+          <span class="nav-icon">📊</span>
+          <span>ダッシュボード</span>
+        </a>
+        <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-tax">
+          <span class="nav-icon">📋</span>
+          <span>確定申告・取引台帳</span>
+        </a>
+        <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-mining">
+          <span class="nav-icon">⚡</span>
+          <span>マイニング・CPU設定</span>
+        </a>
+        <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-network">
+          <span class="nav-icon">🌐</span>
+          <span>ネットワーク・半減期</span>
+        </a>
+        <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-articles">
+          <span class="nav-icon">📚</span>
+          <span>ナレッジアーカイブ</span>
+        </a>
+
+        <div class="nav-section-title">外部リンク &amp; コミュニティ</div>
+        <a id="drawerRabbitLink" href="https://catchthatrabbit.com" target="_blank" rel="noopener noreferrer" class="drawer-link">
+          <span class="nav-icon">🐰</span>
+          <span>Catch That RABBIT プール ↗</span>
+        </a>
+        <a id="drawerExplorerLink" href="https://blockindex.net" target="_blank" rel="noopener noreferrer" class="drawer-link">
+          <span class="nav-icon">🧭</span>
+          <span>Core Explorer (Blockindex) ↗</span>
+        </a>
+        <a href="https://t.me/s/Core_Blockchain_Japan" target="_blank" rel="noopener noreferrer" class="drawer-link">
+          <span class="nav-icon">💬</span>
+          <span>Telegram 日本語公式 ↗</span>
+        </a>
+        <a href="https://note.com/hitoyohitoyoni" target="_blank" rel="noopener noreferrer" class="drawer-link">
+          <span class="nav-icon">📝</span>
+          <span>note 日本語技術解説 ↗</span>
+        </a>
+        <a href="https://github.com/core-coin/core" target="_blank" rel="noopener noreferrer" class="drawer-link">
+          <span class="nav-icon">🐙</span>
+          <span>Core Blockchain GitHub ↗</span>
+        </a>
+        <a href="https://ping.exchange" target="_blank" rel="noopener noreferrer" class="drawer-link">
+          <span class="nav-icon">💱</span>
+          <span>PingExchange (取引所) ↗</span>
+        </a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-left">
+        <button id="openDrawerBtn" class="btn-hamburger" title="メニューを開く">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </button>
+        <div class="navbar-brand">
+          <a href="#dashboard" class="brand-link">
+            <img src="assets/core-icon.svg" alt="CoreStation" class="brand-logo-svg">
+            <div class="brand-text-block">
+              <span class="brand-title">CoreStation</span>
+              <span class="brand-subtitle">Core Blockchain Node &amp; Asset Station</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Desktop Navigation Tabs (Dashboard vs Details) -->
+      <nav class="main-tabs-nav">
+        <a href="#dashboard" class="tab-btn active" data-target="view-dashboard">
+          <span class="tab-icon">📊</span>
+          <span>ダッシュボード</span>
+        </a>
+        <a href="#details" class="tab-btn" data-target="view-details">
+          <span class="tab-icon">📑</span>
+          <span>詳細・各種台帳</span>
+        </a>
+      </nav>
+
+      <div class="navbar-right">
+        <span class="net-badge">
+          <span class="pulse-dot"></span>
+          <span>PoDE Live</span>
+        </span>
+        <button id="navDbStatusBtn" class="btn-db-status" title="SQLiteデータベース状態">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+            <path d="M12 2C6.48 2 2 4.02 2 6.5v11C2 19.98 6.48 22 12 22s10-2.02 10-4.5v-11C22 4.02 17.52 2 12 2zm0 2c4.42 0 8 1.57 8 2.5S16.42 9 12 9 4 7.43 4 6.5 7.58 4 12 4zm0 16c-4.42 0-8-1.57-8-2.5V16.8c1.94 1.25 4.86 1.7 8 1.7s6.06-.45 8-1.7V17.5c0 .93-3.58 2.5-8 2.5zm0-4.5c-4.42 0-8-1.57-8-2.5v-2.7c1.94 1.25 4.86 1.7 8 1.7s6.06-.45 8-1.7V13c0 .93-3.58 2.5-8 2.5zm0-4.5c-4.42 0-8-1.57-8-2.5V8.8c1.94 1.25 4.86 1.7 8 1.7s6.06-.45 8-1.7V8.5c0 .93-3.58 2.5-8 2.5z"/>
+          </svg>
+          <span id="navDbBadgeText">DB接続中</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Area -->
+  <main class="main-container">
+
+    <!-- =========================================================================
+         VIEW 1: ダッシュボード (Dashboard - Central Command Center)
+         ========================================================================= -->
+    <div id="view-dashboard" class="app-view active">
+      
+      <!-- Top Wallet Address Bar -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-content" style="padding: 14px 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 280px;">
+              <span style="font-size: 15.5px; font-weight: 700; color: var(--text-muted); white-space: nowrap;">ウォレット:</span>
+              <input type="text" id="walletInput" class="form-input" style="padding: 7px 12px; font-family: var(--font-mono); font-size: 15.5px;" placeholder="cbアドレスを入力...">
+              <button id="searchBtn" class="btn-primary btn-sm">照会</button>
+              <button id="saveWalletBtn" class="btn-secondary btn-sm" title="デフォルトアドレスとして保存">保存</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <select id="currencySelect" class="form-select" style="padding: 6px 10px; font-size: 14.5px; font-weight: 600;">
+                <option value="JPY">JPY (円)</option>
+                <option value="USD">USD (米ドル)</option>
+                <option value="EUR">EUR (ユーロ)</option>
+                <option value="CHF">CHF (スイスフラン)</option>
+              </select>
+              <button id="refreshBtn" class="btn-secondary btn-sm" title="最新データ更新">
+                <span id="refreshIcon">🔄</span> 更新
+              </button>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 14.5px; color: var(--text-muted); flex-wrap: wrap;">
+            <span>現在のアドレス:</span>
+            <code class="font-mono" id="displayWalletAddress" style="color: var(--primary); font-weight: 600;">cb57b88d24678c2091332971e3a38cca472dd8aac0cd</code>
+            <button id="copyAddressBtn" class="copy-btn">コピー</button>
+            <span id="bcAddress" style="display: none;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero KPI Banner (4 Key Metric Cards) -->
+      <div class="hero-kpi-grid">
+        <!-- 1. 保有マイニング資産 -->
+        <div class="hero-kpi-card">
+          <div>
+            <div class="hero-kpi-header">
+              <span class="hero-kpi-label">保有マイニング資産</span>
+              <span class="hero-kpi-icon">💼</span>
+            </div>
+            <div class="hero-kpi-val" title="累積獲得残高">
+              <span id="totalAmountXcb">0.00</span> <span style="font-size: 14px; font-weight: 600; color: var(--text-muted);">XCB</span>
+            </div>
+          </div>
+          <div class="hero-kpi-sub">
+            <span>評価額: <strong style="color: var(--text-main);" id="totalAmountFiat">0 JPY</strong></span>
+            <span style="font-size: 12px; color: var(--text-muted);">(PingExchange)</span>
+          </div>
+        </div>
+
+        <!-- 2. リアルタイム採掘速度 -->
+        <div class="hero-kpi-card" id="kpiHashrateCard" style="cursor: pointer;" title="クリックでワーカー詳細を表示">
+          <div>
+            <div class="hero-kpi-header">
+              <span class="hero-kpi-label">採掘速度 (Hashrate)</span>
+              <span class="hero-kpi-icon">⚡</span>
+            </div>
+            <div class="hero-kpi-val" style="color: var(--primary);">
+              <span id="currentHashrate">0 H/s</span>
+            </div>
+          </div>
+          <div class="hero-kpi-sub">
+            <span id="kpiWorkerBadge" class="badge-online" style="background: var(--success); font-size: 12px; padding: 2px 8px;">稼働中</span>
+            <span id="kpiWorkerCount" style="font-size: 12px; color: var(--text-muted);">Catch That Rabbit 直結</span>
+          </div>
+        </div>
+
+        <!-- 3. 本日の獲得報酬 -->
+        <div class="hero-kpi-card">
+          <div>
+            <div class="hero-kpi-header">
+              <span class="hero-kpi-label" id="todayMiningLabel">本日獲得報酬 (Today)</span>
+              <span class="hero-kpi-icon">💰</span>
+            </div>
+            <div class="hero-kpi-val" style="color: var(--success);">
+              +<span id="todayAmountXcb">0.00</span> <span style="font-size: 14px; font-weight: 600; color: var(--text-muted);">XCB</span>
+            </div>
+          </div>
+          <div class="hero-kpi-sub">
+            <span>日当換算: <strong style="color: var(--text-main);" id="todayAmountFiat">0 JPY</strong></span>
+            <span style="font-size: 12px; color: var(--text-muted);">(自動計上)</span>
+          </div>
+        </div>
+
+        <!-- 4. XCB市場レート & ネットワーク -->
+        <div class="hero-kpi-card">
+          <div>
+            <div class="hero-kpi-header">
+              <span class="hero-kpi-label">XCB市場レート / 難易度</span>
+              <span class="hero-kpi-icon">🌐</span>
+            </div>
+            <div class="hero-kpi-val">
+              $0.0319 <span style="font-size: 14px; font-weight: normal; color: var(--text-muted);">(4.81 円)</span>
+            </div>
+          </div>
+          <div class="hero-kpi-sub">
+            <span>PoDE全網: <strong style="color: var(--text-main);">18.24 Mh/s</strong></span>
+            <span style="font-size: 12px; color: var(--text-muted);">Diff: 440.85M</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions Bar -->
+      <div class="quick-actions-bar">
+        <span class="quick-actions-label">クイック操作:</span>
+        <button id="openCsvModalBtn" class="btn-primary btn-sm">
+          📥 確定申告用CSVを出力
+        </button>
+        <button id="quickSyncBtn" class="btn-secondary btn-sm" onclick="document.getElementById('triggerSyncBtn')?.click();">
+          🔄 DB即時同期
+        </button>
+        <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-mining');">
+          ⚡ CPU推奨設定を見る
+        </button>
+        <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-network');">
+          🔮 2026-2030年 将来予測を見る
+        </button>
+        <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-articles');">
+          📚 技術ガイド・ナレッジを読む
+        </button>
+      </div>
+
+      <!-- Dashboard 2-Column Grid -->
+      <div class="dashboard-grid">
+        <!-- Left Column: Mining Activity, Chart, Recent TX -->
+        <div class="dashboard-col-left">
+          <!-- Mining Chart -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">📈 採掘実績推移 (XCB Yield History)</h2>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14.5px; color: var(--text-muted);">
+                <span>過去30日</span>
+              </div>
+            </div>
+            <div class="card-content" style="padding: 16px;">
+              <div style="position: relative; height: 260px; width: 100%;">
+                <canvas id="xcbChart"></canvas>
+              </div>
+              <div style="display: flex; justify-content: space-around; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color); font-size: 14.5px; color: var(--text-muted); text-align: center;">
+                <div>
+                  <div>直近7日合計</div>
+                  <div style="font-size: 16.5px; font-weight: 700; color: var(--text-main);" id="sevenDaysTotal">- XCB</div>
+                  <div style="font-size: 13.5px;" id="sevenDaysAvg">(日均 -)</div>
+                </div>
+                <div>
+                  <div>直近30日合計</div>
+                  <div style="font-size: 16.5px; font-weight: 700; color: var(--text-main);" id="thirtyDaysTotal">- XCB</div>
+                  <div style="font-size: 13.5px;" id="thirtyDaysAvg">(日均 -)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Transactions Preview -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">💼 直近の採掘報酬・着金履歴</h2>
+              <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-tax');">
+                確定申告・全台帳を見る ↗
+              </button>
+            </div>
+            <div class="card-content" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="daily-table">
+                  <thead>
+                    <tr>
+                      <th>日付</th>
+                      <th style="text-align: right;">時価換算</th>
+                      <th style="text-align: right;">採掘数量 (XCB)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardRecentTableBody">
+                    <tr>
+                      <td colspan="3" style="text-align: center; padding: 20px; color: var(--text-muted);">読込中...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Workers Summary -->
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h2 class="card-title" style="margin: 0;">🖥️ 稼働中ワーカー (Mining Workers)</h2>
+                <span id="workersCountBadge" class="badge-online" style="font-size: 12px; padding: 2px 8px;">検出中</span>
+              </div>
+              <button id="refreshWorkersBtn" class="btn-secondary btn-sm" style="padding: 4px 10px; font-size: 13px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; border-radius: 6px; border: 1px solid var(--border-color); background: #ffffff;" title="ワーカー情報を再取得">
+                <span id="refreshWorkersIcon">🔄</span> 更新
+              </button>
+            </div>
+            <div class="card-content" style="padding: 16px;">
+              <div id="workersContainer">
+                <div style="color: var(--text-muted); font-size: 15.5px;">ワーカー情報を取得中...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Network & Future Outlook & Knowledge -->
+        <div class="dashboard-col-right">
+          <!-- Core Network Status Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">🌐 Core Blockchain 稼働状況</h2>
+              <a href="https://blockindex.net" target="_blank" rel="noopener noreferrer" style="font-size: 14.5px;">Blockindex ↗</a>
+            </div>
+            <div class="card-content" style="padding: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 15.5px;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
+                  <span style="color: var(--text-muted);">コンセンサス / アルゴリズム:</span>
+                  <span style="font-weight: 600;">PoDE / Ouroboros-X</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
+                  <span style="color: var(--text-muted);">最新ブロック高:</span>
+                  <span class="font-mono" style="font-weight: 700; color: var(--primary);">#18,891,676</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
+                  <span style="color: var(--text-muted);">ブロック生成間隔:</span>
+                  <span>約 7.0 秒 / 報酬 1.65 XCB</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
+                  <span style="color: var(--text-muted);">総供給量:</span>
+                  <span class="font-mono">397,677,423 XCB</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--text-muted);">市場流通比率:</span>
+                  <span class="font-mono" style="font-weight: 600; color: var(--success);">98,681,863 XCB (24.8%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2026-2030 Future Outlook Digest -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">🔮 今後の見通し (2026-2030) 予測</h2>
+              <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-network');">
+                詳細クロニクル ↗
+              </button>
+            </div>
+            <div class="card-content" style="padding: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-left: 3px solid var(--primary); border-radius: 6px; padding: 10px 12px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+                    <strong style="font-size: 14.5px; color: var(--primary);">基本シナリオ (確率 60%)</strong>
+                    <span style="font-size: 13.5px; font-weight: 700;">$0.06〜$0.15 (9〜22円)</span>
+                  </div>
+                  <p style="font-size: 13.5px; color: var(--text-muted); margin: 0; line-height: 1.4;">
+                    DePIN・CorePass決済の実需浸透。マイナー損益分岐点が8〜12円へ切り上がり。
+                  </p>
+                </div>
+
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-left: 3px solid var(--success); border-radius: 6px; padding: 10px 12px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+                    <strong style="font-size: 14.5px; color: var(--success);">強気シナリオ (確率 25%)</strong>
+                    <span style="font-size: 13.5px; font-weight: 700; color: var(--success);">$0.25〜$0.50 (38〜75円)</span>
+                  </div>
+                  <p style="font-size: 13.5px; color: var(--text-muted); margin: 0; line-height: 1.4;">
+                    大手CEX上場、Wall Money DeFi/RWA拡大、PoDE再評価による世界的な資金流入。
+                  </p>
+                </div>
+
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-left: 3px solid var(--warning); border-radius: 6px; padding: 10px 12px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+                    <strong style="font-size: 14.5px; color: var(--warning);">保守シナリオ (確率 15%)</strong>
+                    <span style="font-size: 13.5px; font-weight: 700;">$0.025〜$0.035 (3.8〜5.2円)</span>
+                  </div>
+                  <p style="font-size: 13.5px; color: var(--text-muted); margin: 0; line-height: 1.4;">
+                    PingExchange中心の流動性推移。高効率Ryzen機材による寡占・底値圏安定。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Featured Technical Knowledge Pickup -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">📚 ピックアップ技術ガイド (NAS保存版)</h2>
+              <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-articles');">
+                全10記事 ↗
+              </button>
+            </div>
+            <div class="card-content" style="padding: 12px 16px;">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); cursor: pointer;" onclick="window.openArticleModal('comparative-analysis-enterprise-blockchains');">
+                  <span style="font-size: 14.5px; font-weight: 600; color: var(--primary);">🌐 実需型チェーン徹底比較 (VeChain/Hedera等対比)</span>
+                  <span style="font-size: 13.5px; color: var(--primary); font-weight: 600;">NEW 読む →</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; background: var(--bg-surface); cursor: pointer;" onclick="window.openArticleModal('enterprise-adoption-arax-audit');">
+                  <span style="font-size: 14.5px; font-weight: 600; color: var(--text-main);">🏛️ 企業・国家採用動向 ＆ 米上場企業ARAX信用調査</span>
+                  <span style="font-size: 13.5px; color: var(--primary);">読む →</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; background: var(--bg-surface); cursor: pointer;" onclick="window.openArticleModal('dev-update-2026');">
+                  <span style="font-size: 14.5px; font-weight: 600; color: var(--text-main);">🚀 Core 最新開発動向・エコシステム進捗 (2026)</span>
+                  <span style="font-size: 13.5px; color: var(--primary);">読む →</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; background: var(--bg-surface); cursor: pointer;" onclick="window.openArticleModal('tax-guide');">
+                  <span style="font-size: 14.5px; font-weight: 600; color: var(--text-main);">📑 XCBマイニング確定申告・所得計算マニュアル</span>
+                  <span style="font-size: 13.5px; color: var(--primary);">読む →</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; background: var(--bg-surface); cursor: pointer;" onclick="window.openArticleModal('cpu-tuning-guide');">
+                  <span style="font-size: 14.5px; font-weight: 600; color: var(--text-main);">⚡ Core i9 / Ryzen 9 / Core i5 最適化ガイド</span>
+                  <span style="font-size: 13.5px; color: var(--primary);">読む →</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; background: var(--bg-surface); cursor: pointer;" onclick="window.openArticleModal('coreminer-versions');">
+                  <span style="font-size: 14.5px; font-weight: 600; color: var(--text-main);">🐙 CoreMiner全バージョン詳細更新履歴分析</span>
+                  <span style="font-size: 13.5px; color: var(--primary);">読む →</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; background: var(--bg-surface); cursor: pointer;" onclick="window.openArticleModal('tokenomics-halving-history');">
+                  <span style="font-size: 14.5px; font-weight: 600; color: var(--text-main);">📈 XCB 半減期・供給量・価値遷移クロニクル</span>
+                  <span style="font-size: 13.5px; color: var(--primary);">読む →</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         VIEW 2: 詳細・各種台帳 (Details View with Segmented Sub-Tabs)
+         ========================================================================= -->
+    <div id="view-details" class="app-view">
+      
+      <!-- Sub-Tabs Bar (Segmented Navigation) -->
+      <div class="sub-tabs-container">
+        <button class="sub-tab-btn active" id="subtab-tax" data-subview="subview-tax">
+          <span class="nav-icon">📋</span>
+          <span>確定申告・取引台帳</span>
+        </button>
+        <button class="sub-tab-btn" id="subtab-mining" data-subview="subview-mining">
+          <span class="nav-icon">⚡</span>
+          <span>マイニング・CPU設定</span>
+        </button>
+        <button class="sub-tab-btn" id="subtab-network" data-subview="subview-network">
+          <span class="nav-icon">🌐</span>
+          <span>ネットワーク・半減期</span>
+        </button>
+        <button class="sub-tab-btn" id="subtab-articles" data-subview="subview-articles">
+          <span class="nav-icon">📚</span>
+          <span>ナレッジアーカイブ</span>
+        </button>
+      </div>
+
+      <!-- SUBVIEW 1: 確定申告・取引台帳 (Tax & Full Ledger) -->
+      <div id="subview-tax" class="sub-view active">
+        <!-- DB Status Card -->
+        <section class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <h2 class="card-title">💾 ローカルSQLiteデータベース接続状況 (Asustor NAS)</h2>
+              <span class="badge-online" id="dbStatusBadge" style="background: var(--success); font-size: 13.5px;">● 正常稼働中</span>
+            </div>
+            <button id="openTaxGuideFromDetailsBtn" class="btn-secondary btn-sm" onclick="window.openArticleModal('tax-guide');">
+              📖 確定申告マニュアルを読む
+            </button>
+          </div>
+          <div class="card-content">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 18px;">
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px;">
+                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--primary);" id="dbDailyCount">510</div>
+                <div style="font-size: 13.5px; color: var(--text-muted); text-transform: uppercase;">日次集計レコード</div>
+              </div>
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px;">
+                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--success);" id="dbTxCount">4,215</div>
+                <div style="font-size: 13.5px; color: var(--text-muted); text-transform: uppercase;">個別着金トランザクション</div>
+              </div>
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px;">
+                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--text-secondary);" id="dbRateCount">51,840</div>
+                <div style="font-size: 13.5px; color: var(--text-muted); text-transform: uppercase;">蓄積為替レート (PingExchange)</div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; color: var(--text-muted); margin-bottom: 16px;">
+              <div><strong>DB保存パス:</strong> <code class="font-mono" id="dbFilePath">/volume1/Docker/CoreGeeksEXp/data/wallet.db</code></div>
+              <div><strong>蓄積期間:</strong> <span id="dbDateRange">2023/08/20 〜 2026/09/05 (約3年分)</span></div>
+              <div><strong>最終同期日時:</strong> <span id="dbLastSync">2026-09-06 12:23 JST</span></div>
+            </div>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button id="triggerSyncBtn" class="btn-primary btn-sm">
+                🔄 最新データをDBに再同期
+              </button>
+              <button id="viewRawDbBtn" class="btn-secondary btn-sm">
+                🔍 DB内取引明細プレビュー
+              </button>
+              <button class="btn-success btn-sm" onclick="document.getElementById('openCsvModalBtn')?.click();">
+                📥 申告用CSVをダウンロード
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Full Daily Ledger Table -->
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">📅 日別獲得報酬台帳 (全510日分)</h2>
+            <span style="font-size: 14.5px; color: var(--text-muted);">ウォレット着金日のPingExchange時価による自動所得計算</span>
+          </div>
+          <div class="card-content" style="padding: 0;">
+            <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+              <table class="daily-table">
+                <thead style="position: sticky; top: 0; z-index: 10;">
+                  <tr>
+                    <th>日付</th>
+                    <th style="text-align: right;">時価評価 (JPY)</th>
+                    <th style="text-align: right;">採掘数量 (XCB)</th>
+                  </tr>
+                </thead>
+                <tbody id="dailyTableBody">
+                  <tr>
+                    <td colspan="3" style="text-align: center; padding: 24px; color: var(--text-muted);">データ読込中...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- SUBVIEW 2: マイニング・CPU設定 (Mining & Hardware) -->
+      <div id="subview-mining" class="sub-view">
+        <!-- CPU Optimization & Recommended Presets -->
+        <section class="card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <h2 class="card-title">💻 主要CPU推奨マイニング設定 (Ryzen 9 7950X / Core i9-14900 / Core i5-13500)</h2>
+              <p style="font-size: 14.5px; color: var(--text-muted); margin-top: 4px;">RandomY (PoDE) のL3キャッシュ設計（L3容量 ÷ 2MB基準）に基づいた最適スレッド数・電力設定</p>
+            </div>
+            <button class="btn-secondary btn-sm" onclick="window.openArticleModal('cpu-tuning-guide');">
+              📖 CPU完全最適化ガイドを読む
+            </button>
+          </div>
+          <div class="card-content">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+              
+              <!-- Card 1: Ryzen 9 7950X -->
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                      <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0;">AMD Ryzen 9 7950X</h3>
+                      <span style="font-size: 13.5px; color: var(--text-muted);">16C / 32T | L3: 64MB (32MB×2)</span>
+                    </div>
+                    <span class="badge-online" style="background: var(--success); font-size: 14.5px;">最高効率モンスター</span>
+                  </div>
+
+                  <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 12px; font-size: 14.5px; line-height: 1.6;">
+                    <div><strong>推奨スレッド数:</strong> <span style="color: var(--primary); font-weight: 700;">30 〜 32 スレッド</span> (<code>-t 30</code>)</div>
+                    <div><strong>目安ハッシュレート:</strong> <span style="font-weight: 700; color: var(--accent-blue);">約 22,000 〜 25,000 H/s</span></div>
+                    <div><strong>推奨電力設定:</strong> 105W Eco Mode (PPT=142W)</div>
+                    <div><strong>低電圧化:</strong> Curve Optimizer All Cores <code>-20</code> 〜 <code>-30</code></div>
+                  </div>
+
+                  <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4;">
+                    💡 64MB L3により32スレッドフル稼働が可能。Eco Mode 105Wで消費電力を約40%削減しつつハッシュ95%以上維持。
+                  </p>
+                </div>
+
+                <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                  <div style="font-size: 13.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">推奨起動コマンド例:</div>
+                  <div class="article-code-box" style="margin: 0 0 6px 0; padding: 8px 10px; font-size: 13.5px; word-break: break-all;">
+                    <code id="cmdRyzen7950x">./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.ryzen7950x@sg.catchthatrabbit.com:8008 -t 30</code>
+                  </div>
+                  <button class="btn-secondary btn-sm" style="width: 100%;" onclick="window.copyToClipboard(document.getElementById('cmdRyzen7950x').innerText, 'Ryzen 9 7950X用コマンドをコピーしました');">
+                    📋 コマンドをコピー
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card 2: Core i9-14900 -->
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                      <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0;">Intel Core i9-14900 (K/KF)</h3>
+                      <span style="font-size: 13.5px; color: var(--text-muted);">24C (8P+16E) / 32T | L3: 36MB</span>
+                    </div>
+                    <span class="badge-online" style="background: var(--primary); font-size: 14.5px;">高クロックIntelフラッグシップ</span>
+                  </div>
+
+                  <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 12px; font-size: 14.5px; line-height: 1.6;">
+                    <div><strong>推奨スレッド数:</strong> <span style="color: var(--danger); font-weight: 700;">16 〜 18 スレッド</span> (<code>-t 16</code>) ⚠️32T厳禁</div>
+                    <div><strong>目安ハッシュレート:</strong> <span style="font-weight: 700; color: var(--accent-blue);">約 13,500 〜 15,500 H/s</span></div>
+                    <div><strong>推奨電力設定:</strong> PL1=125W〜150W / PL2=180W</div>
+                    <div><strong>低電圧化:</strong> Global Core SVID Offset <code>-0.050V</code> 〜 <code>-0.080V</code></div>
+                  </div>
+
+                  <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4;">
+                    ⚠️ L3が36MBのため最大18スレッドが限界。32T全開はキャッシュスラッシングを起こしハッシュ急落＆異常発熱します。
+                  </p>
+                </div>
+
+                <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                  <div style="font-size: 13.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">推奨起動コマンド例:</div>
+                  <div class="article-code-box" style="margin: 0 0 6px 0; padding: 8px 10px; font-size: 13.5px; word-break: break-all;">
+                    <code id="cmdCore14900">./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.i9_14900@sg.catchthatrabbit.com:8008 -t 16</code>
+                  </div>
+                  <button class="btn-secondary btn-sm" style="width: 100%;" onclick="window.copyToClipboard(document.getElementById('cmdCore14900').innerText, 'Core i9-14900用コマンドをコピーしました');">
+                    📋 コマンドをコピー
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card 3: Core i5-13500 -->
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                      <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0;">Intel Core i5-13500</h3>
+                      <span style="font-size: 13.5px; color: var(--text-muted);">14C (6P+8E) / 20T | L3: 24MB</span>
+                    </div>
+                    <span class="badge-online" style="background: var(--accent-blue); font-size: 14.5px;">低消費電力・常時稼働高効率</span>
+                  </div>
+
+                  <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 12px; font-size: 14.5px; line-height: 1.6;">
+                    <div><strong>推奨スレッド数:</strong> <span style="color: var(--primary); font-weight: 700;">10 〜 12 スレッド</span> (<code>-t 11</code>)</div>
+                    <div><strong>目安ハッシュレート:</strong> <span style="font-weight: 700; color: var(--accent-blue);">約 6,800 〜 7,800 H/s</span></div>
+                    <div><strong>推奨電力設定:</strong> PL1=65W〜80W / PL2=110W</div>
+                    <div><strong>冷却要件:</strong> 定番空冷クーラー（AK400等）で夏場も60℃台</div>
+                  </div>
+
+                  <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4;">
+                    💡 L3=24MBのため12スレッドが最適解。Pコア6基(12T)のみに割り振ることで消費電力わずか70W前後の静音運用が可能。
+                  </p>
+                </div>
+
+                <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                  <div style="font-size: 13.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">推奨起動コマンド例:</div>
+                  <div class="article-code-box" style="margin: 0 0 6px 0; padding: 8px 10px; font-size: 13.5px; word-break: break-all;">
+                    <code id="cmdCore13500">./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.i5_13500@sg.catchthatrabbit.com:8008 -t 11</code>
+                  </div>
+                  <button class="btn-secondary btn-sm" style="width: 100%;" onclick="window.copyToClipboard(document.getElementById('cmdCore13500').innerText, 'Core i5-13500用コマンドをコピーしました');">
+                    📋 コマンドをコピー
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- Command Generator & Pools Grid -->
+        <div class="dashboard-grid">
+          <div class="dashboard-col-left">
+            <section class="card">
+              <div class="card-header">
+                <h2 class="card-title">CoreMiner 起動コマンド (公式 C++)</h2>
+                <button class="btn-secondary btn-sm" onclick="window.openArticleModal('coreminer-versions');">
+                  バージョン履歴 ↗
+                </button>
+              </div>
+              <div class="card-content">
+                <p style="font-size: 14.5px; color: var(--text-muted); margin-bottom: 10px;">ご自身のアドレスが自動反映されています。コピーしてターミナルで実行してください。</p>
+                <div class="article-code-box" style="margin-bottom: 8px;">
+                  <pre id="coreminerCmd" style="margin: 0; white-space: pre-wrap; word-break: break-all;">./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.worker1@sg.catchthatrabbit.com:8008</pre>
+                </div>
+                <button class="btn-secondary btn-sm" onclick="window.copyToClipboard(document.getElementById('coreminerCmd').innerText, 'CoreMiner起動コマンドをコピーしました');">
+                  📋 コマンドをコピー
+                </button>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <h2 class="card-title">SRBMiner-MULTI 起動コマンド (マルチCPU対応)</h2>
+              </div>
+              <div class="card-content">
+                <p style="font-size: 14.5px; color: var(--text-muted); margin-bottom: 10px;">Ryzen や Intel で広く利用されている SRBMiner の設定例です。</p>
+                <div class="article-code-box" style="margin-bottom: 8px;">
+                  <pre id="srbminerCmd" style="margin: 0; white-space: pre-wrap; word-break: break-all;">./SRBMiner-MULTI --algorithm pode --pool sg.catchthatrabbit.com:8008 --wallet cb57b88d24678c2091332971e3a38cca472dd8aac0cd.worker1 --cpu-threads 0</pre>
+                </div>
+                <button class="btn-secondary btn-sm" onclick="window.copyToClipboard(document.getElementById('srbminerCmd').innerText, 'SRBMiner起動コマンドをコピーしました');">
+                  📋 コマンドをコピー
+                </button>
+              </div>
+            </section>
+          </div>
+
+          <div class="dashboard-col-right">
+            <section class="card">
+              <div class="card-header">
+                <h2 class="card-title">Catch That RABBIT 公式プール一覧</h2>
+              </div>
+              <div class="card-content" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="daily-table">
+                    <thead>
+                      <tr>
+                        <th>地域</th>
+                        <th>ストラタムホスト</th>
+                        <th>ポート</th>
+                        <th>手数料</th>
+                      </tr>
+                    </thead>
+                    <tbody id="miningPoolsBody">
+                      <!-- Injected dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBVIEW 3: ネットワーク・半減期 (Network & Chronicle) -->
+      <div id="subview-network" class="sub-view">
+        <!-- Network Stats KPI -->
+        <div class="hero-kpi-grid" style="margin-bottom: 24px;">
+          <div class="hero-kpi-card">
+            <div class="hero-kpi-header">
+              <span class="hero-kpi-label">採掘難易度 (Difficulty)</span>
+              <span>⚡</span>
+            </div>
+            <div class="hero-kpi-val" id="netDifficulty">440.85 M</div>
+            <div class="hero-kpi-sub">PoDE 自動難易度調整</div>
+          </div>
+          <div class="hero-kpi-card">
+            <div class="hero-kpi-header">
+              <span class="hero-kpi-label">全網総ハッシュレート</span>
+              <span>⛏️</span>
+            </div>
+            <div class="hero-kpi-val" id="netHashrate">18.24 Mh/s</div>
+            <div class="hero-kpi-sub">アクティブマイナー: <span id="netActiveMiners">216</span></div>
+          </div>
+          <div class="hero-kpi-card">
+            <div class="hero-kpi-header">
+              <span class="hero-kpi-label">最新ブロック高</span>
+              <span>🧱</span>
+            </div>
+            <div class="hero-kpi-val" id="netBlockHeight">18,891,676</div>
+            <div class="hero-kpi-sub">生成間隔 約7秒</div>
+          </div>
+          <div class="hero-kpi-card">
+            <div class="hero-kpi-header">
+              <span class="hero-kpi-label">総供給量 / 流通量</span>
+              <span>🪙</span>
+            </div>
+            <div class="hero-kpi-val" style="font-size: 1.3rem;" id="netCirculatingSupply">98,681,863 XCB</div>
+            <div class="hero-kpi-sub">総供給: <span id="netTotalSupply">397,677,423 XCB</span></div>
+          </div>
+        </div>
+
+        <!-- Chronicle Table -->
+        <section class="card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <h2 class="card-title">📈 XCB 半減期・発行曲線 ＆ 価値遷移クロニクル (2022-2026)</h2>
+              <p style="font-size: 14.5px; color: var(--text-muted); margin-top: 4px;">PoDE難易度調整による実質半減サイクルとPingExchangeにおける時価レートの歴史的推移</p>
+            </div>
+            <button type="button" class="btn-secondary btn-sm" id="openTokenomicsArticleBtn" onclick="window.openArticleModal('tokenomics-halving-history');">
+              📖 トークノミクス解説記事を読む
+            </button>
+          </div>
+          <div class="card-content" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="daily-table">
+                <thead>
+                  <tr>
+                    <th>フェーズ / 時期</th>
+                    <th>主要マイルストーン</th>
+                    <th style="text-align: right;">XCB時価 (USD / JPY)</th>
+                    <th style="text-align: right;">1日採掘量目安</th>
+                    <th>採掘環境・価値の特質</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 600;">第1期：創成期<br><span style="font-size: 13.5px; color: var(--text-muted);">2022年</span></td>
+                    <td>PoDEメインネット稼働、CoreMiner v0.19.60公開、M1 Mac対応</td>
+                    <td style="text-align: right; font-family: var(--font-mono);">$0.005〜$0.015<br><span style="color: var(--text-muted); font-size: 13.5px;">(0.7〜2.0円)</span></td>
+                    <td style="text-align: right; font-family: var(--font-mono); color: var(--primary); font-weight: 600;">50〜100+ XCB/日</td>
+                    <td><span class="badge-online" style="background: var(--success);">黎明独占期</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">第2期：確立期<br><span style="font-size: 13.5px; color: var(--text-muted);">2023年</span></td>
+                    <td>Catch That Rabbitプール本格稼働、PingExchange P2P取引開始</td>
+                    <td style="text-align: right; font-family: var(--font-mono);">$0.015〜$0.035<br><span style="color: var(--text-muted); font-size: 13.5px;">(2.2〜5.2円)</span></td>
+                    <td style="text-align: right; font-family: var(--font-mono); color: var(--primary); font-weight: 600;">約 20〜24 XCB/日</td>
+                    <td><span class="badge-online" style="background: var(--accent-blue);">安定黄金期</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">第3期：半減期<br><span style="font-size: 13.5px; color: var(--text-muted);">2024年</span></td>
+                    <td><strong>【実質半減】</strong>マイナー激増でDifficulty急騰、xcb_getWork &amp; RandomX 1.2.1へ刷新</td>
+                    <td style="text-align: right; font-family: var(--font-mono); color: var(--danger); font-weight: 700;">$0.030〜$0.075<br><span style="font-size: 13.5px;">(4.5〜11.6円 最高値圏)</span></td>
+                    <td style="text-align: right; font-family: var(--font-mono); color: var(--warning); font-weight: 600;">約 2〜12 XCB/日</td>
+                    <td><span class="badge-online" style="background: var(--danger);">半減・価格高騰</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">第4期：実用化期<br><span style="font-size: 13.5px; color: var(--text-muted);">2025年</span></td>
+                    <td>DePIN / RWA連携構想、全網ハッシュレート18〜20Mh/s到達、クラウド配備対応</td>
+                    <td style="text-align: right; font-family: var(--font-mono);">$0.040〜$0.080<br><span style="color: var(--text-muted); font-size: 13.5px;">(6.0〜12.0円)</span></td>
+                    <td style="text-align: right; font-family: var(--font-mono);">約 8〜12 XCB/日</td>
+                    <td><span class="badge-online" style="background: #8b5cf6;">DePIN基盤化</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">第5期：自立成熟期<br><span style="font-size: 13.5px; color: var(--text-muted);">2026年 (現在)</span></td>
+                    <td>総供給3.97億XCB、市場流通9,868万XCB(24.8%)、本NAS自立分散型管理への完全移行</td>
+                    <td style="text-align: right; font-family: var(--font-mono); font-weight: 600;">$0.0319<br><span style="color: var(--text-muted); font-size: 13.5px;">(約 4.81〜5.00円)</span></td>
+                    <td style="text-align: right; font-family: var(--font-mono); font-weight: 600;">約 1.5〜7.1 XCB/日</td>
+                    <td><span class="badge-online" style="background: var(--success);">自立安定期</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 今後の見通し (2026-2030) 未来シナリオ予測 -->
+          <div style="padding: 20px; border-top: 1px solid var(--border-color); background: var(--bg-surface);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+              <h3 style="font-size: 16.5px; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 8px;">
+                <span>🔮</span> 今後の見通し：2026年後半〜2030年の市場・供給シナリオ予測
+              </h3>
+              <span style="font-size: 14.5px; color: var(--text-muted);">年間インフレ率 1.5%〜2.0% 収束予測</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 14px;">
+              <!-- 基本シナリオ -->
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; border-left: 4px solid var(--primary);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <span style="font-weight: 700; font-size: 14.5px; color: var(--primary);">基本シナリオ (確率 60%)</span>
+                  <span class="badge-online" style="background: var(--primary); font-size: 14.5px;">堅調拡大</span>
+                </div>
+                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--text-main); margin-bottom: 6px;">
+                  $0.06 〜 $0.15 <span style="font-size: 14.5px; font-weight: normal; color: var(--text-muted);">(9〜22円)</span>
+                </div>
+                <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
+                  DePIN・CorePass決済の実需浸透。マイナー損益分岐点が8〜12円へ切り上がり、インフレ鈍化とともに2〜3倍の上昇基調。
+                </p>
+              </div>
+
+              <!-- 強気シナリオ -->
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; border-left: 4px solid var(--success);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <span style="font-weight: 700; font-size: 14.5px; color: var(--success);">強気シナリオ (確率 25%)</span>
+                  <span class="badge-online" style="background: var(--success); font-size: 14.5px;">エコシステム爆発</span>
+                </div>
+                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--success); margin-bottom: 6px;">
+                  $0.25 〜 $0.50 <span style="font-size: 14.5px; font-weight: normal; color: var(--text-muted);">(38〜75円)</span>
+                </div>
+                <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
+                  大手グローバルCEX上場・Wall Money/RWA本格展開。PoDE省電力マイニングの世界的再評価による資金流入。
+                </p>
+              </div>
+
+              <!-- 保守シナリオ -->
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; border-left: 4px solid var(--warning);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <span style="font-weight: 700; font-size: 14.5px; color: var(--warning);">保守シナリオ (確率 15%)</span>
+                  <span class="badge-online" style="background: var(--warning); font-size: 14.5px;">現状維持・底堅推移</span>
+                </div>
+                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 6px;">
+                  $0.025 〜 $0.035 <span style="font-size: 14.5px; font-weight: normal; color: var(--text-muted);">(3.8〜5.2円)</span>
+                </div>
+                <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
+                  流動性がPingExchange中心に留まる状態。高効率CPU(Ryzen等)による寡占・底値圏推移。
+                </p>
+              </div>
+            </div>
+
+            <!-- Drivers & Tips -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; font-size: 13.5px; color: var(--text-muted);">
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px;">
+                <span style="font-weight: 700; color: var(--text-main);">🚀 4大実需ドライバー:</span>
+                <ul style="margin: 4px 0 0 16px; padding: 0;">
+                  <li>DePIN/RWA統合によるデータトランザクション手数料消費</li>
+                  <li>CorePass DID 企業認証・KYCでのXCBガス需要拡大</li>
+                  <li>Wall Money DeFi / ステーブルコイン担保需要</li>
+                  <li>PingExchange板の厚み増大と外部取引所連携</li>
+                </ul>
+              </div>
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px;">
+                <span style="font-weight: 700; color: var(--text-main);">💡 マイナーの推奨運用方針:</span>
+                <ul style="margin: 4px 0 0 16px; padding: 0;">
+                  <li>電気代相当分のみ最小限利確、残余XCBは中長期HODL</li>
+                  <li>本NASの「申告用データ出力」で取得時レートを正確に記録・節税</li>
+                  <li>Ryzen 9 7950X / Eco-ModeなどWあたりハッシュ効率最優先の設備維持</li>
+                  <li>難易度上昇に備えた定期的なCoreMiner最新版へのチューニング</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Core Explorer Card -->
+        <section class="card">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h2 class="card-title" style="margin: 0;">🔍 Core Explorer (ブロック &amp; トランザクション照会)</h2>
+              <span id="explorerLiveBadge" style="display: inline-flex; align-items: center; gap: 5px; font-size: 12px; padding: 2px 8px; border-radius: 9999px; background: rgba(34, 197, 94, 0.1); color: #16a34a; font-weight: 600; border: 1px solid rgba(34, 197, 94, 0.25);">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #22c55e; display: inline-block;"></span> LIVE
+              </span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <button id="refreshExplorerBtn" class="btn-secondary" style="padding: 6px 14px; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border-radius: 6px; border: 1px solid var(--border-color); background: #ffffff;" title="最新ブロック情報を再取得">
+                <span id="refreshExplorerIcon" style="display: inline-block;">🔄</span> 最新ブロックに更新
+              </button>
+              <a href="https://blockindex.net" target="_blank" rel="noopener noreferrer" style="font-size: 14.5px; font-weight: 500; color: var(--primary);">Blockindexで全体を見る ↗</a>
+            </div>
+          </div>
+          <div class="card-content" style="padding: 16px;">
+            <div class="search-box-large" style="margin-bottom: 16px;">
+              <input type="text" id="explorerSearchInput" placeholder="アドレス (cb...)、ブロック番号、またはトランザクションハッシュ (0x...) を入力...">
+              <button id="explorerSearchBtn" class="btn-primary">検索</button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="daily-table">
+                <thead>
+                  <tr>
+                    <th style="width: 15%; text-align: center;">ブロック番号</th>
+                    <th style="width: 15%; text-align: center;">経過時間</th>
+                    <th style="width: 40%; text-align: left;">採掘者 (Miner)</th>
+                    <th style="width: 15%; text-align: center;">取引数</th>
+                    <th style="width: 15%; text-align: right;">報酬</th>
+                  </tr>
+                </thead>
+                <tbody id="explorerBlocksBody">
+                  <!-- Injected dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- SUBVIEW 4: ナレッジアーカイブ (Knowledge & Articles) -->
+      <div id="subview-articles" class="sub-view">
+        <section class="card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <h2 class="card-title">📚 Core 公式技術・運用ガイドアーカイブ (全10記事)</h2>
+              <p style="font-size: 14.5px; color: var(--text-muted); margin-top: 4px;">Asustor NAS上に永続アーカイブ済み（完全オフラインでいつでも全文閲覧可能）</p>
+            </div>
+            <span class="badge-online" style="background: var(--success); font-size: 13.5px;">🔒 自サーバー永続保存</span>
+          </div>
+          <div class="card-content">
+            <div class="article-grid" id="articlesArchiveContainer">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">🌐 Core コミュニティ &amp; 技術リソース集</h2>
+          </div>
+          <div class="card-content">
+            <div id="communitySectionsContainer">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Application Footer -->
+  <footer class="app-footer">
+    <div class="app-footer-container">
+      <p>CoreStation &copy; 2026 Core Blockchain (XCB) Autonomous Station</p>
+      <p style="color: var(--text-muted); font-size: 13.5px;">Standalone Self-Hosted System for Asustor AS3102T NAS (Docker &amp; Local SQLite)</p>
+    </div>
+  </footer>
+
+  <!-- Modal 1: 申告用データ CSV Preview & Download -->
+  <div id="csvModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">申告用データ (確定申告用マイニング履歴)</h3>
+        <button id="closeCsvModalBtn" class="modal-close-btn" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 15.5px; color: var(--text-muted); margin-bottom: 12px;">ローカルSQLiteデータベース（<code>wallet.db</code>）に保存されている確定申告用取引データから、自分専用のCSVを出力します。</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; background: var(--bg-surface); padding: 14px; border-radius: 6px; border: 1px solid var(--border-color);">
+          <div>
+            <label for="csvStartDate" style="display: block; font-size: 13.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">開始日</label>
+            <input type="date" id="csvStartDate" class="form-input" style="width: 100%;" value="2026-06-01">
+          </div>
+          <div>
+            <label for="csvEndDate" style="display: block; font-size: 13.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">終了日</label>
+            <input type="date" id="csvEndDate" class="form-input" style="width: 100%;" value="2026-09-06">
+          </div>
+          <div>
+            <label for="csvCurrency" style="display: block; font-size: 13.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">基準通貨</label>
+            <select id="csvCurrency" class="form-select" style="width: 100%;">
+              <option value="JPY">JPY (円)</option>
+              <option value="USD">USD (米ドル)</option>
+              <option value="EUR">EUR (ユーロ)</option>
+              <option value="CHF">CHF (スイスフラン)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+          <button id="downloadCsvBtn" class="btn-primary">期間指定CSVダウンロード</button>
+          <button id="downloadAllCsvBtn" class="btn-secondary">全4,215件を一括ダウンロード</button>
+        </div>
+
+        <div id="csvErrorMsg" style="display: none; padding: 8px 12px; background: var(--danger-light); color: var(--danger); border-radius: 4px; font-size: 14.5px; margin-bottom: 14px;">
+          設定する期間は3ヶ月以内（92日以内）にする必要があります。
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h4 style="font-size: 15.5px; font-weight: 700; margin: 0;">取引明細プレビュー（ローカルDBから取得）</h4>
+            <span id="previewCountText" style="font-size: 14.5px; color: var(--text-muted);">読込中...</span>
+          </div>
+          <div class="table-responsive" style="max-height: 240px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px;">
+            <table class="daily-table">
+              <thead style="position: sticky; top: 0; z-index: 5;">
+                <tr>
+                  <th>日時 (UTC)</th>
+                  <th>種別</th>
+                  <th>通貨</th>
+                  <th style="text-align: right;">数量</th>
+                  <th style="text-align: right;">時価 (PingExchange)</th>
+                  <th style="text-align: right;">手数料</th>
+                  <th>トランザクションハッシュ</th>
+                </tr>
+              </thead>
+              <tbody id="csvPreviewTableBody">
+                <!-- Injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="openTaxGuideFromModalBtn" class="btn-secondary btn-sm" onclick="window.openArticleModal('tax-guide');">📖 確定申告マニュアルを読む</button>
+        <button class="btn-secondary btn-sm" onclick="document.getElementById('csvModal').style.display='none'; document.body.style.overflow='';">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Worker Details Modal -->
+  <div id="workersModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">稼働中のWorker 詳細</h3>
+        <button id="closeWorkersModalBtn" class="modal-close-btn" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body" id="modalWorkersBody">
+        <div style="text-align: center; color: var(--text-muted); padding: 20px;">読込中...</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary btn-sm" onclick="document.getElementById('workersModal').style.display='none'; document.body.style.overflow='';">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Raw DB Data Inspector -->
+  <div id="rawDbModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container" style="max-width: 780px;">
+      <div class="modal-header">
+        <h3 class="modal-title">ローカルSQLite データベース明細確認</h3>
+        <button id="closeRawDbModalBtn" class="modal-close-btn" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 14.5px; color: var(--text-muted); margin-bottom: 12px;">
+          <p><strong>DBファイル:</strong> <code class="font-mono">/volume1/Docker/CoreGeeksEXp/data/wallet.db</code></p>
+          <p><strong>保存内容:</strong> 日次集計 510日分、取引明細 4,215件、為替レート 51,840件が完全保存されています。</p>
+        </div>
+        <div class="table-responsive" style="max-height: 360px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px;">
+          <table class="daily-table">
+            <thead style="position: sticky; top: 0; z-index: 5;">
+              <tr>
+                <th>日付</th>
+                <th style="text-align: right;">採掘量 (XCB)</th>
+                <th style="text-align: right;">当日ランク</th>
+                <th style="text-align: right;">累計採掘量 (XCB)</th>
+                <th style="text-align: right;">累計ランク</th>
+              </tr>
+            </thead>
+            <tbody id="rawDbTableBody">
+              <!-- Injected dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary btn-sm" onclick="document.getElementById('rawDbModal').style.display='none'; document.body.style.overflow='';">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Article Reader Modal (Local NAS Hosted) -->
+  <div id="articleModal" class="modal-backdrop" style="display: none; z-index: 2000;">
+    <div class="modal-container" style="max-width: 860px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span id="articleModalCategory" class="badge-online" style="background: var(--primary);">ガイド</span>
+          <h3 class="modal-title" id="articleModalTitle" style="margin: 0;">記事タイトル</h3>
+        </div>
+        <button id="closeArticleModalBtn" class="modal-close-btn" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 75vh; overflow-y: auto; padding: 24px;">
+        <div style="margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14.5px; color: var(--text-muted);">
+          <span id="articleModalDate">📅 更新日: 2026-09-06</span>
+          <span class="badge-online" style="background: var(--success); font-size: 13.5px;">🔒 NASローカル永続保存版</span>
+        </div>
+        <div id="articleModalContent" class="article-modal-content">
+          <!-- Article body injected dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <span style="font-size: 14.5px; color: var(--text-muted);">※ 本記事はAsustor NAS上に永続保管されています</span>
+        <button id="closeArticleModalBottomBtn" class="btn-primary btn-sm" style="padding: 7px 20px;">← 記事一覧に戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Application Script -->
+  <script src="app.js?v=20260912_4"></script>
+</body>
+</html>

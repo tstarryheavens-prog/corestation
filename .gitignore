@@ -1,0 +1,27 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+venv/
+env/
+
+# Large local database & backup files
+data/wallet.db
+data/backup_*.json
+
+# Generated large media files in hub
+hub/output/*.m4a
+hub/output/*.aiff
+hub/output/*.mp3
+hub/output/*.mp4

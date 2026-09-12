@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <defs>
+    <linearGradient id="cubeTop" x1="12" y1="6" x2="36" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="cubeLeft" x1="8" y1="16" x2="24" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="cubeRight" x1="24" y1="16" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="coreGlow" x1="20" y1="18" x2="28" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Isometric Cube / Block Matrix -->
+  <!-- Top Face -->
+  <polygon points="24,4 42,14 24,24 6,14" fill="url(#cubeTop)" opacity="0.95" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Left Face -->
+  <polygon points="6,14 24,24 24,44 6,34" fill="url(#cubeLeft)" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Right Face -->
+  <polygon points="24,24 42,14 42,34 24,44" fill="url(#cubeRight)" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- Inner Decentralized Core Node (Crystalline Center) -->
+  <polygon points="24,14 33,19 33,29 24,34 15,29 15,19" fill="#ffffff" opacity="0.2"/>
+  <polygon points="24,17 30,20.5 30,27.5 24,31 18,27.5 18,20.5" fill="url(#coreGlow)" stroke="#93c5fd" stroke-width="1.2" stroke-linejoin="round"/>
+
+  <!-- Cryptographic Node Vertices -->
+  <circle cx="24" cy="4" r="2" fill="#60a5fa"/>
+  <circle cx="42" cy="14" r="2" fill="#3b82f6"/>
+  <circle cx="42" cy="34" r="2" fill="#2563eb"/>
+  <circle cx="24" cy="44" r="2" fill="#1d4ed8"/>
+  <circle cx="6" cy="34" r="2" fill="#1e40af"/>
+  <circle cx="6" cy="14" r="2" fill="#3b82f6"/>
+  <!-- Center Core Node Point -->
+  <circle cx="24" cy="24" r="3" fill="#ffffff"/>
+  <circle cx="24" cy="24" r="1.5" fill="#0284c7"/>
+</svg>
