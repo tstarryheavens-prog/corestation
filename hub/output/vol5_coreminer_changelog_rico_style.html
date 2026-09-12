@@ -1,53 +1,92 @@
 <div style="line-height: 1.8; font-size: 16px; color: #333;">
 
+  <!-- CoreStation Official Brand Header Banner -->
+  <div style="text-align: center; margin-bottom: 25px;">
+    <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;">
+      <img src="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg" alt="CoreStation - Core Blockchain Mining &amp; Node Hub" style="width: 100%; max-width: 820px; height: auto; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); display: block; margin: 0 auto;">
+    </a>
+  </div>
+
   <p style="font-size: 18px; font-weight: bold; color: #e65100;">
     どうも！みなさんこんにちは、リコです！✍🏻🎮
   </p>
 
   <p>
     ピックアップ技術ガイド第5弾へようこそ！✨<br>
-    今回は、マイニングをやってる自作PC勢・ガジェット好きなら絶対にワクワクするディープなテーマ……
+    今回は、Core Blockchain（XCB）をマイニングしている自作PC勢・Mac勢・ガジェット好きなら絶対に知っておくべき、超ディープで超重要なテーマをお届けします！
   </p>
 
   <div style="background-color: #ede7f6; border-left: 5px solid #673ab7; padding: 15px; margin: 20px 0; border-radius: 4px;">
-    <strong>「CoreMinerのバージョン進化がガチで凄すぎる件について！」</strong><br>
-    <strong>「ソフトをアップデートするだけで、ハッシュレート（採掘速度）が爆上がりする！？」</strong>
+    <strong style="font-size: 17px; color: #512da8;">⚡️「公式マイナー『CoreMiner』のバージョン進化がガチで凄すぎる件！」</strong><br>
+    <strong>「最新版（v0.19.89）を使わないと、実は掘れなくなっていた！？知らなきゃ大損する技術的進化と最適化の真実！」</strong>
   </div>
 
   <p>
-    実はCore Blockchainのマイニングソフトって、開発陣の狂気的なチューニングによって、<strong>バージョンが上がるたびに採掘効率がとんでもない勢いで進化</strong>しているんです！<br>
-    今回はその技術的な変遷と、「どう設定すれば一番効率よくコインを掘れるのか？」をわかりやすくまとめました！
+    実はCore Blockchainのマイニングソフト（公式Catch That Rabbit製 <code>catchthatrabbit/coreminer</code>）って、初期の <code>v0.19.60</code> から最新の <strong><code>v0.19.89</code></strong> に至るまで、開発陣による凄まじいチューニングと暗号エンジンの全面刷新が行われてきたんです。<br>
+    「えっ、マイナーなんて適当に動いてればどれでも同じじゃないの？」と思っている方……<strong>それ、めちゃくちゃ危険です！！</strong><br>
+    今回は、CoreMinerの本当の進化の歴史と、採掘速度（ハッシュレート）を限界まで引き出す黄金ルールをリコが徹底解説します！
   </p>
 
   <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
 
+  <div style="background-color: #ffebee; border-left: 5px solid #d32f2f; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <strong style="color: #c62828; font-size: 17px;">🚨 まず結論：絶対に【v0.19.89】（最低でもv0.19.87以降）を使ってください！</strong><br>
+    v0.19.84以前の古いマイナーを使い続けていると、採掘プロトコルが旧仕様のままのため、最新のプールやノードから<strong>ジョブを弾かれてしまい（Rejected）、電気代だけ食って1コインも掘れない</strong>という致命的な大惨事になります！今すぐ手元のマイナーのバージョンを確認しましょう！
+  </div>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
   <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
-    1. CoreMinerの進化の歴史！神アプデまとめ🚀
+    1. CoreMiner（catchthatrabbit）進化の4大フェーズ！🚀
   </h2>
 
   <p>
-    初期バージョンから現在に至るまで、どんな神アップデートが行われてきたのかを振り返ってみましょう！
+    CoreMinerは、Core Blockchainのメインネット始動から現在に至るまで、全30回以上のリリースを経て進化してきました。その歩みを4つの世代に分けて見てみましょう！
   </p>
 
-  <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+  <table style="width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 14.5px;">
     <thead>
       <tr style="background-color: #512da8; color: white;">
-        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">バージョン</th>
-        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">主な進化ポイント・影響</th>
+        <th style="padding: 12px; border: 1px solid #ddd; text-align: left; width: 25%;">世代・フェーズ</th>
+        <th style="padding: 12px; border: 1px solid #ddd; text-align: left; width: 25%;">バージョン範囲</th>
+        <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">主な進化ポイント・技術マイルストーン</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td style="padding: 10px; border: 1px solid #ddd;"><strong>黎明期 (v0.1〜0.5)</strong></td>
-        <td style="padding: 10px; border: 1px solid #ddd;">基本的なOuroboros-Xアルゴリズムの実装。まだCPUの限界性能を活かしきれておらず、発熱が大きかった時代。</td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>第1期：基盤構築＆クロスプラットフォーム化</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><code>v0.19.60</code> 〜 <code>v0.19.72</code><br>(2022年5月〜10月)</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">
+          ・<strong>Apple Silicon（M1/M2/M3 macOS ARM64）にネイティブ対応！</strong> Rosetta 2を介さず省電力・爆速マイニングが可能に。<br>
+          ・スレッド細分化パラメータ（<code>-t</code>, <code>--mining-threads</code>）の実装。<br>
+          ・DockerコンテナをAlpine Linux化し、わずか約20MBの軽量イメージを実現。
+        </td>
       </tr>
       <tr style="background-color: #fafafa;">
-        <td style="padding: 10px; border: 1px solid #ddd;"><strong>最適化期 (v0.8〜1.0)</strong></td>
-        <td style="padding: 10px; border: 1px solid #ddd;"><strong>【神アプデ】AVX2 / AVX-512 命令セットへの最適化！</strong> これにより、対応CPUのハッシュレートが一気に1.5倍〜2倍近く跳ね上がりました！</td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>第2期：耐障害性と自動運用化</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><code>v0.19.73</code> 〜 <code>v0.19.84</code><br>(2023年2月〜9月)</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">
+          ・Linux <code>systemd</code> によるOS起動時自動スタート対応。<br>
+          ・バージョン確認（<code>--version</code>）とアップデート自動通知。<br>
+          ・<code>mine.sh</code> のネット切断復帰時における無限ループ不具合を解消。完全放置運用が安定化！
+        </td>
       </tr>
       <tr>
-        <td style="padding: 10px; border: 1px solid #ddd;"><strong>最新版 (v1.2以降)</strong></td>
-        <td style="padding: 10px; border: 1px solid #ddd;">マルチスレッド制御の洗練、メモリ帯域の効率化、ネットワーク切断時の自動再接続機能が大幅強化！長期間の完全放置運用が可能に。</td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>第3期：暗号エンジン刷新＆プロトコル革新⚡️</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><code>v0.19.85</code> 〜 <code>v0.19.88</code><br>(2024年10月〜11月)</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">
+          ・<strong>【超重要】暗号アルゴリズム「RandomY」の全面刷新！</strong>（RandomX 1.2.1ベースへ進化）。JITコンパイル効率とキャッシュ親和性が劇的向上！<br>
+          ・<strong>【大改革】RPCプロトコルの移行:</strong> 旧来の <code>eth_getWork</code> から、Core Blockchain正式仕様の <strong><code>xcb_getWork</code></strong> へ完全移行！
+        </td>
+      </tr>
+      <tr style="background-color: #fafafa;">
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>第4期：現代的CI/CD＆クラウド自動配備🚀</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><code>v0.19.89</code> 〜 現在<br>(2025年〜2026年最新)</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">
+          ・Ubuntu 24.04 ARM64対応によるCI/CD自動ビルドの強化。<br>
+          ・<code>cloud-init-coreminer.yaml</code> を追加し、クラウドVPSでの1クリック自動マイニング構築に対応。<br>
+          ・外部監視用 JSON-RPC API（<code>miner_getstatdetail</code>）の完備。
+        </td>
       </tr>
     </tbody>
   </table>
@@ -55,45 +94,80 @@
   <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
 
   <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
-    2. ハッシュレートを伸ばすための超重要ポイント💡
+    2. 見逃せない！2大メガ進化のディープな裏側💡
+  </h2>
+
+  <h3 style="color: #673ab7; margin-top: 20px;">① 「eth_getWork」から「xcb_getWork」へのプロトコル完全独立</h3>
+  <p>
+    実はCoreMinerは、開発初期にイーサリアム系のマイナー（<code>ethminer</code>）のアーキテクチャをベースに作られていたため、プールとの通信にイーサリアム互換の <code>eth_getWork</code> メソッドを使っていました。<br>
+    しかし、Core Blockchain独自のノード（<code>core-coin/core</code>）が完全に進化・自立したことで、正式仕様である <strong><code>xcb_getWork</code></strong> へと移行したのです！<br>
+    この対応が入ったのが <strong>v0.19.87</strong>。そのため、これより古いマイナーを使っていると、今の最新プールとは会話が成立せずエラーになってしまいます。
+  </p>
+
+  <h3 style="color: #673ab7; margin-top: 20px;">② RandomY（RandomX 1.2.1ベース）の高速化</h3>
+  <p>
+    Core BlockchainのPoDE（Proof of Distributed Efficiency）で採用されているパズル暗号は、CPUマイニング特化型の <strong>「RandomY」</strong> です！<br>
+    v0.19.85〜v0.19.86で最新のRandomX 1.2.1エンジンへと刷新されたことで、以下の恩恵を受けられるようになりました：
+  </p>
+  <ul>
+    <li><strong>JIT（Just-In-Time）コンパイルの高速化:</strong> CPUがその場でマシン語コードを生成・実行するスピードが大幅アップ！</li>
+    <li><strong>AVX2 / AVX-512 命令のフル活用:</strong> Ryzen（Zen 3/4/5）やIntel（Core 12〜14世代/Core Ultra）の高性能演算ユニットをフルにぶん回せる！</li>
+    <li><strong>大容量メモリページ（Huge Pages）との親和性:</strong> メモリへのアクセス遅延が大幅に削減！</li>
+  </ul>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    3. マイニング効率を最大化する3つの絶対ルール🎮⚡️
   </h2>
 
   <p>
-    「もっとたくさんコインを掘りたい！」という方向けに、効率を最大化するコツを3つ伝授します！
+    「じゃあ、リコさん！どう設定すればウチのPCで一番たくさんXCBを掘れるの！？」という方のために、ガチ勢が必ずやっている3つの黄金設定をお教えします！
   </p>
 
-  <h3 style="color: #673ab7; margin-top: 20px;">① CPUのキャッシュメモリ（L3キャッシュ）が最重要！</h3>
-  <p>
-    Core BlockchainのPoDEアルゴリズムは、実はクロック周波数（GHz）よりも<strong>「CPUのL3キャッシュ容量」</strong>をめちゃくちゃ使います。<br>
-    AMDの「3D V-Cache搭載モデル（Ryzen 7 7800X3Dなど）」や、Intelの上位モデル（Core i9など）が圧倒的に有利なのはこのためなんですね！
-  </p>
+  <div style="background: #e8f5e9; border: 1px solid #81c784; padding: 15px; border-radius: 8px; margin: 15px 0;">
+    <h3 style="margin-top: 0; color: #2e7d32; font-size: 18px;">🔥 ルール①：スレッド数は「L3キャッシュ ÷ 2MB」で決める！</h3>
+    <p style="margin-bottom: 5px;">
+      初心者が一番やりがちなのが「CPUの最大スレッド数（例: 32スレッド）を全部使っちゃう」こと。<br>
+      RandomYアルゴリズムは、<strong>1スレッドあたり最低2MBのL3キャッシュ</strong>をガッツリ占有します。もしL3キャッシュが足りないのにスレッド数を増やしすぎると、キャッシュの取り合い（スラッシング）が起きて<strong>逆に採掘速度がガタ落ち</strong>します！
+    </p>
+    <ul style="margin-bottom: 0;">
+      <li><strong>Ryzen 9 7950X (L3: 64MB):</strong> 64MB ÷ 2MB = <strong>最大32スレッド</strong>（<code>-t 30〜32</code> が最適）</li>
+      <li><strong>Ryzen 7 7800X3D (L3: 96MB 3D V-Cache):</strong> キャッシュに超余裕あり！8コア16スレッドをフルパワーで回せるモンスター！</li>
+      <li><strong>Core i5-13500 (L3: 24MB):</strong> 24MB ÷ 2MB = <strong>12スレッド</strong>（<code>-t 12</code> 指定がベスト！全20スレッドで回すと効率低下）</li>
+    </ul>
+  </div>
 
-  <h3 style="color: #673ab7; margin-top: 20px;">② メモリは必ず「2枚差し（デュアルチャネル）」にすべし！</h3>
-  <p>
-    メモリ1枚差し（シングルチャネル）のPCだと、せっかくのCPUのパワーにメモリが追いつかずに性能がガタ落ちします。<br>
-    必ず同じ規格のメモリを2枚（8GB×2枚など）挿して、デュアルチャネルで動かしましょう！これだけで採掘効率が変わります。
-  </p>
+  <div style="background: #e1f5fe; border: 1px solid #4fc3f7; padding: 15px; border-radius: 8px; margin: 15px 0;">
+    <h3 style="margin-top: 0; color: #0277bd; font-size: 18px;">🚀 ルール②：Linuxでは「Huge Pages（1GB/2MB）」を必ず有効化！</h3>
+    <p style="margin-bottom: 0;">
+      LinuxやNASで動かしているなら、OSの「Huge Pages（巨大ページ）」設定を必ず有効にしましょう！<br>
+      通常の4KBページではなく2MBや1GBの巨大ページでメモリを確保することで、CPUのTLBキャッシュミスが激減し、<strong>ハッシュレートが約10%〜15%も底上げ</strong>されます！
+    </p>
+  </div>
 
-  <h3 style="color: #673ab7; margin-top: 20px;">③ 熱対策を怠らないこと！（サーマルスロットリング防止）</h3>
-  <p>
-    マイニング中はCPUがフル稼働します。温度が90℃や100℃を超えると、CPUが身を守るために勝手にスピードを落としちゃいます（サーマルスロットリング）。<br>
-    しっかりしたCPUクーラーを導入するか、PCケースの通気性を良くして冷やしてあげてくださいね❄️
-  </p>
+  <div style="background: #fff3e0; border: 1px solid #ffb74d; padding: 15px; border-radius: 8px; margin: 15px 0;">
+    <h3 style="margin-top: 0; color: #e65100; font-size: 18px;">❄️ ルール③：電力制限（Eco Mode）でワッパ（効率）を極める！</h3>
+    <p style="margin-bottom: 0;">
+      Ryzen 9 7950XなどのハイエンドCPUは、定格（170W/PPT 230W）で回すと爆熱になり電気代が跳ね上がります。<br>
+      マザーボードのBIOSで「105W Eco Mode」やCurve Optimizer（-20〜-30）を設定すると、<strong>消費電力を約40%も削減しながら、ハッシュレートは95%以上維持</strong>できます！電気代を差し引いた手残り利益が最大化しますよ！
+    </p>
+  </div>
 
   <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
 
   <div style="background-color: #e3f2fd; border-left: 5px solid #1976d2; padding: 20px; margin: 25px 0; border-radius: 6px;">
-    <h3 style="margin-top: 0; color: #0d47a1; font-size: 19px;">⚡️ 成果の比較は「CoreStation」のグラフで！</h3>
+    <h3 style="margin-top: 0; color: #0d47a1; font-size: 19px;">⚡️ チューニングの成果は「CoreStation」で可視化！</h3>
     <p>
-      「設定変えたらハッシュレート上がったかな？」「日次の収益はどう変化した？」は、無料の <strong>CoreStation</strong> で確認できます👇
+      「設定を変えてハッシュレートがどれくらい伸びたか？」「1日の採掘枚数はどう変わったか？」は、無料で使える <strong>CoreStation</strong> でリアルタイムに検証できます👇
     </p>
     <p style="text-align: center; margin: 15px 0;">
       <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="background-color: #1976d2; color: white; padding: 12px 24px; font-weight: bold; text-decoration: none; border-radius: 30px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        👉 CoreStation 公式ステーションを開く（完全無料）
+        👉 CoreStation 公式ポータルを開く（完全無料）
       </a>
     </p>
     <p style="margin-bottom: 0;">
-      過去の推移グラフと日次マイニング集計が一発で見えるので、チューニングの成果検証にめちゃくちゃ便利です！
+      Catch That Rabbitプールのワーカー情報と直結し、日次集計や確定申告用データ出力まで全自動でサポートしてくれます！
     </p>
   </div>
 
@@ -104,29 +178,29 @@
   </h2>
 
   <p>
-    今回は、<strong>「CoreMinerの進化の歴史＆ハッシュレート最大化のコツ」</strong>をお届けしました！
+    今回は、<strong>「CoreMinerの真のバージョン進化史＆効率最大化の3つの秘訣」</strong>をお届けしました！
   </p>
 
   <div style="background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 8px; margin: 20px 0;">
     <strong>🎯 今回のおさらい：</strong>
     <ul style="margin-bottom: 0; padding-left: 20px;">
-      <li>マイナーソフトは最新版を使うだけで効率が劇的にUPする！</li>
-      <li>CPUのL3キャッシュ容量とメモリのデュアルチャネルが命！</li>
-      <li>熱ダレしないようにしっかり冷却して放置マイニングを楽しむ！</li>
+      <li>マイナーは必ず <strong>最新版（v0.19.89）</strong> を使う！（<code>xcb_getWork</code> ＆ 最新RandomYが必須）</li>
+      <li>スレッド数はCPUの <strong>「L3キャッシュ容量 ÷ 2MB」</strong> で指定するのが鉄則！</li>
+      <li>Huge Pages有効化とEco Mode低電圧化で、電気代を抑えて利益を最大化する！</li>
     </ul>
   </div>
 
   <p>
-    次回は、さらに突っ込んだ自作PCファン必見のテーマ！<br>
-    <strong>「Core i9-14900 vs Ryzen 9 7950X！最強のマイニングCPUと推奨設定徹底比較」</strong>をお届けします！
+    次回は、さらに自作PCファン・マイナー必見のハードウェア比較！<br>
+    <strong>「Ryzen 9950X / 9800X3D vs Core Ultra 9 / 14900K！2026年最強のマイニングCPUと最適化ガイド」</strong>をお届けします！
   </p>
 
   <p style="font-size: 17px; font-weight: bold; color: #e65100; margin-top: 30px;">
-    少しでも「面白かった！」「勉強になった！」という方は、ぜひ読者登録やスター（⭐️）、SNSシェアをよろしくお願いいたします！🥰✍🏻
+    「めちゃくちゃ勉強になった！」「設定見直してみる！」という方は、ぜひ読者登録やスター（⭐️）、SNSでのシェアをよろしくお願いいたします！🥰✍🏻
   </p>
 
   <p>
-    それでは、また次回の記事でお会いしましょう！ばいばーい！👋🎮✨
+    それでは、また次回の更新でお会いしましょう！ばいばーい！👋🎮✨
   </p>
 
 </div>

@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="100%" height="100%" style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050711" />
+      <stop offset="50%" stop-color="#090d20" />
+      <stop offset="100%" stop-color="#060916" />
+    </linearGradient>
+    <linearGradient id="cyanPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="40%" stop-color="#60a5fa" />
+      <stop offset="75%" stop-color="#c084fc" />
+      <stop offset="100%" stop-color="#f472b6" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    
+    <!-- Glow Filters -->
+    <filter id="glowCyan" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glowPurple" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="220" fill="url(#bgGrad)" />
+  
+  <!-- Subtle Grid Lines -->
+  <g stroke="rgba(56, 189, 248, 0.08)" stroke-width="1">
+    <line x1="0" y1="40" x2="900" y2="40" />
+    <line x1="0" y1="90" x2="900" y2="90" />
+    <line x1="0" y1="140" x2="900" y2="140" />
+    <line x1="0" y1="180" x2="900" y2="180" />
+    <line x1="150" y1="0" x2="150" y2="220" />
+    <line x1="300" y1="0" x2="300" y2="220" />
+    <line x1="450" y1="0" x2="450" y2="220" />
+    <line x1="600" y1="0" x2="600" y2="220" />
+    <line x1="750" y1="0" x2="750" y2="220" />
+  </g>
+
+  <!-- Left: Quantum Core Emblem -->
+  <g transform="translate(115, 110)">
+    <!-- Outer Glow Rings -->
+    <circle r="76" fill="none" stroke="url(#cyanPurple)" stroke-width="1.5" stroke-dasharray="4,6" opacity="0.6" filter="url(#glowCyan)" />
+    <circle r="65" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.4" />
+
+    <!-- 3D Hexagon Cage -->
+    <polygon points="0,-55 48,-27 48,27 0,55 -48,27 -48,-27" fill="rgba(129, 140, 248, 0.06)" stroke="url(#cyanPurple)" stroke-width="2.5" filter="url(#glowCyan)" />
+    
+    <!-- Isometric Cube / Crystal Core Inner Lines -->
+    <line x1="0" y1="0" x2="0" y2="-55" stroke="#38bdf8" stroke-width="2" />
+    <line x1="0" y1="0" x2="48" y2="27" stroke="#818cf8" stroke-width="2" />
+    <line x1="0" y1="0" x2="-48" y2="27" stroke="#c084fc" stroke-width="2" />
+
+    <!-- Inner Quantum Stars -->
+    <polygon points="0,-35 30,-17 30,17 0,35 -30,17 -30,-17" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.85" />
+    <polygon points="0,-20 17,-10 17,10 0,20 -17,10 -17,-10" fill="url(#cyanPurple)" opacity="0.4" />
+
+    <!-- Central Radiant Core Node -->
+    <circle r="7" fill="#ffffff" filter="url(#glowCyan)" />
+    <circle r="3" fill="#38bdf8" />
+
+    <!-- Vertex Dots -->
+    <circle cx="0" cy="-55" r="3.5" fill="#38bdf8" filter="url(#glowCyan)" />
+    <circle cx="48" cy="-27" r="3.5" fill="#818cf8" />
+    <circle cx="48" cy="27" r="3.5" fill="#c084fc" />
+    <circle cx="0" cy="55" r="3.5" fill="#38bdf8" />
+    <circle cx="-48" cy="27" r="3.5" fill="#818cf8" />
+    <circle cx="-48" cy="-27" r="3.5" fill="#c084fc" />
+  </g>
+
+  <!-- Right: Typography & Brand -->
+  <g transform="translate(235, 75)">
+    <!-- Tagline Badge -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="-18" width="210" height="24" rx="6" fill="rgba(56, 189, 248, 0.12)" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1" />
+      <circle cx="14" cy="-6" r="4" fill="#10b981" />
+      <text x="26" y="-2" font-family="'Montserrat', -apple-system, sans-serif" font-size="11" font-weight="800" fill="#38bdf8" letter-spacing="1.5">QUANTUM SECURE PoDE</text>
+    </g>
+
+    <!-- Main Title 'CORESTATION' -->
+    <text x="0" y="46" font-family="'Montserrat', 'Arial Black', sans-serif" font-size="52" font-weight="900" fill="url(#textGrad)" letter-spacing="4" filter="url(#glowPurple)">CORESTATION</text>
+    <text x="0" y="46" font-family="'Montserrat', 'Arial Black', sans-serif" font-size="52" font-weight="900" fill="url(#textGrad)" letter-spacing="4">CORESTATION</text>
+
+    <!-- Subtitle -->
+    <text x="3" y="78" font-family="'Montserrat', -apple-system, sans-serif" font-size="14.5" font-weight="700" fill="#94a3b8" letter-spacing="3.5">CORE BLOCKCHAIN (XCB) MINING &amp; ECOSYSTEM</text>
+
+    <!-- Sub Info Line -->
+    <g transform="translate(3, 106)">
+      <text x="0" y="0" font-family="sans-serif" font-size="12" fill="#64748b">
+        <tspan fill="#38bdf8">⚡ 24h AI Auto-Watcher</tspan>
+        <tspan fill="#475569">  |  </tspan>
+        <tspan fill="#fbbf24">🪙 Catch That Rabbit 直結</tspan>
+        <tspan fill="#475569">  |  </tspan>
+        <tspan fill="#a855f7">📊 確定申告・損益台帳</tspan>
+      </text>
+    </g>
+  </g>
+</svg>

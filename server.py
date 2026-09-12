@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 import threading
 import time
 import ssl
+import mimetypes
 from concurrent.futures import ThreadPoolExecutor
 
 LIVE_NETWORK_CACHE = {
@@ -133,6 +134,37 @@ class CoreGeeksHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def serve_static_file(self, target_path):
+        try:
+            content_type, _ = mimetypes.guess_type(target_path)
+            if not content_type:
+                if target_path.endswith(".js"):
+                    content_type = "application/javascript"
+                elif target_path.endswith(".css"):
+                    content_type = "text/css"
+                elif target_path.endswith(".jpg") or target_path.endswith(".jpeg"):
+                    content_type = "image/jpeg"
+                elif target_path.endswith(".png"):
+                    content_type = "image/png"
+                elif target_path.endswith(".svg"):
+                    content_type = "image/svg+xml"
+                elif target_path.endswith(".ico"):
+                    content_type = "image/x-icon"
+                else:
+                    content_type = "application/octet-stream"
+
+            with open(target_path, "rb") as f:
+                content = f.read()
+
+            self.send_response(200)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(content)))
+            self.send_header("Cache-Control", "no-cache")
+            self.end_headers()
+            self.wfile.write(content)
+        except Exception as e:
+            self.send_error(500, f"Error reading static file: {e}")
+
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path.rstrip("/")
@@ -145,17 +177,18 @@ class CoreGeeksHandler(SimpleHTTPRequestHandler):
 
         # Serve static web frontend
         if path == "" or path == "/":
-            self.path = "/index.html"
-            return super().do_GET()
+            self.serve_static_file(os.path.join(BASE_DIR, "index.html"))
+            return
 
         # Check if physical file exists in BASE_DIR
         local_target = os.path.normpath(os.path.join(BASE_DIR, path.lstrip("/")))
         if os.path.exists(local_target) and not os.path.isdir(local_target):
-            return super().do_GET()
+            self.serve_static_file(local_target)
+            return
 
         # SPA Fallback for all portal routes (/ja/*, /network, /explorer, etc.)
-        self.path = "/index.html"
-        return super().do_GET()
+        self.serve_static_file(os.path.join(BASE_DIR, "index.html"))
+        return
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
