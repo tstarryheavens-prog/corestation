@@ -1,0 +1,174 @@
+<div style="line-height: 1.8; font-size: 16px; color: #333;">
+
+  <p style="font-size: 18px; font-weight: bold; color: #e65100;">
+    どうも！みなさんこんにちは、リコです！✍🏻🎮
+  </p>
+
+  <p>
+    前回の「マイニング税金の落とし穴」の記事、たくさんの方に読んでいただき本当にありがとうございました！✨
+  </p>
+
+  <p>
+    そして今回は待望の第2弾！<br>
+    <strong>「じゃあ実際にどうやってマイニング始めるの！？」「初心者でも普通のPCで掘れるの？」</strong>という疑問に、コピペで即スタートできる手順付きで徹底解説していきます！
+  </p>
+
+  <div style="background-color: #e8f5e9; border-left: 5px solid #4caf50; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <strong style="color: #2e7d32; font-size: 17px;">💡 実はCore Blockchain (XCB) って、めちゃくちゃ個人に優しいんです！</strong><br>
+    ビットコインみたいに「何百万円もする巨大な専用マシン（ASIC）」を持ってる大企業に独占されないように、<strong>【普通のパソコンのCPUで誰でも平等に掘れる】</strong>という超神設計（PoDE / Ouroboros-X）になってるんですよ！
+  </div>
+
+  <p>
+    今回は、日本から接続するなら絶対コレ！という定番プール<strong>「Catch That Rabbit」</strong>を使った最短セットアップ方法をまとめました。ゲーミングPCや自作PCを持ってる人はもちろん、余ってるノートPCがある人も必見です！
+  </p>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    1. マイニングに必要な3つのアイテム！🎒
+  </h2>
+
+  <p>
+    始める前に、以下の3つが手元にあるかチェックしてくださいね！
+  </p>
+
+  <ol style="padding-left: 20px;">
+    <li><strong>パソコン</strong>（WindowsまたはLinux。Core i5/i7/i9やRyzen搭載機がおすすめ！）</li>
+    <li><strong>XCBウォレットアドレス</strong>（受け取り用の口座番号。<code>cb...</code> から始まるアドレス）</li>
+    <li><strong>マイニングソフト</strong>（今回は一番安定してる「SRBMiner-MULTI」を使います）</li>
+  </ol>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    2. プールはどこを選ぶ？日本なら「シンガポール」一択！🇸🇬
+  </h2>
+
+  <p>
+    マイニングは世界中の仲間と力を合わせて掘る「プール（Pool）」に参加するのが基本です。<br>
+    公式推奨の最大手プールが<strong>「Catch That Rabbit」</strong>なんですが、サーバーが世界各地にあります。
+  </p>
+
+  <p>
+    「え、どこ選べばいいの？」って迷うかもしれませんが、<strong>日本から接続するなら「シンガポール」が一番回線が速くて安定</strong>します！
+  </p>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+    <thead>
+      <tr style="background-color: #ff9800; color: white;">
+        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">サーバー地域</th>
+        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">接続アドレス (Stratum)</th>
+        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">おすすめ度</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background-color: #fff3e0;">
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>シンガポール</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><code>sg.catchthatrabbit.com:8008</code></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">⭐️⭐️⭐️⭐️⭐️（日本国内ならコレ！）</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ddd;">香港</td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><code>hk.catchthatrabbit.com:8008</code></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">⭐️⭐️⭐️⭐️（サブ用）</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ddd;">北米 (US)</td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><code>us.catchthatrabbit.com:8008</code></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">⭐️⭐️（遠いので遅延あり）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    3. 【コピペでOK】マイニングソフトの起動コマンド！🚀
+  </h2>
+
+  <p>
+    ソフト（SRBMiner-MULTI）をダウンロードしたら、中にある起動ファイル（バッチファイル）をメモ帳で開いて、以下のコマンドを貼り付けるだけでOKです！
+  </p>
+
+  <div style="background: #263238; color: #eceff1; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 14px; overflow-x: auto; margin: 15px 0;">
+    <span style="color: #80cbc4;"># Windowsの場合 (start.bat に保存してダブルクリック)</span><br>
+    SRBMiner-MULTI.exe --algorithm ouroboros ^<br>
+    &nbsp;&nbsp;--pool stratum+tcp://sg.catchthatrabbit.com:8008 ^<br>
+    &nbsp;&nbsp;--wallet あなたのウォレットアドレス.PC1 ^<br>
+    &nbsp;&nbsp;--password x --cpu-threads 0
+  </div>
+
+  <div style="background-color: #fff9c4; border-left: 5px solid #fbc02d; padding: 12px; margin: 15px 0;">
+    <strong>⚠️ ここだけ書き換えてね！</strong><br>
+    <code>あなたのウォレットアドレス</code> の部分を、自分のアドレス（<code>cb...</code>）に書き換えてください。末尾の <code>.PC1</code> はマシン名なので、好きな名前（<code>.Rig01</code> とか <code>.GamingPC</code>）で大丈夫です！
+  </div>
+
+  <p>
+    実行して黒い画面に数字がズラズラ〜っと流れ始めて、<strong>「Accepted share」</strong>という緑色の文字が出たら大成功！無事にマイニングが始まっています🎉
+  </p>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    4. 掘れたコインの確認と資産管理はどうする？📊
+  </h2>
+
+  <p>
+    「ちゃんと掘れてるのかな？」と気になったら、Catch That Rabbitの公式サイトで自分のアドレスを検索すれば、今のハッシュレート（計算スピード）がリアルタイムで見られます。
+  </p>
+
+  <p>
+    そして、報酬は<strong>約2時間ごとに自動的にウォレットへ振り込まれます！</strong>何もしなくても勝手にコインが増えていく感覚、マジで楽しいです（笑）。
+  </p>
+
+  <div style="background-color: #e3f2fd; border-left: 5px solid #1976d2; padding: 20px; margin: 25px 0; border-radius: 6px;">
+    <h3 style="margin-top: 0; color: #0d47a1; font-size: 19px;">📱 日々のマイニング成果は「CoreStation」でチェック！</h3>
+    <p>
+      「今日いくら稼げたの？」「今月の電気代と比べて黒字になってる？」を一目でグラフ化して確認したい方は、無料ツールの <strong>CoreStation</strong> を使ってみてください👇
+    </p>
+    <p style="text-align: center; margin: 15px 0;">
+      <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="background-color: #1976d2; color: white; padding: 12px 24px; font-weight: bold; text-decoration: none; border-radius: 30px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        👉 CoreStation 公式ステーションを開く（完全無料）
+      </a>
+    </p>
+    <p style="margin-bottom: 0;">
+      日次のマイニング報酬や日本円換算レート、ランキングが一発で分かるので、毎日の進捗確認にめちゃくちゃ便利です！
+    </p>
+  </div>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    まとめ＆次回予告！✨
+  </h2>
+
+  <p>
+    今回は、<strong>「Core Blockchain (XCB) のマイニング設定完全ガイド」</strong>をお届けしました！
+  </p>
+
+  <div style="background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 8px; margin: 20px 0;">
+    <strong>🎯 今回のおさらい：</strong>
+    <ul style="margin-bottom: 0; padding-left: 20px;">
+      <li>XCBは普通のPCのCPUでマイニングできる個人に優しいコイン！</li>
+      <li>プールは日本から激速の<strong>シンガポールサーバー</strong>を選ぶ！</li>
+      <li>日々の報酬と確定申告データは<strong>CoreStationで一括管理</strong>する！</li>
+    </ul>
+  </div>
+
+  <p>
+    PCをつけっぱなしにしておくだけでコインがコツコツ貯まっていくの、本当にロマンがありますよね〜！ぜひみなさんも試してみてください💪🔥
+  </p>
+
+  <p>
+    次回は、<strong>「貯まったコインはどうやって保管・換金する？CorePassウォレット＆PingExchange連携ガイド」</strong>をわかりやすくお届けします！
+  </p>
+
+  <p style="font-size: 17px; font-weight: bold; color: #e65100; margin-top: 30px;">
+    少しでも「参考になった！」「やってみたい！」と思った方は、ぜひ読者登録やスター（⭐️）、SNSシェアをよろしくお願いいたします！🥰✍🏻
+  </p>
+
+  <p>
+    それでは、また次回の記事でお会いしましょう！ばいばーい！👋🎮✨
+  </p>
+
+</div>

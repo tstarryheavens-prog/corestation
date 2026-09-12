@@ -614,16 +614,35 @@ class CoreGeeksHandler(SimpleHTTPRequestHandler):
         except Exception as e:
             self.send_json({"state": False, "error": str(e)}, 500)
 
+def chronicle_watcher_background_worker():
+    """Background daemon thread to check Core Chronicle and publish via Gemini AI every 4 hours."""
+    # Initial sleep of 30 seconds after server boot
+    time.sleep(30)
+    while True:
+        try:
+            from hub.chronicle_watcher import check_and_publish
+            print("[Auto-Watcher] 🔍 Checking Core Chronicle updates...")
+            check_and_publish()
+        except Exception as e:
+            print(f"[Auto-Watcher] Error: {e}", file=sys.stderr)
+        # Sleep for 4 hours (14,400 seconds)
+        time.sleep(14400)
+
 def run():
     # Start live blocks background worker (refreshes every 10-12s)
     t = threading.Thread(target=live_blocks_background_worker, daemon=True)
     t.start()
+
+    # Start AI Chronicle Watcher background worker (runs every 4 hours)
+    t_watcher = threading.Thread(target=chronicle_watcher_background_worker, daemon=True)
+    t_watcher.start()
 
     server_address = ("", PORT)
     httpd = HTTPServer(server_address, CoreGeeksHandler)
     print(f"============================================================")
     print(f" CoreGeeks Self-Hosted NAS Server Started on Port {PORT}")
     print(f" Serving Web & Local SQLite API")
+    print(f" AI Chronicle Auto-Watcher: ACTIVE (Every 4 hours)")
     print(f" Database: {DB_PATH}")
     print(f" Access URL: http://localhost:{PORT}/")
     print(f"============================================================")

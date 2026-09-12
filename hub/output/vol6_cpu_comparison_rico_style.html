@@ -1,0 +1,164 @@
+<div style="line-height: 1.8; font-size: 16px; color: #333;">
+
+  <p style="font-size: 18px; font-weight: bold; color: #e65100;">
+    どうも！みなさんこんにちは、リコです！✍🏻🎮
+  </p>
+
+  <p>
+    ピックアップ技術ガイド第6弾へようこそ！✨<br>
+    今回は、自作PC好き・ゲーマーなら絶対に大好物なあのテーマ……
+  </p>
+
+  <div style="background-color: #ede7f6; border-left: 5px solid #7c4dff; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <strong>「【最新版】いまマイニングするなら、どのCPUが最強なの！？」</strong><br>
+    <strong>「Ryzen 9000番台 vs Intel Core Ultra＆第14世代！一番コスパが良い神CPUをガチ比較！」</strong>
+  </div>
+
+  <p>
+    Core Blockchain (XCB) は「CPUの性能」がそのまま稼ぎ（ハッシュレート）に直結するので、<strong>CPU選びと設定をミスると電気代ばかり食って大赤字</strong>になっちゃいます💦<br>
+    今回は、現在自作PC市場で使われている人気CPU（Ryzen 9950X / 9800X3D / 7950X、Intel Core Ultra 9 285K / 14900K、さらに超省電力なミニPCのN100まで！）を一挙に比較して、おすすめの最適化設定を完全公開します！
+  </p>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    1. 覚えるべき鉄則！「L3キャッシュ ÷ 2MB」が最強の公式💡
+  </h2>
+
+  <p>
+    細かい設定に入る前に、リコから<strong>【マイニングCPU選びの絶対ルール】</strong>を伝授します！ここテストに出ますよ〜！📝
+  </p>
+
+  <div style="background-color: #fffde7; border: 2px solid #ffd54f; padding: 15px; border-radius: 8px; margin: 15px 0;">
+    <strong>⚡️ 最適なスレッド数 ＝「CPUのL3キャッシュ容量 ÷ 2MB」</strong><br>
+    XCBのマイニングアルゴリズムは、1スレッド動かすのに「2MBのL3キャッシュ」を消費します。<br>
+    「32スレッドあるから全開で回そう！」とすると、キャッシュの取り合いになって<strong>逆にハッシュレートがガタ落ちする</strong>んです！
+  </div>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    2. 主要CPUのマイニング性能＆おすすめ度一覧！🏆
+  </h2>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+    <thead>
+      <tr style="background-color: #6200ea; color: white;">
+        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">CPU名</th>
+        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">L3容量</th>
+        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">想定ハッシュレート</th>
+        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">ワットパフォーマンス・評価</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background-color: #ede7f6;">
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>👑 AMD Ryzen 9 9950X (Zen 5)</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">64MB</td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>約 28,000〜31,000 H/s</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">⭐️⭐️⭐️⭐️⭐️<br><strong>【文句なしの現役最強】</strong><br>真のAVX-512対応で圧倒的効率！EcoModeで神コスパ。</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>🎮 AMD Ryzen 7 9800X3D / 7800X3D</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>96MB (3D V-Cache)</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">約 16,000〜18,000 H/s</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">⭐️⭐️⭐️⭐️⭐️<br><strong>【ゲーム＆マイニング両立神】</strong><br>超巨大キャッシュのおかげで、わずか75W前後で爆速動作！</td>
+      </tr>
+      <tr style="background-color: #fafafa;">
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>⚡️ AMD Ryzen 9 7950X (Zen 4)</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">64MB</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">約 23,000〜26,000 H/s</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">⭐️⭐️⭐️⭐️<br>価格がこなれてきてコスパ抜群！105W EcoModeが推奨。</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>🔵 Intel Core Ultra 9 285K</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">36MB</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">約 18,000〜21,000 H/s</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">⭐️⭐️⭐️⭐️<br>前世代より発熱と消費電力が大幅改善！新世代のインテル主力。</td>
+      </tr>
+      <tr style="background-color: #fafafa;">
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>🔥 Intel Core i9-14900K / 14900</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">36MB</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">約 19,000〜22,000 H/s</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">⭐️⭐️⭐️<br>パワーは凄いが高発熱！BIOSで電力制限（PL1=125W）必須！</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>🌱 Intel N100 / N95 (ミニPC・NAS)</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">6MB</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">約 1,200〜1,600 H/s</td>
+        <td style="padding: 10px; border: 1px solid #ddd;">⭐️⭐️⭐️⭐️<br><strong>【電気代ゼロ感覚】</strong><br>消費電力わずか6W〜15W！24時間完全放置のサブ機に最高。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    3. 電気代を40%削る！神セッティングの手順⚡️
+  </h2>
+
+  <p>
+    そのまま回すと電気代が爆上がりしてしまいます！BIOSで以下の「神設定」を施しましょう！
+  </p>
+
+  <h3 style="color: #6200ea; margin-top: 20px;">① AMD Ryzenなら「Eco Mode (105W / 65W)」＋「Curve Optimizer」！</h3>
+  <p>
+    BIOS画面で「Precision Boost Overdrive (PBO)」を開き、<strong>Eco Mode（105W）</strong>をポチッと選択するだけ！<br>
+    さらに「Curve Optimizer」で All Cores を <code>-20</code> 〜 <code>-30</code>（低電圧化）に設定すると、<strong>消費電力が40%も落ちるのに、ハッシュレートは95%以上キープ</strong>されます。これやらないと絶対に損です！
+  </p>
+
+  <h3 style="color: #6200ea; margin-top: 20px;">② Intel Coreなら「PL1 / PL2 の電力制限」！</h3>
+  <p>
+    Intelの第14世代（14900K等）を使う場合は、無制限（253W超）で回すと水冷クーラーでも100℃に達してしまいます。<br>
+    BIOSで <strong>PL1=125W、PL2=180W</strong> 程度にしっかりフタをしてあげることで、電気代を抑えつつ長寿命で安定マイニングできます！
+  </p>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <div style="background-color: #e3f2fd; border-left: 5px solid #1976d2; padding: 20px; margin: 25px 0; border-radius: 6px;">
+    <h3 style="margin-top: 0; color: #0d47a1; font-size: 19px;">📊 チューニングの成果は「CoreStation」で可視化！</h3>
+    <p>
+      「EcoModeにしたら日次の採掘量にどう影響した？」「電気代と収益のバランスは？」をチェックするなら、無料の <strong>CoreStation</strong> を開いてみてください👇
+    </p>
+    <p style="text-align: center; margin: 15px 0;">
+      <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="background-color: #1976d2; color: white; padding: 12px 24px; font-weight: bold; text-decoration: none; border-radius: 30px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        👉 CoreStation 公式ステーションを開く（完全無料）
+      </a>
+    </p>
+    <p style="margin-bottom: 0;">
+      リアルタイムの収益推移と採掘ランキングで、チューニングの成果が一目でわかります！
+    </p>
+  </div>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    まとめ＆次回予告！✨
+  </h2>
+
+  <p>
+    今回は、<strong>「最新マイニングCPU徹底比較＆最適化ガイド」</strong>をお届けしました！
+  </p>
+
+  <div style="background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 8px; margin: 20px 0;">
+    <strong>🎯 今回のおさらい：</strong>
+    <ul style="margin-bottom: 0; padding-left: 20px;">
+      <li>現役最強は <strong>Ryzen 9 9950X / 7950X</strong>！ワッパ最強は <strong>9800X3D</strong>！</li>
+      <li>「スレッド数 ＝ L3キャッシュ ÷ 2MB」の公式を絶対に守る！</li>
+      <li>BIOSでEcoModeや電力制限をかけて、電気代を抑えて賢くマイニング！</li>
+    </ul>
+  </div>
+
+  <p>
+    次回は、ビットコインでも超話題のあのイベント！<br>
+    <strong>「Core Blockchain (XCB) の半減期っていつ来るの？供給量と価格の未来を完全予測！」</strong>をお届けします！
+  </p>
+
+  <p style="font-size: 17px; font-weight: bold; color: #e65100; margin-top: 30px;">
+    この記事が自作PCやマイニングの参考になった方は、ぜひ読者登録やスター（⭐️）、SNSシェアをよろしくお願いします！🥰✍🏻
+  </p>
+
+  <p>
+    それでは、また次回の記事でお会いしましょう！ばいばーい！👋🎮✨
+  </p>
+
+</div>

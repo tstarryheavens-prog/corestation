@@ -25,3 +25,10 @@ hub/output/*.m4a
 hub/output/*.aiff
 hub/output/*.mp3
 hub/output/*.mp4
+
+# Sensitive credentials
+hub/config/hatena_config.json
+hub/config/gemini_config.json
+hub/config/*_credentials.json
+
+

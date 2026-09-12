@@ -1,0 +1,132 @@
+<div style="line-height: 1.8; font-size: 16px; color: #333;">
+
+  <p style="font-size: 18px; font-weight: bold; color: #e65100;">
+    どうも！みなさんこんにちは、リコです！✍🏻🎮
+  </p>
+
+  <p>
+    ピックアップ技術ガイド第5弾へようこそ！✨<br>
+    今回は、マイニングをやってる自作PC勢・ガジェット好きなら絶対にワクワクするディープなテーマ……
+  </p>
+
+  <div style="background-color: #ede7f6; border-left: 5px solid #673ab7; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <strong>「CoreMinerのバージョン進化がガチで凄すぎる件について！」</strong><br>
+    <strong>「ソフトをアップデートするだけで、ハッシュレート（採掘速度）が爆上がりする！？」</strong>
+  </div>
+
+  <p>
+    実はCore Blockchainのマイニングソフトって、開発陣の狂気的なチューニングによって、<strong>バージョンが上がるたびに採掘効率がとんでもない勢いで進化</strong>しているんです！<br>
+    今回はその技術的な変遷と、「どう設定すれば一番効率よくコインを掘れるのか？」をわかりやすくまとめました！
+  </p>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    1. CoreMinerの進化の歴史！神アプデまとめ🚀
+  </h2>
+
+  <p>
+    初期バージョンから現在に至るまで、どんな神アップデートが行われてきたのかを振り返ってみましょう！
+  </p>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+    <thead>
+      <tr style="background-color: #512da8; color: white;">
+        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">バージョン</th>
+        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">主な進化ポイント・影響</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>黎明期 (v0.1〜0.5)</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">基本的なOuroboros-Xアルゴリズムの実装。まだCPUの限界性能を活かしきれておらず、発熱が大きかった時代。</td>
+      </tr>
+      <tr style="background-color: #fafafa;">
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>最適化期 (v0.8〜1.0)</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>【神アプデ】AVX2 / AVX-512 命令セットへの最適化！</strong> これにより、対応CPUのハッシュレートが一気に1.5倍〜2倍近く跳ね上がりました！</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>最新版 (v1.2以降)</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">マルチスレッド制御の洗練、メモリ帯域の効率化、ネットワーク切断時の自動再接続機能が大幅強化！長期間の完全放置運用が可能に。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    2. ハッシュレートを伸ばすための超重要ポイント💡
+  </h2>
+
+  <p>
+    「もっとたくさんコインを掘りたい！」という方向けに、効率を最大化するコツを3つ伝授します！
+  </p>
+
+  <h3 style="color: #673ab7; margin-top: 20px;">① CPUのキャッシュメモリ（L3キャッシュ）が最重要！</h3>
+  <p>
+    Core BlockchainのPoDEアルゴリズムは、実はクロック周波数（GHz）よりも<strong>「CPUのL3キャッシュ容量」</strong>をめちゃくちゃ使います。<br>
+    AMDの「3D V-Cache搭載モデル（Ryzen 7 7800X3Dなど）」や、Intelの上位モデル（Core i9など）が圧倒的に有利なのはこのためなんですね！
+  </p>
+
+  <h3 style="color: #673ab7; margin-top: 20px;">② メモリは必ず「2枚差し（デュアルチャネル）」にすべし！</h3>
+  <p>
+    メモリ1枚差し（シングルチャネル）のPCだと、せっかくのCPUのパワーにメモリが追いつかずに性能がガタ落ちします。<br>
+    必ず同じ規格のメモリを2枚（8GB×2枚など）挿して、デュアルチャネルで動かしましょう！これだけで採掘効率が変わります。
+  </p>
+
+  <h3 style="color: #673ab7; margin-top: 20px;">③ 熱対策を怠らないこと！（サーマルスロットリング防止）</h3>
+  <p>
+    マイニング中はCPUがフル稼働します。温度が90℃や100℃を超えると、CPUが身を守るために勝手にスピードを落としちゃいます（サーマルスロットリング）。<br>
+    しっかりしたCPUクーラーを導入するか、PCケースの通気性を良くして冷やしてあげてくださいね❄️
+  </p>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <div style="background-color: #e3f2fd; border-left: 5px solid #1976d2; padding: 20px; margin: 25px 0; border-radius: 6px;">
+    <h3 style="margin-top: 0; color: #0d47a1; font-size: 19px;">⚡️ 成果の比較は「CoreStation」のグラフで！</h3>
+    <p>
+      「設定変えたらハッシュレート上がったかな？」「日次の収益はどう変化した？」は、無料の <strong>CoreStation</strong> で確認できます👇
+    </p>
+    <p style="text-align: center; margin: 15px 0;">
+      <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="background-color: #1976d2; color: white; padding: 12px 24px; font-weight: bold; text-decoration: none; border-radius: 30px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        👉 CoreStation 公式ステーションを開く（完全無料）
+      </a>
+    </p>
+    <p style="margin-bottom: 0;">
+      過去の推移グラフと日次マイニング集計が一発で見えるので、チューニングの成果検証にめちゃくちゃ便利です！
+    </p>
+  </div>
+
+  <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
+
+  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    まとめ＆次回予告！✨
+  </h2>
+
+  <p>
+    今回は、<strong>「CoreMinerの進化の歴史＆ハッシュレート最大化のコツ」</strong>をお届けしました！
+  </p>
+
+  <div style="background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 8px; margin: 20px 0;">
+    <strong>🎯 今回のおさらい：</strong>
+    <ul style="margin-bottom: 0; padding-left: 20px;">
+      <li>マイナーソフトは最新版を使うだけで効率が劇的にUPする！</li>
+      <li>CPUのL3キャッシュ容量とメモリのデュアルチャネルが命！</li>
+      <li>熱ダレしないようにしっかり冷却して放置マイニングを楽しむ！</li>
+    </ul>
+  </div>
+
+  <p>
+    次回は、さらに突っ込んだ自作PCファン必見のテーマ！<br>
+    <strong>「Core i9-14900 vs Ryzen 9 7950X！最強のマイニングCPUと推奨設定徹底比較」</strong>をお届けします！
+  </p>
+
+  <p style="font-size: 17px; font-weight: bold; color: #e65100; margin-top: 30px;">
+    少しでも「面白かった！」「勉強になった！」という方は、ぜひ読者登録やスター（⭐️）、SNSシェアをよろしくお願いいたします！🥰✍🏻
+  </p>
+
+  <p>
+    それでは、また次回の記事でお会いしましょう！ばいばーい！👋🎮✨
+  </p>
+
+</div>
