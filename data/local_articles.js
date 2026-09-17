@@ -1777,5 +1777,91 @@ echo "vm.nr_hugepages=1280" | sudo tee -a /etc/sysctl.conf</code></pre>
       <p>Core Blockchainは、短期的な市場の流行を追うコインではなく、<strong>「EU環境法制や有事レジリエンス通信という、将来確実に必要とされるインフラ実需を狙い撃ちした堅牢なレイヤー1」</strong>です。</p>
       <p>日々のマイニングで得られるXCBは、将来こうした企業DXやオンチェーントランザクションが本格拡大した際に「必須のエナジー（手数料資源）」として消費される基礎資産となります。目先の市場価格のノイズに惑わされず、着実に原価でXCBを蓄積していくことが最も理にかなった長期戦略と言えます。</p>
     `
+  },
+  {
+    id: "coreminer-wsl-setup-guide",
+    title: "【完全初心者OK】Windows WSL2でCoreMinerを最速導入する完全手順マニュアル（Ubuntu 24.04必須・図解）",
+    category: "mining",
+    categoryName: "マイニング実践・導入ガイド",
+    date: "2026-09-18",
+    summary: "Windows環境でLinuxネイティブの最高ハッシュレートを引き出す！Ubuntu 24.04以上が必須な理由（GLIBC 2.38要件）、HugePages有効化による速度向上、対話型起動コマンド生成、24時間バックグラウンド稼働（tmux）、トラブルシューティングまでを網羅した完全手順書。",
+    content: `
+      <div class="article-alert warning" style="border: 2px solid #ef4444; background: rgba(239, 68, 68, 0.08); padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+        <strong style="color: #ef4444; font-size: 16px;">⚠️【最重要】CoreMiner最新版は「Ubuntu 24.04 LTS 以上」が必須です！</strong><br>
+        <p style="margin: 8px 0 0 0; line-height: 1.6; font-size: 14px;">
+          公式CoreMiner（v0.19.89等）は最新の標準ライブラリ（<strong>GLIBC 2.38以上</strong>）でコンパイルされています。<br>
+          古い <strong>Ubuntu 20.04 や 22.04 LTS では、起動時に「<code>version 'GLIBC_2.38' not found</code>」という致命的エラーが出て絶対に起動しません。</strong><br>
+          WSL2をインストールする際は、必ず <strong><code>wsl --install -d Ubuntu-24.04</code></strong> と指定してください！
+        </p>
+      </div>
+
+      <h3>1. はじめに：なぜ Windows ネイティブではなく WSL2 なのか？</h3>
+      <p>Core Blockchainが採用するコンセンサスアルゴリズム「RandomY (PoDE)」は、CPUのL3キャッシュ帯域とメモリアクセス速度に極めて敏感です。WindowsのWin32バイナリと比較して、Linuxのネイティブ環境（glibc / pthreads）ではスレッドスケジューリングのオーバーヘッドが少なく、<strong>10%〜20%高いハッシュレート</strong>を記録します。</p>
+      <p>Windows Subsystem for Linux 2 (WSL2) を利用すれば、Windowsの日常利用を快適に保ちながら、中身は完全なLinuxカーネル上でCoreMinerを最高効率で稼働させることができます。</p>
+
+      <h3>2. 全ステップ・完全導入ロードマップ</h3>
+
+      <h4>【STEP 1】Windows に WSL2 & Ubuntu 24.04 を導入</h4>
+      <p>スタートボタンを右クリック ➔ 「ターミナル（管理者）」または「PowerShell（管理者）」を開き、以下を実行します：</p>
+      <pre><code>wsl --install -d Ubuntu-24.04</code></pre>
+      <p>完了後、PCを再起動すると自動的にUbuntu 24.04が起動します。任意のユーザー名とパスワードを設定してください。</p>
+
+      <h4>【STEP 2】必須ライブラリの一括インストール</h4>
+      <p>Ubuntuのターミナルで以下をコピペ実行します：</p>
+      <pre><code>sudo apt update && sudo apt upgrade -y && sudo apt install -y wget tar curl libssl-dev hwloc libhwloc-dev tmux</code></pre>
+
+      <h4>【STEP 3】ハッシュレート20〜30%向上の必須技！「HugePages」有効化</h4>
+      <p>Linux標準の4KBページングから2MB HugePagesに切り替えることで、メモリアクセスボトルネックを解消します：</p>
+      <pre><code># 即時適用
+sudo sysctl -w vm.nr_hugepages=1280
+
+# PC再起動後も有効に保つ設定
+echo "vm.nr_hugepages=1280" | sudo tee -a /etc/sysctl.conf</code></pre>
+      <p>※ 確認: <code>grep Huge /proc/meminfo</code> で <code>HugePages_Total: 1280</code> となればOK！</p>
+
+      <h4>【STEP 4】CoreMiner 最新版バイナリのダウンロード</h4>
+      <p>作業フォルダを作成し、公式リポジトリからバイナリを取得して解凍します：</p>
+      <pre><code>mkdir -p ~/coreminer && cd ~/coreminer
+wget https://github.com/catchthatrabbit/coreminer/releases/download/v0.19.89/coreminer-linux-x86_64.tar.gz
+tar -zxvf coreminer-linux-x86_64.tar.gz
+chmod +x coreminer
+./coreminer --version</code></pre>
+
+      <h4>【STEP 5】採掘起動コマンドの実行</h4>
+      <p>ご自身のウォレットアドレスとワーカー名、スレッド数を指定して起動します：</p>
+      <pre><code>./coreminer -P stratum+tcp://[あなたのウォレットアドレス].[ワーカー名]@sg.catchthatrabbit.com:8008 -t [スレッド数]</code></pre>
+      <ul>
+        <li><strong>プール推奨:</strong> 日本国内からはシンガポール（<code>sg.catchthatrabbit.com:8008</code>）が最も低遅延です。</li>
+        <li><strong>推奨スレッド数:</strong> Ryzen 9 7950X: <code>-t 30</code> / Core i9-14900: <code>-t 16</code> / Core i5-13500: <code>-t 11</code></li>
+      </ul>
+
+      <h4>【STEP 6】24時間連続稼働テクニック（tmux）</h4>
+      <p>ターミナルを閉じてもマイニングを止めないために <code>tmux</code> を使用します：</p>
+      <pre><code>tmux new -s miner
+# ここでマイニング起動コマンドを実行
+# 画面から離脱: [Ctrl] + [B] ➔ [D]
+# 画面に復帰: tmux a -t miner</code></pre>
+
+      <h4>【STEP 7】Windowsが重くならないWSL2メモリ制限（.wslconfig）</h4>
+      <p><code>Win + R</code> ➔ <code>notepad %USERPROFILE%\\.wslconfig</code> でファイルを作成し保存します：</p>
+      <pre><code>[wsl2]
+memory=8GB
+processors=16
+swap=0</code></pre>
+
+      <h3>3. よくあるエラーとトラブルシューティング</h3>
+      <ul>
+        <li><strong>Q. <code>GLIBC_2.38 not found</code> と出る:</strong><br>
+        ➔ Ubuntu 22.04以下の古いバージョンです。PowerShell管理者から <code>wsl --install -d Ubuntu-24.04</code> をインストールしてUbuntu 24.04から実行してください。</li>
+        <li><strong>Q. プールに反映されない:</strong><br>
+        ➔ 初回シェアが採掘されてからプール集計・Web表示まで5〜15分かかります。ターミナルに <code>Accepted share</code> が出ていれば正常です。</li>
+      </ul>
+
+      <div style="text-align: center; margin-top: 25px;">
+        <button class="btn-primary" onclick="window.navigateToDetailsSub('subview-guide');" style="padding: 10px 20px; font-weight: 700; font-size: 15px;">
+          🚀 対話型コマンドジェネレーター付きの「専用ガイド画面」を開く ➔
+        </button>
+      </div>
+    `
   }
 ];

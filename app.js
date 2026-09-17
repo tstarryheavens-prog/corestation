@@ -486,6 +486,8 @@
       }).catch(() => {});
     } else if (targetSubviewId === "subview-mining") {
       renderMiningView();
+    } else if (targetSubviewId === "subview-guide") {
+      renderGuideView();
     } else if (targetSubviewId === "subview-articles") {
       renderArticlesView();
     }
@@ -1359,6 +1361,44 @@
     `).join("");
   }
 
+  // --- View 4.5: CoreMiner WSL2 Setup Guide Generator ---
+  function renderGuideView() {
+    const walletInput = document.getElementById("guideWalletInput");
+    if (walletInput && (!walletInput.value || walletInput.value === "cb57b88d24678c2091332971e3a38cca472dd8aac0cd")) {
+      walletInput.value = state.walletAddress || "cb57b88d24678c2091332971e3a38cca472dd8aac0cd";
+    }
+    window.updateGeneratedGuideCmd();
+  }
+
+  window.updateGeneratedGuideCmd = function() {
+    const walletInput = document.getElementById("guideWalletInput");
+    const workerInput = document.getElementById("guideWorkerInput");
+    const poolSelect = document.getElementById("guidePoolSelect");
+    const threadInput = document.getElementById("guideThreadInput");
+    const outputPre = document.getElementById("guideGeneratedCmd");
+
+    if (!outputPre) return;
+
+    const wallet = (walletInput && walletInput.value.trim()) ? walletInput.value.trim() : (state.walletAddress || "cb57b88d24678c2091332971e3a38cca472dd8aac0cd");
+    const worker = (workerInput && workerInput.value.trim()) ? workerInput.value.trim() : "WinWSL01";
+    const pool = (poolSelect && poolSelect.value) ? poolSelect.value : "sg.catchthatrabbit.com:8008";
+    const threads = (threadInput && threadInput.value) ? threadInput.value.trim() : "16";
+
+    let cmd = `./coreminer -P stratum+tcp://${wallet}.${worker}@${pool}`;
+    if (threads && parseInt(threads, 10) > 0) {
+      cmd += ` -t ${threads}`;
+    }
+    outputPre.textContent = cmd;
+  };
+
+  window.setGuideThreadPreset = function(count) {
+    const threadInput = document.getElementById("guideThreadInput");
+    if (threadInput) {
+      threadInput.value = count;
+      window.updateGeneratedGuideCmd();
+    }
+  };
+
   // --- View 5: Articles & Community Hub Renderer ---
   function renderArticlesView() {
     if (el.communitySectionsContainer && state.communityLinks && state.communityLinks.length > 0) {
@@ -1992,7 +2032,9 @@
       return;
     }
 
-    if (h.includes("tax") || h.includes("ledger")) {
+    if (h.includes("guide") || h.includes("setup") || h.includes("wsl")) {
+      switchView("view-details", "subview-guide");
+    } else if (h.includes("tax") || h.includes("ledger")) {
       switchView("view-details", "subview-tax");
     } else if (h.includes("mining")) {
       switchView("view-details", "subview-mining");

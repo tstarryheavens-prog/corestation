@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CoreStation - Core Blockchain (XCB) ノード＆資産管理ステーション</title>
   <link rel="icon" type="image/svg+xml" href="assets/core-icon.svg">
-  <link rel="stylesheet" href="style.css?v=20260917_1">
+  <link rel="stylesheet" href="style.css?v=20260918_1">
   <!-- Chart.js CDN (with built-in pure Canvas fallback) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Pre-bundled local SQLite data for instant zero-latency loading -->
-  <script src="data/initial_data.js?v=20260917_1"></script>
-  <script src="data/local_articles.js?v=20260917_1"></script>
+  <script src="data/initial_data.js?v=20260918_1"></script>
+  <script src="data/local_articles.js?v=20260918_1"></script>
   <!-- A8.net Auto Link Manager (Monetization Hub) -->
   <script src="//statics.a8.net/a8link/a8linkmgr.js"></script>
   <script>
@@ -45,6 +45,10 @@
         <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-mining">
           <span class="nav-icon">⚡</span>
           <span>マイニング・CPU設定</span>
+        </a>
+        <a href="#guide" class="drawer-link" data-target="view-details" data-subview="subview-guide">
+          <span class="nav-icon">🚀</span>
+          <span>CoreMiner 導入手順 (WSL2)</span>
         </a>
         <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-network">
           <span class="nav-icon">🌐</span>
@@ -309,6 +313,9 @@
         <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-mining');">
           ⚡ CPU推奨設定を見る
         </button>
+        <button class="btn-secondary btn-sm" style="color: var(--primary); font-weight: 700; border-color: rgba(37, 99, 235, 0.4);" onclick="window.navigateToDetailsSub('subview-guide');">
+          🚀 CoreMiner 導入手順 (WSL2)
+        </button>
         <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-network');">
           🔮 2026-2030年 将来予測を見る
         </button>
@@ -490,6 +497,10 @@
                   <span style="font-size: 14.5px; font-weight: 600; color: var(--text-main);">🏛️ 企業・国家採用動向 ＆ 米上場企業ARAX信用調査</span>
                   <span style="font-size: 13.5px; color: var(--primary);">読む →</span>
                 </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 6px; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); cursor: pointer;" onclick="window.navigateToDetailsSub('subview-guide');">
+                  <span style="font-size: 14.5px; font-weight: 700; color: var(--primary);">🚀 【必読】Windows WSL2 CoreMiner導入手順</span>
+                  <span style="font-size: 13.5px; color: var(--primary); font-weight: 700;">手順を見る →</span>
+                </div>
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; background: var(--bg-surface); cursor: pointer;" onclick="window.openArticleModal('dev-update-2026');">
                   <span style="font-size: 14.5px; font-weight: 600; color: var(--text-main);">🚀 Core 最新開発動向・エコシステム進捗 (2026)</span>
                   <span style="font-size: 13.5px; color: var(--primary);">読む →</span>
@@ -556,6 +567,10 @@
         <button class="sub-tab-btn" id="subtab-mining" data-subview="subview-mining">
           <span class="nav-icon">⚡</span>
           <span>マイニング・CPU設定</span>
+        </button>
+        <button class="sub-tab-btn" id="subtab-guide" data-subview="subview-guide">
+          <span class="nav-icon">🚀</span>
+          <span>CoreMiner 導入手順 (WSL2)</span>
         </button>
         <button class="sub-tab-btn" id="subtab-network" data-subview="subview-network">
           <span class="nav-icon">🌐</span>
@@ -694,6 +709,22 @@
                 <span>⚙️ 稼働ログ・詳細確認</span>
               </button>
             </div>
+          </div>
+        <!-- Windows WSL2 Guide Banner in Mining Subview -->
+        <div class="card" style="margin-bottom: 20px; border-left: 4px solid var(--primary); background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);">
+          <div class="card-content" style="padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <span style="font-size: 26px;">🚀</span>
+              <div>
+                <strong style="font-size: 15px; color: var(--text-main);">Windows PCで今すぐCoreMinerを動かしたい方へ</strong>
+                <div style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+                  「Ubuntu 24.04以上必須」の最新要件やHugePages設定、起動コマンド自動生成までを網羅した完全導入マニュアルを公開中！
+                </div>
+              </div>
+            </div>
+            <button class="btn-primary btn-sm" onclick="window.navigateToDetailsSub('subview-guide');" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+              <span>📖 WSL2 導入マニュアルを見る ➔</span>
+            </button>
           </div>
         </div>
 
@@ -906,7 +937,526 @@
         </div>
       </div>
 
-      <!-- SUBVIEW 3: ネットワーク・半減期 (Network & Chronicle) -->
+      <!-- SUBVIEW 3: CoreMiner 導入手順 (WSL2) (Windows WSL2 Setup Guide) -->
+      <div id="subview-guide" class="sub-view">
+        
+        <!-- Guide Hero Header Card -->
+        <section class="card" style="margin-bottom: 24px; border-top: 4px solid #3b82f6;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <span class="badge-online" style="background: var(--primary); font-size: 13px;">初心者対応・完全図解</span>
+                <span class="badge-online" style="background: #10b981; font-size: 13px;">Windows 10 / 11 対応</span>
+                <span class="badge-online" style="background: #f59e0b; font-size: 13px;">所要時間: 約15分</span>
+              </div>
+              <h1 class="card-title" style="font-size: 1.5rem; margin: 0; color: var(--text-main);">
+                🚀 【完全攻略】Windows WSL2 で CoreMiner を絶対に導入する手順マニュアル
+              </h1>
+              <p style="font-size: 14.5px; color: var(--text-muted); margin-top: 8px; line-height: 1.6;">
+                Windows PCのグラフィックや日常作業をそのままに、WSL2（Linux仮想化）を使って<strong>Linuxネイティブの最高ハッシュレート（RandomY / PoDE）</strong>を引き出すセットアップ手順です。<br>
+                このページの手順通りにコマンドをコピー＆ペーストするだけで、誰でも確実にマイニングを開始できます。
+              </p>
+            </div>
+            <div>
+              <button class="btn-secondary btn-sm" onclick="window.scrollTo({ top: document.getElementById('guideGeneratorCard').offsetTop - 80, behavior: 'smooth' });">
+                ⚡ 起動コマンド自動生成へ直行 ↓
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- CRITICAL WARNING: UBUNTU 24.04 REQUIREMENT -->
+        <div class="guide-critical-alert" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(245, 158, 11, 0.12) 100%); border: 2px solid #ef4444; border-radius: 10px; padding: 18px 20px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);">
+          <div style="display: flex; align-items: flex-start; gap: 14px;">
+            <span style="font-size: 32px; line-height: 1;">⚠️</span>
+            <div style="flex: 1;">
+              <h3 style="color: #ef4444; margin: 0 0 8px 0; font-size: 17px; font-weight: 800; letter-spacing: 0.02em;">
+                【最重要】CoreMiner最新版は「Ubuntu 24.04 LTS 以上」が必須です！
+              </h3>
+              <p style="margin: 0 0 10px 0; font-size: 14.5px; line-height: 1.7; color: var(--text-main);">
+                Catch That Rabbit公式の最新版CoreMiner（<code>v0.19.89</code> 等）は、最新のC++20規格および最新の標準ライブラリ（<strong>GLIBC 2.38以上</strong>）でビルドされています。<br>
+                従来の <strong>Ubuntu 20.04 や 22.04 LTS では、起動時に「<code>/lib/x86_64-linux-gnu/libc.so.6: version 'GLIBC_2.38' not found</code>」というエラーが発生し、絶対に動作しません。</strong>
+              </p>
+              <div style="background: var(--bg-card); border-radius: 6px; padding: 10px 14px; font-size: 13.5px; border-left: 4px solid #f59e0b; color: var(--text-main);">
+                <strong>💡 解決策はシンプル！</strong><br>
+                単に <code>wsl --install</code> と打つと古いUbuntuが入る場合があるため、本マニュアルのSTEP 1に記載の通り、必ず <strong><code>wsl --install -d Ubuntu-24.04</code></strong> と明示指定してインストールしてください！
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Prerequisites Card -->
+        <section class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h2 class="card-title">🖥️ 導入前の事前準備・システム要件チェック</h2>
+          </div>
+          <div class="card-content">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                  <span style="font-size: 18px;">🪟</span>
+                  <strong style="color: var(--text-main); font-size: 15px;">対応OS</strong>
+                </div>
+                <p style="font-size: 13.5px; color: var(--text-muted); margin: 0; line-height: 1.5;">
+                  Windows 11（推奨）または Windows 10 (バージョン 2004 以降、ビルド 19041 以降)。64-bit版必須。
+                </p>
+              </div>
+
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                  <span style="font-size: 18px;">⚙️</span>
+                  <strong style="color: var(--text-main); font-size: 15px;">CPU仮想化 (VT-x / AMD-V)</strong>
+                </div>
+                <p style="font-size: 13.5px; color: var(--text-muted); margin: 0; line-height: 1.5;">
+                  タスクマネージャーの「パフォーマンス」➔「CPU」で<strong>「仮想化: 有効」</strong>になっていることを確認してください（無効の場合はマザーボードBIOSでSVM/Intel VTをON）。
+                </p>
+              </div>
+
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                  <span style="font-size: 18px;">💾</span>
+                  <strong style="color: var(--text-main); font-size: 15px;">必要メモリ</strong>
+                </div>
+                <p style="font-size: 13.5px; color: var(--text-muted); margin: 0; line-height: 1.5;">
+                  最小8GB、<strong>推奨16GB以上</strong>。RandomYデータセットの展開とHugePages用に約2.5GB〜3GBのRAMを消費します。
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 1: Install WSL2 & Ubuntu 24.04 -->
+        <section class="card guide-step-card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="guide-step-badge">STEP 1</span>
+              <h2 class="card-title" style="margin: 0;">Windowsに WSL2 ＆ Ubuntu 24.04 を導入する</h2>
+            </div>
+            <span class="badge-online" style="background: #3b82f6;">作業環境: PowerShell (管理者)</span>
+          </div>
+          <div class="card-content">
+            <ol class="guide-instruction-list">
+              <li>
+                Windowsの <strong>[スタートボタン] を右クリック</strong> して、<strong>[ターミナル（管理者）]</strong> または <strong>[PowerShell（管理者）]</strong> を開きます。
+              </li>
+              <li>
+                以下のコマンドをコピーして貼り付け、[Enter] キーを押します：
+                <div class="code-snippet-box">
+                  <div class="code-snippet-header">
+                    <span>PowerShell (管理者)</span>
+                    <button class="btn-copy-code" onclick="window.copyToClipboard('wsl --install -d Ubuntu-24.04', 'STEP 1 コマンドをコピーしました');">📋 コピー</button>
+                  </div>
+                  <pre class="code-snippet-pre"><code>wsl --install -d Ubuntu-24.04</code></pre>
+                </div>
+              </li>
+              <li>
+                ダウンロードと展開が完了したら、画面の指示に従って <strong>Windows PC を再起動</strong> します。
+              </li>
+              <li>
+                PC再起動後、自動的に <strong>Ubuntu 24.04 の黒いターミナル画面</strong> が立ち上がります。<br>
+                ※ 開かない場合は、Windowsのスタートメニューから「Ubuntu 24.04」をクリックして起動してください。
+              </li>
+              <li>
+                ターミナル上に <code>Enter new UNIX username:</code> と表示されたら、お好きなユーザー名（半角英小文字、例: <code>miner</code>）を入力して [Enter]。<br>
+                続けて <code>New password:</code> を求められるので、パスワードを入力します（※画面には伏字も出ませんが正しく入力されています）。
+              </li>
+            </ol>
+
+            <div class="guide-sub-note" style="margin-top: 14px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px;">
+              <strong style="color: var(--primary);">💡 すでにWSL2を使っている既存ユーザーの方へ</strong><br>
+              <span style="font-size: 13.5px; color: var(--text-muted);">
+                Ubuntuターミナルで <code>lsb_release -a</code> を実行し、<code>Description: Ubuntu 24.04 LTS</code> と表示されるか確認してください。<br>
+                Ubuntu 20.04や22.04をお使いの場合は、PowerShell管理者から <code>wsl --install -d Ubuntu-24.04</code> を実行すれば、既存環境を壊さずにUbuntu 24.04を並行追加インストールできます！
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 2: Update & Install Essential Packages -->
+        <section class="card guide-step-card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="guide-step-badge">STEP 2</span>
+              <h2 class="card-title" style="margin: 0;">Ubuntu 24.04 の初期更新と必須ライブラリのインストール</h2>
+            </div>
+            <span class="badge-online" style="background: #10b981;">作業環境: Ubuntu 24.04 (bash)</span>
+          </div>
+          <div class="card-content">
+            <p style="font-size: 14.5px; color: var(--text-muted); margin-bottom: 12px;">
+              Ubuntuの黒いターミナル画面で、以下のコマンドを1行コピーして貼り付け、[Enter] を押します（途中でパスワードを聞かれたらSTEP 1で決めたパスワードを入力）：
+            </p>
+
+            <div class="code-snippet-box">
+              <div class="code-snippet-header">
+                <span>Ubuntu 24.04 (bash)</span>
+                <button class="btn-copy-code" onclick="window.copyToClipboard('sudo apt update && sudo apt upgrade -y && sudo apt install -y wget tar curl libssl-dev hwloc libhwloc-dev tmux', 'STEP 2 コマンドをコピーしました');">📋 コピー</button>
+              </div>
+              <pre class="code-snippet-pre"><code>sudo apt update && sudo apt upgrade -y && sudo apt install -y wget tar curl libssl-dev hwloc libhwloc-dev tmux</code></pre>
+            </div>
+
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 10px;">
+              ※ これにより、ダウンローダー（<code>wget/curl</code>）、解凍ツール（<code>tar</code>）、暗号通信ライブラリ（<code>libssl</code>）、CPUトポロジー検出（<code>hwloc</code>）、およびバックグラウンド常駐ツール（<code>tmux</code>）がすべて整います。
+            </p>
+          </div>
+        </section>
+
+        <!-- STEP 3: Enable HugePages -->
+        <section class="card guide-step-card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="guide-step-badge">STEP 3</span>
+              <h2 class="card-title" style="margin: 0;">【採掘速度20〜30%UP】HugePages（巨大ページ）を有効化する</h2>
+            </div>
+            <span class="badge-online" style="background: #f59e0b;">超重要チューニング</span>
+          </div>
+          <div class="card-content">
+            <p style="font-size: 14.5px; color: var(--text-main); line-height: 1.6; margin-bottom: 14px;">
+              Core Blockchainが採用するRandomY（PoDE）は、CPUキャッシュとメインメモリ間の超高速アクセスを要求します。<br>
+              Linux標準の4KBページングではなく<strong>2MBのHugePages（巨大ページ）</strong>を割り当てておかないと、<strong>ハッシュレートが20%〜30%も低下</strong>します。必ず有効化してください！
+            </p>
+
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">① 今すぐHugePagesを割り当てる（即時反映）：</div>
+              <div class="code-snippet-box">
+                <div class="code-snippet-header">
+                  <span>Ubuntu 24.04 (bash)</span>
+                  <button class="btn-copy-code" onclick="window.copyToClipboard('sudo sysctl -w vm.nr_hugepages=1280', 'HugePages即時設定をコピーしました');">📋 コピー</button>
+                </div>
+                <pre class="code-snippet-pre"><code>sudo sysctl -w vm.nr_hugepages=1280</code></pre>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">② PC再起動後も自動でHugePagesを有効に保つ（永続化）：</div>
+              <div class="code-snippet-box">
+                <div class="code-snippet-header">
+                  <span>Ubuntu 24.04 (bash)</span>
+                  <button class="btn-copy-code" onclick="window.copyToClipboard('echo \"vm.nr_hugepages=1280\" | sudo tee -a /etc/sysctl.conf', 'HugePages永続化コマンドをコピーしました');">📋 コピー</button>
+                </div>
+                <pre class="code-snippet-pre"><code>echo "vm.nr_hugepages=1280" | sudo tee -a /etc/sysctl.conf</code></pre>
+              </div>
+            </div>
+
+            <div style="font-size: 13.5px; color: var(--text-muted);">
+              ✅ <strong>確認コマンド:</strong> <code>grep Huge /proc/meminfo</code> を実行して、<code>HugePages_Total: 1280</code> と表示されれば完了です！
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 4: Download & Extract CoreMiner -->
+        <section class="card guide-step-card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="guide-step-badge">STEP 4</span>
+              <h2 class="card-title" style="margin: 0;">CoreMiner 最新版バイナリのダウンロード ＆ 展開</h2>
+            </div>
+            <span class="badge-online" style="background: #8b5cf6;">Catch That Rabbit 公式</span>
+          </div>
+          <div class="card-content">
+            <p style="font-size: 14.5px; color: var(--text-muted); margin-bottom: 12px;">
+              専用フォルダを作成し、公式リポジトリから最新バイナリ（<code>v0.19.89</code>）をダウンロードして解凍・実行権限を付与します。<br>
+              以下のコマンドをまとめてコピー＆ペーストして実行してください：
+            </p>
+
+            <div class="code-snippet-box">
+              <div class="code-snippet-header">
+                <span>Ubuntu 24.04 (bash) - 一括ダウンロード＆展開</span>
+                <button class="btn-copy-code" onclick="window.copyToClipboard('mkdir -p ~/coreminer && cd ~/coreminer && wget https://github.com/catchthatrabbit/coreminer/releases/download/v0.19.89/coreminer-linux-x86_64.tar.gz && tar -zxvf coreminer-linux-x86_64.tar.gz && chmod +x coreminer', 'STEP 4 一括コマンドをコピーしました');">📋 コピー</button>
+              </div>
+              <pre class="code-snippet-pre"><code>mkdir -p ~/coreminer && cd ~/coreminer
+wget https://github.com/catchthatrabbit/coreminer/releases/download/v0.19.89/coreminer-linux-x86_64.tar.gz
+tar -zxvf coreminer-linux-x86_64.tar.gz
+chmod +x coreminer</code></pre>
+            </div>
+
+            <div style="margin-top: 14px;">
+              <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">動作確認テスト：</div>
+              <div class="code-snippet-box">
+                <div class="code-snippet-header">
+                  <span>Ubuntu 24.04 (bash)</span>
+                  <button class="btn-copy-code" onclick="window.copyToClipboard('./coreminer --version', 'バージョン確認コマンドをコピーしました');">📋 コピー</button>
+                </div>
+                <pre class="code-snippet-pre"><code>./coreminer --version</code></pre>
+              </div>
+              <p style="font-size: 13.5px; color: var(--success); font-weight: 600; margin-top: 8px;">
+                🎉 ターミナルに「<code>coreminer version 0.19.89</code>」と表示されれば、導入成功です！
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 5: Interactive Command Generator -->
+        <section class="card guide-step-card" id="guideGeneratorCard" style="margin-bottom: 24px; border: 2px solid var(--primary);">
+          <div class="card-header" style="background: rgba(37, 99, 235, 0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="guide-step-badge" style="background: var(--primary);">STEP 5</span>
+              <div>
+                <h2 class="card-title" style="margin: 0; color: var(--primary);">【対話型ジェネレーター】あなた専用の起動コマンドを作成</h2>
+                <span style="font-size: 13px; color: var(--text-muted);">入力内容に応じて、即座にコピーできる起動コマンドが自動生成されます</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-content">
+            
+            <!-- Generator Form Grid -->
+            <div class="generator-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px;">
+              
+              <!-- Input 1: Wallet Address -->
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+                  1. XCBウォレットアドレス (CorePass等)
+                </label>
+                <input type="text" id="guideWalletInput" class="generator-input font-mono" 
+                       value="cb57b88d24678c2091332971e3a38cca472dd8aac0cd"
+                       placeholder="cb57b88d24..." 
+                       oninput="window.updateGeneratedGuideCmd();">
+                <span style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 4px;">
+                  ※ 「cb」から始まるあなたのアドレスを入力
+                </span>
+              </div>
+
+              <!-- Input 2: Worker Name -->
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+                  2. ワーカー名（識別用のマシン名）
+                </label>
+                <input type="text" id="guideWorkerInput" class="generator-input font-mono" 
+                       value="WinWSL01" 
+                       placeholder="WinWSL01" 
+                       oninput="window.updateGeneratedGuideCmd();">
+                <span style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 4px;">
+                  ※ 半角英数字（例: <code>Rig01</code>, <code>PC-i9</code> 等）
+                </span>
+              </div>
+
+              <!-- Input 3: Pool Selection -->
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+                  3. 接続マイニングプール (Stratum)
+                </label>
+                <select id="guidePoolSelect" class="generator-input font-mono" onchange="window.updateGeneratedGuideCmd();">
+                  <option value="sg.catchthatrabbit.com:8008" selected>sg.catchthatrabbit.com:8008 (シンガポール - 日本最速)</option>
+                  <option value="hk.catchthatrabbit.com:8008">hk.catchthatrabbit.com:8008 (香港 - アジア予備)</option>
+                  <option value="fi.catchthatrabbit.com:8008">fi.catchthatrabbit.com:8008 (フィンランド - 欧州本拠地)</option>
+                  <option value="de.catchthatrabbit.com:8008">de.catchthatrabbit.com:8008 (ドイツ - 欧州予備)</option>
+                </select>
+                <span style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 4px;">
+                  ※ 日本国内からは「シンガポール」が最もPingが低く安定します
+                </span>
+              </div>
+
+              <!-- Input 4: Threads & Presets -->
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+                  4. マイニングスレッド数 (<code>-t</code>)
+                </label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="number" id="guideThreadInput" class="generator-input font-mono" 
+                         value="16" min="1" max="128" 
+                         style="max-width: 100px;" 
+                         oninput="window.updateGeneratedGuideCmd();">
+                  <div style="display: flex; flex-wrap: wrap; gap: 4px; align-items: center;">
+                    <button type="button" class="btn-secondary btn-sm" onclick="window.setGuideThreadPreset(30);">Ryzen 7950X (30)</button>
+                    <button type="button" class="btn-secondary btn-sm" onclick="window.setGuideThreadPreset(16);">Core i9 (16)</button>
+                    <button type="button" class="btn-secondary btn-sm" onclick="window.setGuideThreadPreset(11);">Core i5 (11)</button>
+                  </div>
+                </div>
+                <span style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 4px;">
+                  ※ L3キャッシュ容量 ÷ 2MB または論理コア数 - 2 を目安に設定
+                </span>
+              </div>
+
+            </div>
+
+            <!-- Output Box -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-weight: 700; font-size: 14px; color: var(--primary);">
+                  💻 生成された起動コマンド（これをUbuntuターミナルで実行）：
+                </span>
+                <button class="btn-primary btn-sm" onclick="window.copyToClipboard(document.getElementById('guideGeneratedCmd').innerText, '起動コマンドをコピーしました！');" style="font-weight: 700;">
+                  📋 起動コマンドをコピー
+                </button>
+              </div>
+              <pre id="guideGeneratedCmd" style="background: #0f172a; color: #38bdf8; padding: 14px; border-radius: 6px; font-family: monospace; font-size: 14px; margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.6;">./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.WinWSL01@sg.catchthatrabbit.com:8008 -t 16</pre>
+            </div>
+
+            <div style="margin-top: 14px; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 6px; padding: 12px 14px; font-size: 13.5px; color: var(--text-main);">
+              <strong>🌟 正常起動時のログ見本:</strong><br>
+              コマンドを実行すると、まず <code>[RandomY] Dataset initialized in 2.1s</code> と表示され、数秒後に <code>[Stratum] Solution found! Accepted share 1/1 (diff 1.2G)</code> という緑色のログが流れ始めます。これでブロック採掘に参加できています！
+            </div>
+
+          </div>
+        </section>
+
+        <!-- STEP 6: Background Running (tmux & nohup) -->
+        <section class="card guide-step-card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="guide-step-badge">STEP 6</span>
+              <h2 class="card-title" style="margin: 0;">画面を閉じても24時間動き続けるバックグラウンド実行（tmux）</h2>
+            </div>
+            <span class="badge-online" style="background: #06b6d4;">24時間連続運用テクニック</span>
+          </div>
+          <div class="card-content">
+            <p style="font-size: 14.5px; color: var(--text-main); line-height: 1.6; margin-bottom: 12px;">
+              Ubuntuのターミナルを「×」で閉じるとマイニングも停止してしまいます。<br>
+              仮想端末ツール <strong><code>tmux</code></strong> を使えば、ターミナルウィンドウを閉じてもバックグラウンドで24時間採掘を続けられ、いつでもマイニング画面に復帰できます！
+            </p>
+
+            <ol class="guide-instruction-list">
+              <li>
+                <strong>tmux セッションを作成する：</strong>
+                <div class="code-snippet-box">
+                  <div class="code-snippet-header">
+                    <span>Ubuntu 24.04 (bash)</span>
+                    <button class="btn-copy-code" onclick="window.copyToClipboard('tmux new -s miner', 'tmux起動コマンドをコピーしました');">📋 コピー</button>
+                  </div>
+                  <pre class="code-snippet-pre"><code>tmux new -s miner</code></pre>
+                </div>
+              </li>
+              <li>
+                新しい画面に切り替わったら、STEP 5で生成した <strong>マイニング起動コマンドを実行</strong> します。
+              </li>
+              <li>
+                <strong>マイニング画面から切り離す（デタッチ）:</strong><br>
+                キーボードの <kbd>Ctrl</kbd> ＋ <kbd>B</kbd> を同時に押した直後に、指を離して <kbd>D</kbd> キーを押します。<br>
+                ➔ 画面が元のターミナルに戻り、マイニングは裏で動き続けます。これでウィンドウを「×」で閉じても安全です！
+              </li>
+              <li>
+                <strong>いつでもマイニング画面に戻る（アタッチ）:</strong>
+                <div class="code-snippet-box">
+                  <div class="code-snippet-header">
+                    <span>Ubuntu 24.04 (bash)</span>
+                    <button class="btn-copy-code" onclick="window.copyToClipboard('tmux a -t miner', 'tmuxアタッチコマンドをコピーしました');">📋 コピー</button>
+                  </div>
+                  <pre class="code-snippet-pre"><code>tmux a -t miner</code></pre>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- STEP 7: WSL2 Memory Optimization (.wslconfig) -->
+        <section class="card guide-step-card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="guide-step-badge">STEP 7</span>
+              <h2 class="card-title" style="margin: 0;">Windowsが重くならないWSL2メモリ制限設定（.wslconfig）</h2>
+            </div>
+            <span class="badge-online" style="background: #64748b;">PC快適性チューニング</span>
+          </div>
+          <div class="card-content">
+            <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px;">
+              WSL2はデフォルトでPC全体のメモリの半分以上を確保しようとするため、Windows側のブラウザや作業が重くなる場合があります。<br>
+              Windows側の設定ファイル <code>.wslconfig</code> で上限を定めておくと、普段使いも極めて快適に維持できます。
+            </p>
+
+            <ol class="guide-instruction-list">
+              <li>
+                Windowsで <kbd>Win</kbd> + <kbd>R</kbd> を押し、<code>notepad %USERPROFILE%\.wslconfig</code> と入力して [OK] を押します。
+              </li>
+              <li>
+                新規作成を尋ねられたら [はい] を押し、以下の内容を貼り付けて保存します：
+                <div class="code-snippet-box">
+                  <div class="code-snippet-header">
+                    <span>C:\Users\&lt;ユーザー名&gt;\.wslconfig</span>
+                    <button class="btn-copy-code" onclick="window.copyToClipboard('[wsl2]\nmemory=8GB\nprocessors=16\nswap=0', 'wslconfig設定をコピーしました');">📋 コピー</button>
+                  </div>
+                  <pre class="code-snippet-pre"><code>[wsl2]
+memory=8GB
+processors=16
+swap=0</code></pre>
+                </div>
+                <span style="font-size: 13px; color: var(--text-muted);">
+                  ※ メモリ上限（8GB等）と割り当てスレッド数はご自身のPCスペックに合わせて調整してください。
+                </span>
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- STEP 8: Troubleshooting Q&A -->
+        <section class="card guide-step-card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="guide-step-badge" style="background: #ef4444;">STEP 8</span>
+              <h2 class="card-title" style="margin: 0;">【絶対解決】つまずきやすいトラブルシューティング Q&amp;A</h2>
+            </div>
+          </div>
+          <div class="card-content">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+
+              <!-- Q1 -->
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                  <span style="color: #ef4444; font-weight: 800; font-size: 16px;">Q1.</span>
+                  <strong style="color: var(--text-main); font-size: 15px;">「version 'GLIBC_2.38' not found」というエラーが出て起動しない</strong>
+                </div>
+                <div style="font-size: 14px; color: var(--text-main); line-height: 1.6; padding-left: 24px;">
+                  <strong style="color: #10b981;">A. 原因は古いUbuntu（20.04や22.04）です！</strong><br>
+                  最新CoreMinerはUbuntu 24.04（GLIBC 2.38+）が必須です。PowerShell（管理者）を開き、<code>wsl --install -d Ubuntu-24.04</code> を実行してUbuntu 24.04を導入し、スタートメニューから「Ubuntu 24.04」を開いてSTEP 2以降を実行してください。
+                </div>
+              </div>
+
+              <!-- Q2 -->
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                  <span style="color: #ef4444; font-weight: 800; font-size: 16px;">Q2.</span>
+                  <strong style="color: var(--text-main); font-size: 15px;">「Failed to allocate huge pages」と表示される</strong>
+                </div>
+                <div style="font-size: 14px; color: var(--text-main); line-height: 1.6; padding-left: 24px;">
+                  <strong style="color: #10b981;">A. HugePagesが未設定または不足しています。</strong><br>
+                  <code>sudo sysctl -w vm.nr_hugepages=1280</code> を実行してください。それでも出る場合は、PC全体の使用中メモリが多く空きが足りない可能性があるため、一旦ブラウザ等の重いアプリを閉じてから再実行してください。
+                </div>
+              </div>
+
+              <!-- Q3 -->
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                  <span style="color: #ef4444; font-weight: 800; font-size: 16px;">Q3.</span>
+                  <strong style="color: var(--text-main); font-size: 15px;">マイニングを開始したのに、プールやダッシュボードに反映されない</strong>
+                </div>
+                <div style="font-size: 14px; color: var(--text-main); line-height: 1.6; padding-left: 24px;">
+                  <strong style="color: #10b981;">A. 反映までに約5〜15分の集計タイムラグがあります。</strong><br>
+                  ターミナル上で <code>[Stratum] Solution found! Accepted share</code> という緑色の文字が出ていれば、ブロックチェーン上への提出は100%成功しています。プール側で一定数のシェアが集計されると、Web画面にワーカー名とハッシュレートが表示されます。
+                </div>
+              </div>
+
+              <!-- Q4 -->
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                  <span style="color: #ef4444; font-weight: 800; font-size: 16px;">Q4.</span>
+                  <strong style="color: var(--text-main); font-size: 15px;">プールへの接続が「Connection refused / timeout」になる</strong>
+                </div>
+                <div style="font-size: 14px; color: var(--text-main); line-height: 1.6; padding-left: 24px;">
+                  <strong style="color: #10b981;">A. 自宅ルーターのポート制限またはプールの一時的なメンテナンスです。</strong><br>
+                  STEP 5のジェネレーターでプール先を「香港（<code>hk.catchthatrabbit.com:8008</code>）」または「フィンランド（<code>fi.catchthatrabbit.com:8008</code>）」に切り替えてお試しください。
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 9: Monitor on CoreStation Dashboard -->
+        <section class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h2 class="card-title">📊 マイニング稼働状況を CoreStation で監視しよう</h2>
+              <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">
+                採掘が開始されると、本サイトの「ダッシュボード」および「マイニング・CPU設定」画面にリアルタイムで反映されます。
+              </p>
+            </div>
+            <button class="btn-primary btn-sm" onclick="window.location.hash='#dashboard';">
+              📊 ダッシュボードに戻る ➔
+            </button>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- SUBVIEW 4: ネットワーク・半減期 (Network & Chronicle) -->
       <div id="subview-network" class="sub-view">
         <!-- Network Stats KPI -->
         <div class="hero-kpi-grid" style="margin-bottom: 24px;">
@@ -1558,6 +2108,6 @@
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Application Script -->
-  <script src="app.js?v=20260917_1"></script>
+  <script src="app.js?v=20260918_1"></script>
 </body>
 </html>
