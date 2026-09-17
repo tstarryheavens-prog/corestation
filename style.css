@@ -1449,4 +1449,64 @@ a:hover {
   border-color: var(--primary);
 }
 
+/* ==========================================================================
+   AdSense & Legal Footer Navigation Styles
+   ========================================================================== */
+.footer-legal-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 14px;
+}
+
+.footer-legal-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-legal-btn:hover {
+  color: var(--primary);
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.footer-legal-sep {
+  color: var(--border-color);
+  font-size: 12px;
+}
+
+.footer-copy {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.footer-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.legal-modal-body h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 22px;
+  margin-bottom: 8px;
+}
+
+.legal-modal-body p {
+  margin-bottom: 14px;
+}
+
 

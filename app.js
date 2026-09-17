@@ -2069,5 +2069,30 @@
     setInterval(fetchWatcherStatus, 15000);
   }
 
+  // --- Legal / Policy Modals (Google AdSense Compliance) ---
+  window.openLegalModal = function(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+  };
+
+  window.closeLegalModal = function(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.style.display = "none";
+      document.body.style.overflow = "";
+    }
+  };
+
+  // Close modal when clicking on backdrop
+  document.addEventListener("click", function(e) {
+    if (e.target && e.target.classList && e.target.classList.contains("modal-backdrop")) {
+      e.target.style.display = "none";
+      document.body.style.overflow = "";
+    }
+  });
+
   document.addEventListener("DOMContentLoaded", init);
 })();

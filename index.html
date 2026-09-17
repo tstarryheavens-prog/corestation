@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CoreStation - Core Blockchain (XCB) ノード＆資産管理ステーション</title>
   <link rel="icon" type="image/svg+xml" href="assets/core-icon.svg">
-  <link rel="stylesheet" href="style.css?v=20260916_1">
+  <link rel="stylesheet" href="style.css?v=20260917_1">
   <!-- Chart.js CDN (with built-in pure Canvas fallback) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Pre-bundled local SQLite data for instant zero-latency loading -->
-  <script src="data/initial_data.js?v=20260916_1"></script>
-  <script src="data/local_articles.js?v=20260916_1"></script>
+  <script src="data/initial_data.js?v=20260917_1"></script>
+  <script src="data/local_articles.js?v=20260917_1"></script>
   <!-- A8.net Auto Link Manager (Monetization Hub) -->
   <script src="//statics.a8.net/a8link/a8linkmgr.js"></script>
   <script>
@@ -18,6 +18,11 @@
       "config_id": "AiCzxW5LM9avBb8VJ393"
     });
   </script>
+  <!-- Google AdSense Verification & Auto-Ads Tag Placeholder -->
+  <!-- 審査用AdSenseコード発行後、以下のca-pub-XXXXXXXXXXXXXXXXを置き換えて有効化してください -->
+  <!--
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  -->
 </head>
 <body>
   <!-- Sliding Drawer Navigation (Mobile / Full Menu) -->
@@ -1161,10 +1166,175 @@
   <!-- Application Footer -->
   <footer class="app-footer">
     <div class="app-footer-container">
-      <p>CoreStation &copy; 2026 Core Blockchain (XCB) Autonomous Station</p>
-      <p style="color: var(--text-muted); font-size: 13.5px;">Standalone Self-Hosted System for Asustor AS3102T NAS (Docker &amp; Local SQLite)</p>
+      <div class="footer-legal-links">
+        <button type="button" class="footer-legal-btn" onclick="openLegalModal('privacyPolicyModal')">📜 プライバシーポリシー</button>
+        <span class="footer-legal-sep">•</span>
+        <button type="button" class="footer-legal-btn" onclick="openLegalModal('disclaimerModal')">⚠️ 免責事項・リスク開示</button>
+        <span class="footer-legal-sep">•</span>
+        <button type="button" class="footer-legal-btn" onclick="openLegalModal('aboutContactModal')">🏢 運営者情報・お問い合わせ</button>
+      </div>
+      <p class="footer-copy">CoreStation &copy; 2026 Core Blockchain (XCB) Autonomous Hub</p>
+      <p class="footer-sub">Standalone Self-Hosted Node &amp; Asset Management Station for Asustor NAS (Docker &amp; Local SQLite)</p>
     </div>
   </footer>
+
+  <!-- Modal: プライバシーポリシー (Google AdSense 準拠) -->
+  <div id="privacyPolicyModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container" style="max-width: 740px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📜 プライバシーポリシー (Privacy Policy)</h3>
+        <button class="modal-close-btn" onclick="closeLegalModal('privacyPolicyModal')" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body legal-modal-body" style="line-height: 1.8; font-size: 14.5px; color: var(--text-main); max-height: 70vh; overflow-y: auto;">
+        
+        <h4 style="margin-top: 0; color: var(--primary);">1. 個人情報の収集および利用目的</h4>
+        <p>
+          当サイト（CoreStation: <code>https://corestation.pages.dev/</code>、以下「当サイト」といいます）では、お問い合わせやご意見をいただく際、お名前（ハンドルネーム）やメールアドレス等の個人情報をご提供いただく場合があります。<br>
+          収集した個人情報は、ご質問への回答や必要な情報をご連絡するためにのみ利用し、目的外の利用はいたしません。
+        </p>
+
+        <h4 style="color: var(--primary);">2. Cookie（クッキー）の利用について</h4>
+        <p>
+          当サイトでは、ユーザーの利便性向上、トラフィック分析、および広告配信のためにCookieを利用しています。<br>
+          Cookieはブラウザを識別するための技術ですが、特定の個人を直接識別する情報（氏名、生年月日、住所、電話番号等）は含まれておりません。ブラウザの設定によりCookieを無効化することも可能です。
+        </p>
+
+        <h4 style="color: var(--primary);">3. 広告配信サービス（Google AdSense等）について</h4>
+        <p>
+          当サイトは、第三者配信事業者（Google AdSenseを含む）の提供する広告サービスを利用しています。<br>
+          Googleなどの第三者広告配信事業者は、Cookieを使用して、ユーザーが当サイトや他のウェブサイトに過去にアクセスした際の情報に基づいて広告を配信します。
+        </p>
+        <div style="background: var(--bg-surface); padding: 12px 16px; border-left: 4px solid var(--primary); border-radius: 4px; margin: 12px 0;">
+          <strong>パーソナライズ広告の無効化について：</strong><br>
+          ユーザーは、<a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600;">Google広告設定</a> にアクセスすることで、パーソナライズ広告を無効にできます。<br>
+          また、<a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600;">www.aboutads.info</a> にアクセスして、第三者配信事業者がパーソナライズド広告に使用するCookieを一括して無効化することも可能です。
+        </div>
+
+        <h4 style="color: var(--primary);">4. アクセス解析ツールについて</h4>
+        <p>
+          当サイトでは、トラフィックデータの収集のためにアクセス解析ツールを利用する場合があります。このトラフィックデータは匿名で収集されており、個人を特定するものではありません。
+        </p>
+
+        <h4 style="color: var(--primary);">5. プライバシーポリシーの改定</h4>
+        <p>
+          当サイトは、法令の改正やサービス運営方針の変更に伴い、本プライバシーポリシーを予告なく改定することがあります。改定後のプライバシーポリシーは、当サイトに掲載された時点で効力を発揮します。
+        </p>
+
+        <p style="text-align: right; font-size: 12.5px; color: var(--text-muted); margin-top: 20px;">
+          制定日: 2026年9月12日<br>最終改定日: 2026年9月17日
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary btn-sm" onclick="closeLegalModal('privacyPolicyModal')">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 免責事項・リスク開示 -->
+  <div id="disclaimerModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container" style="max-width: 740px;">
+      <div class="modal-header">
+        <h3 class="modal-title">⚠️ 免責事項・リスク開示 (Disclaimer)</h3>
+        <button class="modal-close-btn" onclick="closeLegalModal('disclaimerModal')" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body legal-modal-body" style="line-height: 1.8; font-size: 14.5px; color: var(--text-main); max-height: 70vh; overflow-y: auto;">
+        
+        <h4 style="margin-top: 0; color: #f59e0b;">1. 投資判断・金融商品取引に関する免責</h4>
+        <p>
+          当サイトに掲載されている暗号資産（Core Blockchain / XCB / CTN等）に関する情報は、ブロックチェーンの技術的仕組み、マイニングソフトウェアの設定方法、分散型ネットワーク運用の情報提供を目的としており、<strong>投資助言業務や特定の暗号資産の売買を勧誘・推奨するものではありません。</strong><br>
+          暗号資産は価格変動が極めて大きく、元本割れや資産価値の喪失リスクを伴います。暗号資産の取引および投資判断は、必ずご自身の責任と判断において行ってください。
+        </p>
+
+        <h4 style="color: #f59e0b;">2. 税務情報および確定申告に関する免責</h4>
+        <p>
+          当サイトに掲載しているマイニング所得の計算方法、税務上の取り扱い、および本サイトで生成されるCSVデータは、公開された税法情報に基づく一般的な支援ツールです。税理士法に定める「個別の税務相談」を提供するものではありません。<br>
+          実際の税務申告および必要経費の計上等にあたっては、所轄の税務署または税理士等の専門家にご相談の上、ご自身で最終確認をお願いいたします。
+        </p>
+
+        <h4 style="color: #f59e0b;">3. ハードウェア設定・マイニングチューニングに関する免責</h4>
+        <p>
+          当サイトで紹介しているCPUの低電圧化（Curve Optimizer等）、BIOSの電力制限（Eco-Mode等）、スレッド数設定などのチューニング情報は、筆者の環境での実測・検証結果に基づくものです。<br>
+          設定変更に伴う機器の故障、発熱、クラッシュ、保証対象外となる行為、電気代の増加等に関して、当サイトおよび運営者は一切の責任を負いかねます。すべて自己責任にて実行してください。
+        </p>
+
+        <h4 style="color: #f59e0b;">4. 掲載情報の正確性および外部リンクについて</h4>
+        <p>
+          当サイトに掲載されている情報については、可能な限り正確な情報を掲載するよう努めておりますが、技術のアップデートや時間の経過に伴い、内容に誤りや変更が生じる場合があります。掲載内容によって生じた損害等について、当サイトは一切の責任を負いません。<br>
+          また、当サイトからリンクされた外部サイトで提供されるサービスや情報についても同様に責任を負いません。
+        </p>
+
+        <p style="text-align: right; font-size: 12.5px; color: var(--text-muted); margin-top: 20px;">
+          最終更新日: 2026年9月17日
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary btn-sm" onclick="closeLegalModal('disclaimerModal')">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 運営者情報・お問い合わせ -->
+  <div id="aboutContactModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🏢 運営者情報 ＆ お問い合わせ (About &amp; Contact)</h3>
+        <button class="modal-close-btn" onclick="closeLegalModal('aboutContactModal')" title="閉じる">&times;</button>
+      </div>
+      <div class="modal-body legal-modal-body" style="line-height: 1.8; font-size: 14.5px; color: var(--text-main); max-height: 70vh; overflow-y: auto;">
+        
+        <h4 style="margin-top: 0; color: var(--primary);">サイト概要</h4>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 14px;">
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid var(--border-color); font-weight: 700; width: 120px; background: var(--bg-surface);">サイト名</td>
+            <td style="padding: 8px 12px; border: 1px solid var(--border-color);">CoreStation（コアステーション）</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid var(--border-color); font-weight: 700; background: var(--bg-surface);">URL</td>
+            <td style="padding: 8px 12px; border: 1px solid var(--border-color);">
+              <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600;">https://corestation.pages.dev/</a>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid var(--border-color); font-weight: 700; background: var(--bg-surface);">運営目的</td>
+            <td style="padding: 8px 12px; border: 1px solid var(--border-color);">
+              Core Blockchain（XCB）における完全自立型マイニングノードの運用支援、確定申告用資産データの管理、および耐量子暗号・PoDE等の技術仕様に関する客観的情報の普及・発信。
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid var(--border-color); font-weight: 700; background: var(--bg-surface);">公式ブログ</td>
+            <td style="padding: 8px 12px; border: 1px solid var(--border-color);">
+              <a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600;">CoreStation はてなブログ ↗</a>
+            </td>
+          </tr>
+        </table>
+
+        <h4 style="color: var(--primary);">お問い合わせ窓口</h4>
+        <p>
+          当サイトの掲載内容に関するご質問、技術的な誤りのご指摘、または各種お問い合わせは、以下の窓口までお寄せください。
+        </p>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; margin: 14px 0;">
+          <ul style="margin: 0; padding-left: 20px;">
+            <li style="margin-bottom: 8px;">
+              <strong>公式ブログ コメント欄:</strong><br>
+              各記事のコメント欄（<a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">corestation.hatenadiary.com</a>）より受付けております。
+            </li>
+            <li style="margin-bottom: 8px;">
+              <strong>GitHub リポジトリ / Issue:</strong><br>
+              ソースコードや技術的課題のご報告は <a href="https://github.com/tstarryheavens-prog/corestation/issues" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">GitHub Issues ↗</a> へお寄せください。
+            </li>
+          </ul>
+        </div>
+
+        <p style="font-size: 13px; color: var(--text-muted); margin-top: 10px;">
+          ※ スパム防止のため、メールアドレスの直接記載を控えております。確認次第、速やかに対応いたします。
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary btn-sm" onclick="closeLegalModal('aboutContactModal')">閉じる</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal 1: 申告用データ CSV Preview & Download -->
   <div id="csvModal" class="modal-backdrop" style="display: none;">
@@ -1391,6 +1561,6 @@
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Application Script -->
-  <script src="app.js?v=20260916_1"></script>
+  <script src="app.js?v=20260917_1"></script>
 </body>
 </html>
