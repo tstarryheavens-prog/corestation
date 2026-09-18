@@ -9,8 +9,8 @@
   <!-- Chart.js CDN (with built-in pure Canvas fallback) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Pre-bundled local SQLite data for instant zero-latency loading -->
-  <script src="data/initial_data.js?v=20260918_1"></script>
-  <script src="data/local_articles.js?v=20260918_1"></script>
+  <script src="data/initial_data.js?v=20260919_1"></script>
+  <script src="data/local_articles.js?v=20260919_1"></script>
   <!-- A8.net Auto Link Manager (Monetization Hub) -->
   <script src="//statics.a8.net/a8link/a8linkmgr.js"></script>
   <script>
@@ -357,25 +357,38 @@
 
           <!-- Recent Transactions Preview -->
           <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">💼 直近の採掘報酬・着金履歴</h2>
-              <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-tax');">
-                確定申告・全台帳を見る ↗
-              </button>
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h2 class="card-title" style="margin: 0;">💼 直近の採掘報酬・着金履歴</h2>
+                <span class="badge-online" style="font-size: 11px; padding: 2px 7px;">Live自動同期</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <div style="display: inline-flex; background: var(--bg-hover); padding: 2px; border-radius: 6px; border: 1px solid var(--border-color);">
+                  <button id="btnRecentLive" onclick="window.switchRecentViewMode('live')" style="padding: 4px 10px; font-size: 13px; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: var(--primary); color: #ffffff; transition: all 0.15s ease;">⚡ 着金毎 (Live)</button>
+                  <button id="btnRecentDaily" onclick="window.switchRecentViewMode('daily')" style="padding: 4px 10px; font-size: 13px; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: var(--text-secondary); transition: all 0.15s ease;">📅 日別集計</button>
+                </div>
+                <button id="refreshRecentBtn" onclick="window.refreshRecentData()" class="btn-secondary btn-sm" style="padding: 4px 10px; font-size: 13px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; border-radius: 6px; border: 1px solid var(--border-color); background: #ffffff;" title="最新の着金履歴を再取得">
+                  <span id="refreshRecentIcon">🔄</span> 更新
+                </button>
+                <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-tax');" style="padding: 4px 10px; font-size: 13px; border-radius: 6px;">
+                  確定申告・全台帳 ↗
+                </button>
+              </div>
             </div>
             <div class="card-content" style="padding: 0;">
               <div class="table-responsive">
                 <table class="daily-table">
-                  <thead>
+                  <thead id="dashboardRecentTableHead">
                     <tr>
-                      <th>日付</th>
-                      <th style="text-align: right;">時価換算</th>
-                      <th style="text-align: right;">採掘数量 (XCB)</th>
+                      <th style="min-width: 140px;">着金日時</th>
+                      <th>送信元 / プール</th>
+                      <th style="text-align: right; min-width: 90px;">時価換算</th>
+                      <th style="text-align: right; min-width: 110px;">着金数量 (XCB)</th>
                     </tr>
                   </thead>
                   <tbody id="dashboardRecentTableBody">
                     <tr>
-                      <td colspan="3" style="text-align: center; padding: 20px; color: var(--text-muted);">読込中...</td>
+                      <td colspan="4" style="text-align: center; padding: 24px; color: var(--text-muted);">読込中...</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2108,6 +2121,6 @@ swap=0</code></pre>
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Application Script -->
-  <script src="app.js?v=20260918_1"></script>
+  <script src="app.js?v=20260919_1"></script>
 </body>
 </html>

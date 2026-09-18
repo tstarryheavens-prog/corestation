@@ -33,6 +33,7 @@
     communityLinks: [],
     articlesArchive: [],
     currentView: "view-dashboard",
+    recentViewMode: "live",
     isWorkersExpanded: false,
     chartInstances: { xcb: null, ranking: null },
     loading: false
@@ -508,9 +509,7 @@
       const resLocal = await fetch(`${LOCAL_API}/${noCacheUrl}`, {
         cache: "no-store",
         headers: {
-          "Accept": "application/json",
-          "Cache-Control": "no-cache",
-          "Pragma": "no-cache"
+          "Accept": "application/json"
         }
       });
       if (resLocal.ok) {
@@ -521,14 +520,12 @@
       // Local server not running or static Web Station
     }
 
-    // 2. Fallback to remote API
+    // 2. Fallback to remote API (avoid custom headers like Cache-Control/Pragma that trigger CORS preflight rejection)
     try {
       const resRemote = await fetch(`${REMOTE_API}/${noCacheUrl}`, {
         cache: "no-store",
         headers: {
-          "Accept": "application/json",
-          "Cache-Control": "no-cache",
-          "Pragma": "no-cache"
+          "Accept": "application/json"
         }
       });
       if (resRemote.ok) return await resRemote.json();
@@ -536,6 +533,27 @@
       console.warn(`Remote API access failed: ${err.message}`);
     }
     throw new Error(`API endpoint unavailable: ${path}`);
+  }
+
+  // --- Live On-Chain Transactions (Blockindex Direct) ---
+  async function fetchLiveTransactions(wallet) {
+    try {
+      const url = `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=15&_t=${Date.now()}`;
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+      if (!res.ok) return null;
+      const json = await res.json();
+      if (json && Array.isArray(json.transactions)) {
+        return json.transactions;
+      }
+    } catch (e) {
+      console.warn("Direct blockindex.net tx fetch failed:", e.message);
+    }
+    return null;
   }
 
   // --- Pre-Bundled Data Bootstrap ---
@@ -614,14 +632,15 @@
       if (el.drawerExplorerLink) el.drawerExplorerLink.href = `https://blockindex.net/address/${wallet}`;
 
       // Parallel API calls
-      const [rateRes, workerRes, txRes, dbRes, supplyRes, healthRes, explorerRes] = await Promise.all([
+      const [rateRes, workerRes, txRes, dbRes, supplyRes, healthRes, explorerRes, liveTxs] = await Promise.all([
         fetchApi(`currency/last_rate/token/${currency}`).catch(() => null),
         fetchApi(`core/getWorker/${wallet}`).catch(() => null),
         fetchApi(`miner/walletDailyTransaction/${wallet}/${LIMIT_DAYS}`).catch(() => null),
         fetchApi(`db/status`).catch(() => null),
         fetchApi(`core/getSupply`).catch(() => null),
         fetchApi(`miner/network-health`).catch(() => null),
-        fetchApi(`explorer/blocks/1/10`).catch(() => null)
+        fetchApi(`explorer/blocks/1/10`).catch(() => null),
+        fetchLiveTransactions(wallet).catch(() => null)
       ]);
 
       if (rateRes && rateRes.state && rateRes.data) {
@@ -642,6 +661,10 @@
           all_amount: divideBy10e18(item.all_amount),
           all_rank: item.all_rank
         }));
+      }
+
+      if (Array.isArray(liveTxs) && liveTxs.length > 0) {
+        state.recentTransactions = liveTxs;
       }
 
       if (dbRes && dbRes.state && dbRes.data) {
@@ -1154,10 +1177,10 @@
   // --- Daily Table Rendering ---
   function renderDailyTable() {
     const txs = state.dailyTransactions;
-    const rate = state.tokenRates.xcb ? state.tokenRates.xcb.rate : 4.985332;
+    const rate = state.tokenRates.xcb ? state.tokenRates.xcb.rate : 4.7124;
     const currency = state.currency;
 
-    // 1. Populate full daily table in details
+    // 1. Populate full daily table in details (確定申告・台帳ビュー)
     if (el.dailyTableBody) {
       el.dailyTableBody.innerHTML = "";
       if (txs.length === 0) {
@@ -1182,9 +1205,129 @@
       }
     }
 
-    // 2. Populate top 5 recent records in Dashboard
+    // 2. Render Dashboard Recent Card
+    renderDashboardRecent();
+  }
+
+  // --- Dashboard Recent Transactions Card Renderer ---
+  function renderDashboardRecent() {
     const dashboardRecent = document.getElementById("dashboardRecentTableBody");
-    if (dashboardRecent) {
+    const dashboardHead = document.getElementById("dashboardRecentTableHead");
+    if (!dashboardRecent) return;
+
+    const rate = state.tokenRates.xcb ? state.tokenRates.xcb.rate : 4.7124;
+    const currency = state.currency;
+    const mode = state.recentViewMode || "live";
+
+    // Toggle button UI active styling
+    const btnLive = document.getElementById("btnRecentLive");
+    const btnDaily = document.getElementById("btnRecentDaily");
+    if (btnLive && btnDaily) {
+      if (mode === "live") {
+        btnLive.style.background = "var(--primary)";
+        btnLive.style.color = "#ffffff";
+        btnDaily.style.background = "transparent";
+        btnDaily.style.color = "var(--text-secondary)";
+      } else {
+        btnLive.style.background = "transparent";
+        btnLive.style.color = "var(--text-secondary)";
+        btnDaily.style.background = "var(--primary)";
+        btnDaily.style.color = "#ffffff";
+      }
+    }
+
+    if (mode === "live") {
+      // 1. Live On-Chain Transactions View
+      if (dashboardHead) {
+        dashboardHead.innerHTML = `
+          <tr>
+            <th style="min-width: 140px;">着金日時</th>
+            <th>送信元 / プール</th>
+            <th style="text-align: right; min-width: 90px;">時価換算</th>
+            <th style="text-align: right; min-width: 110px;">着金数量 (XCB)</th>
+          </tr>
+        `;
+      }
+
+      const rawTxs = (state.recentTransactions && state.recentTransactions.length > 0)
+        ? state.recentTransactions
+        : [];
+
+      if (rawTxs.length === 0) {
+        dashboardRecent.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 24px; color: var(--text-muted);">
+              直近の着金履歴を取得中...
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      dashboardRecent.innerHTML = "";
+      rawTxs.slice(0, 7).forEach(t => {
+        const row = document.createElement("tr");
+
+        const timestamp = t.block_timestamp || t.blockTime || 0;
+        const d = timestamp ? new Date(timestamp * 1000) : new Date();
+        const dateStr = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+
+        const rawAmount = t.in_amount !== undefined ? t.in_amount : (t.value !== undefined ? t.value : 0);
+        const xcbVal = typeof rawAmount === "number" ? rawAmount : divideBy10e18(rawAmount);
+        const fiatVal = xcbVal * rate;
+
+        const txid = t.transaction_hash || t.txid || "";
+        const fromAddr = t.from_address || (t.vin && t.vin[0] && t.vin[0].addresses && t.vin[0].addresses[0]) || "";
+
+        let poolLabel = "CatchThatRabbit";
+        if (fromAddr.toLowerCase().includes("cb6242d8")) {
+          poolLabel = "CatchThatRabbit (US)";
+        } else if (fromAddr.toLowerCase().includes("cb060ea5")) {
+          poolLabel = "CatchThatRabbit (EU)";
+        } else if (fromAddr) {
+          poolLabel = "マイニングプール";
+        }
+
+        const shortTx = txid ? `${txid.substring(0, 8)}...` : "";
+
+        row.innerHTML = `
+          <td class="col-date" style="font-weight: 500; font-size: 13.5px; white-space: nowrap;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 6px;" title="オンチェーン着金確認済み"></span>
+            ${dateStr}
+          </td>
+          <td style="font-size: 12.5px;">
+            <span class="badge-online" style="font-size: 11px; padding: 2px 7px; background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.25); font-weight: 500;">
+              ${poolLabel}
+            </span>
+            ${txid ? `
+              <a href="https://blockindex.net/tx/${txid}" target="_blank" rel="noopener" style="font-size: 11.5px; color: var(--text-muted); text-decoration: underline; margin-left: 5px; font-family: var(--font-mono);" title="Blockindexでトランザクション検証">
+                ${shortTx} ↗
+              </a>
+            ` : ""}
+          </td>
+          <td class="col-price" style="text-align: right; font-family: var(--font-mono); font-size: 13.5px;">
+            ${formatNumber(fiatVal, 2)} ${currency}
+          </td>
+          <td class="col-xcb" style="text-align: right; font-family: var(--font-mono); font-weight: 600; color: var(--primary); font-size: 14px;">
+            +${formatNumber(xcbVal, 4)} XCB
+          </td>
+        `;
+        dashboardRecent.appendChild(row);
+      });
+
+    } else {
+      // 2. Daily Aggregated View
+      if (dashboardHead) {
+        dashboardHead.innerHTML = `
+          <tr>
+            <th>日付</th>
+            <th style="text-align: right;">時価換算</th>
+            <th style="text-align: right;">採掘数量 (XCB)</th>
+          </tr>
+        `;
+      }
+
+      const txs = state.dailyTransactions;
       dashboardRecent.innerHTML = "";
       if (txs.length === 0) {
         dashboardRecent.innerHTML = `
@@ -1208,6 +1351,23 @@
       }
     }
   }
+
+  window.switchRecentViewMode = function(mode) {
+    state.recentViewMode = mode;
+    renderDashboardRecent();
+  };
+
+  window.refreshRecentData = async function() {
+    const icon = document.getElementById("refreshRecentIcon");
+    if (icon) icon.classList.add("spin");
+    try {
+      await loadData();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      if (icon) icon.classList.remove("spin");
+    }
+  };
 
   // --- DB Status Card ---
   function updateDbStatusCard(status) {
