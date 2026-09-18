@@ -384,28 +384,41 @@
     if (!targetViewId) return;
 
     // Normalization & Backward compatibility mapping
-    if (targetViewId === "view-wallet" || targetViewId === "wallet" || targetViewId === "dashboard") {
+    if (targetViewId === "view-wallet" || targetViewId === "wallet" || targetViewId === "dashboard" || targetViewId === "view-dashboard") {
       targetViewId = "view-dashboard";
-    } else if (targetViewId === "view-tax" || targetViewId === "tax") {
+      targetSubviewId = null;
+    } else if (targetViewId === "view-tax" || targetViewId === "tax" || targetViewId === "subview-tax" || targetViewId === "ledger") {
       targetViewId = "view-details";
       targetSubviewId = "subview-tax";
-    } else if (targetViewId === "view-mining" || targetViewId === "mining") {
+    } else if (targetViewId === "view-mining" || targetViewId === "mining" || targetViewId === "subview-mining") {
       targetViewId = "view-details";
       targetSubviewId = "subview-mining";
-    } else if (targetViewId === "view-network" || targetViewId === "network" || targetViewId === "view-explorer" || targetViewId === "explorer") {
+    } else if (targetViewId === "view-guide" || targetViewId === "guide" || targetViewId === "subview-guide" || targetViewId === "wsl" || targetViewId === "coreminer") {
+      targetViewId = "view-details";
+      targetSubviewId = "subview-guide";
+    } else if (targetViewId === "view-network" || targetViewId === "network" || targetViewId === "subview-network" || targetViewId === "view-explorer" || targetViewId === "explorer" || targetViewId === "halving") {
       targetViewId = "view-details";
       targetSubviewId = "subview-network";
-    } else if (targetViewId === "view-articles" || targetViewId === "articles") {
+    } else if (targetViewId === "view-articles" || targetViewId === "articles" || targetViewId === "subview-articles" || targetViewId === "knowledge") {
       targetViewId = "view-details";
       targetSubviewId = "subview-articles";
+    } else if (targetViewId === "view-details" && !targetSubviewId) {
+      targetSubviewId = "subview-tax";
     }
 
     state.currentView = targetViewId;
 
-    // 1. Update Navigation Tabs
+    // 1. Update Navigation Tabs (main header tabs)
     document.querySelectorAll(".tab-btn").forEach(btn => {
-      const isActive = btn.getAttribute("data-target") === targetViewId;
-      btn.classList.toggle("active", isActive);
+      const target = btn.getAttribute("data-target");
+      const sub = btn.getAttribute("data-subview");
+      if (targetViewId === "view-details") {
+        btn.classList.toggle("active", target === "view-details" && sub === targetSubviewId);
+      } else if (targetViewId === "view-dashboard") {
+        btn.classList.toggle("active", target === "view-dashboard");
+      } else {
+        btn.classList.toggle("active", target === targetViewId);
+      }
     });
 
     // 2. Update Drawer Links
@@ -415,6 +428,8 @@
       if (target) {
         if (targetViewId === "view-details" && sub) {
           link.classList.toggle("active", target === targetViewId && sub === targetSubviewId);
+        } else if (targetViewId === "view-dashboard") {
+          link.classList.toggle("active", target === "view-dashboard");
         } else {
           link.classList.toggle("active", target === targetViewId);
         }
@@ -468,6 +483,27 @@
     document.querySelectorAll(".sub-tab-btn").forEach(btn => {
       btn.classList.toggle("active", btn.getAttribute("data-subview") === targetSubviewId);
     });
+    // Sync main header tab buttons with active subview
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      const target = btn.getAttribute("data-target");
+      const sub = btn.getAttribute("data-subview");
+      if (target === "view-details" && sub) {
+        btn.classList.toggle("active", sub === targetSubviewId);
+      } else {
+        btn.classList.toggle("active", false);
+      }
+    });
+    // Sync drawer links with active subview
+    document.querySelectorAll(".drawer-link").forEach(link => {
+      const target = link.getAttribute("data-target");
+      const sub = link.getAttribute("data-subview");
+      if (target === "view-details" && sub) {
+        link.classList.toggle("active", sub === targetSubviewId);
+      } else if (target === "view-dashboard") {
+        link.classList.toggle("active", false);
+      }
+    });
+
     if (updateHash) {
       const hash = targetSubviewId.replace("subview-", "");
       try {
@@ -2192,15 +2228,15 @@
       return;
     }
 
-    if (h.includes("guide") || h.includes("setup") || h.includes("wsl")) {
+    if (h.includes("guide") || h.includes("setup") || h.includes("wsl") || h.includes("coreminer")) {
       switchView("view-details", "subview-guide");
     } else if (h.includes("tax") || h.includes("ledger")) {
       switchView("view-details", "subview-tax");
     } else if (h.includes("mining")) {
       switchView("view-details", "subview-mining");
-    } else if (h.includes("network") || h.includes("explorer")) {
+    } else if (h.includes("network") || h.includes("explorer") || h.includes("halving")) {
       switchView("view-details", "subview-network");
-    } else if (h.includes("article")) {
+    } else if (h.includes("article") || h.includes("knowledge")) {
       switchView("view-details", "subview-articles");
     } else if (h.includes("details")) {
       switchView("view-details", "subview-tax");

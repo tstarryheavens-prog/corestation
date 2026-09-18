@@ -9,8 +9,8 @@
   <!-- Chart.js CDN (with built-in pure Canvas fallback) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Pre-bundled local SQLite data for instant zero-latency loading -->
-  <script src="data/initial_data.js?v=20260919_1"></script>
-  <script src="data/local_articles.js?v=20260919_1"></script>
+  <script src="data/initial_data.js?v=20260919_2"></script>
+  <script src="data/local_articles.js?v=20260919_2"></script>
   <!-- A8.net Auto Link Manager (Monetization Hub) -->
   <script src="//statics.a8.net/a8link/a8linkmgr.js"></script>
   <script>
@@ -38,11 +38,11 @@
           <span class="nav-icon">📊</span>
           <span>ダッシュボード</span>
         </a>
-        <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-tax">
+        <a href="#tax" class="drawer-link" data-target="view-details" data-subview="subview-tax">
           <span class="nav-icon">📋</span>
           <span>確定申告・取引台帳</span>
         </a>
-        <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-mining">
+        <a href="#mining" class="drawer-link" data-target="view-details" data-subview="subview-mining">
           <span class="nav-icon">⚡</span>
           <span>マイニング・CPU設定</span>
         </a>
@@ -50,11 +50,11 @@
           <span class="nav-icon">🚀</span>
           <span>CoreMiner 導入手順 (WSL2)</span>
         </a>
-        <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-network">
+        <a href="#network" class="drawer-link" data-target="view-details" data-subview="subview-network">
           <span class="nav-icon">🌐</span>
           <span>ネットワーク・半減期</span>
         </a>
-        <a href="#details" class="drawer-link" data-target="view-details" data-subview="subview-articles">
+        <a href="#articles" class="drawer-link" data-target="view-details" data-subview="subview-articles">
           <span class="nav-icon">📚</span>
           <span>ナレッジアーカイブ</span>
         </a>
@@ -110,15 +110,31 @@
         </div>
       </div>
 
-      <!-- Main Desktop Navigation Tabs (Dashboard vs Details) -->
-      <nav class="main-tabs-nav">
+      <!-- Main Desktop Navigation Tabs -->
+      <nav class="main-tabs-nav" id="mainTabsNav">
         <a href="#dashboard" class="tab-btn active" data-target="view-dashboard">
           <span class="tab-icon">📊</span>
           <span>ダッシュボード</span>
         </a>
-        <a href="#details" class="tab-btn" data-target="view-details">
-          <span class="tab-icon">📑</span>
-          <span>詳細・各種台帳</span>
+        <a href="#tax" class="tab-btn" data-target="view-details" data-subview="subview-tax">
+          <span class="tab-icon">📋</span>
+          <span>確定申告・台帳</span>
+        </a>
+        <a href="#mining" class="tab-btn" data-target="view-details" data-subview="subview-mining">
+          <span class="tab-icon">⚡</span>
+          <span>マイニング設定</span>
+        </a>
+        <a href="#guide" class="tab-btn" data-target="view-details" data-subview="subview-guide">
+          <span class="tab-icon">🚀</span>
+          <span>CoreMiner (WSL2)</span>
+        </a>
+        <a href="#network" class="tab-btn" data-target="view-details" data-subview="subview-network">
+          <span class="tab-icon">🌐</span>
+          <span>ネットワーク・半減期</span>
+        </a>
+        <a href="#articles" class="tab-btn" data-target="view-details" data-subview="subview-articles">
+          <span class="tab-icon">📚</span>
+          <span>ナレッジアーカイブ</span>
         </a>
       </nav>
 
@@ -311,16 +327,16 @@
           🔄 DB即時同期
         </button>
         <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-mining');">
-          ⚡ CPU推奨設定を見る
+          ⚡ マイニング・CPU設定
         </button>
         <button class="btn-secondary btn-sm" style="color: var(--primary); font-weight: 700; border-color: rgba(37, 99, 235, 0.4);" onclick="window.navigateToDetailsSub('subview-guide');">
           🚀 CoreMiner 導入手順 (WSL2)
         </button>
         <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-network');">
-          🔮 2026-2030年 将来予測を見る
+          🌐 ネットワーク・半減期
         </button>
         <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-articles');">
-          📚 技術ガイド・ナレッジを読む
+          📚 ナレッジアーカイブ
         </button>
       </div>
 
@@ -2121,6 +2137,6 @@ swap=0</code></pre>
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Application Script -->
-  <script src="app.js?v=20260919_1"></script>
+  <script src="app.js?v=20260919_2"></script>
 </body>
 </html>

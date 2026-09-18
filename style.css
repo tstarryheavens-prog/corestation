@@ -341,27 +341,33 @@ a:hover {
   letter-spacing: 0.02em;
 }
 
-/* Main Top Navigation Tabs (Dashboard vs Details) */
+/* Main Top Navigation Tabs */
 .main-tabs-nav {
   display: flex;
   align-items: center;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: 9999px;
-  padding: 3px;
-  gap: 3px;
+  padding: 3px 4px;
+  gap: 2px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar for Chrome/Firefox */
+}
+.main-tabs-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .tab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
+  gap: 6px;
+  padding: 6px 14px;
   border-radius: 9999px;
   color: var(--text-muted);
   font-weight: 600;
-  font-size: 1.05rem;
-  padding: 9px 24px;
+  font-size: 0.92rem;
+  white-space: nowrap;
   text-decoration: none !important;
   transition: all 0.15s ease;
   border: none;
@@ -371,7 +377,7 @@ a:hover {
 
 .tab-btn:hover {
   color: var(--text-main);
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .tab-btn.active {
@@ -382,7 +388,7 @@ a:hover {
 }
 
 .tab-icon {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
 .navbar-right {
