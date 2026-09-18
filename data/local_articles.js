@@ -5,6 +5,198 @@
  */
 window.__CORE_LOCAL_ARTICLES__ = [
   {
+    id: "ctn-role-and-ecosystem-guide",
+    title: "【XCBと何が違う？】Core Token（CTN）の役割・10億枚のトークノミクス・誕生の経緯からDeFi/0G決済の未来展望まで自作PC女子リコロが徹底解剖！🎮🪙💎",
+    category: "ecosystem",
+    categoryName: "エコシステム・トークノミクス",
+    date: "2026-09-19",
+    summary: "「マイニングで掘れるXCBと、取引所にあるCTNって何が違うの？」自作PC＆ゲーム大好き女子リコロが、Core Blockchainのツイントークン構造を完全解説！10億枚上限のCBC-20仕様、CorePass・PingExchangeでの実需、DeFiや0Gオフライン決済への未来展望まで丸わかり！",
+    content: `
+<div style="text-align: center; margin-bottom: 25px;"><a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;"><img src="https://corestation.pages.dev/apple-touch-icon.png" alt="CoreStation Logo" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); max-height: 280px;" /></a></div>
+
+<div style="line-height: 1.85; font-size: 16px; color: #2d3748;">
+  <p style="font-size: 18px; font-weight: bold; color: #e65100;">
+    どうも！自作PC大好きゲーム女子、リコロです！🎮💻✨
+  </p>
+
+  <p>
+    Core Blockchainでマイニング（XCB採掘）をしているマイナーのみなさん！<br>
+    日夜RyzenやCore i9をフル稼働させて、カタカタお小遣いを掘り当ててますか〜！？自作PC勢としては、CPUの全コア・全スレッドが唸りを上げてハッシュを叩き出しているのを見るだけでご飯3杯いけちゃいますよね！😆🔥
+  </p>
+
+  <p>
+    でもね、公式ウォレットの<strong>CorePass</strong>や取引所の<strong>PingExchange</strong>を覗いたときに、誰もが一度はこう思ったはずなんです……。
+  </p>
+
+  <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+    <strong>🤔「私たちが掘ってるのは『XCB』なのに、画面に並んでる『CTN（Core Token）』って一体なんなの！？」</strong><br>
+    <strong>「マイニングできないの？XCBとの違いや関係性は？どっちを持っておけばいいの？」</strong>
+  </div>
+
+  <p>
+    今回はそんな疑問をスッキリ解消すべく、自作PC＆ゲーム好きのリコロが、<strong>「Core Token（CTN）」の本当の役割、XCBとの違い、誕生の歴史、そしてこれからの爆熱ロードマップ</strong>まで、限界まで分かりやすく徹底解説しちゃいます！🎮🚀
+  </p>
+
+  <hr style="border: none; border-top: 1px dashed #cbd5e0; margin: 30px 0;" />
+
+  <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 30px; color: #1e3a8a;">
+    🎮 1. 自作PC＆オンラインゲームで例える「XCB」と「CTN」の決定的違い！
+  </h3>
+  <p>
+    まずは結論から！この2つの違いを、自作PCやゲームの世界に例えてみましょう！
+  </p>
+
+  <div style="overflow-x: auto; margin: 20px 0;">
+    <table style="width: 100%; border-collapse: collapse; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
+      <thead>
+        <tr style="background: #f8fafc; border-bottom: 2px solid #cbd5e0; color: #334155;">
+          <th style="padding: 12px; text-align: left;">項目</th>
+          <th style="padding: 12px; text-align: left;">⛏️ XCB (Core Coin)</th>
+          <th style="padding: 12px; text-align: left;">🎟️ CTN (Core Token)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 10px; font-weight: bold;">分類</td>
+          <td style="padding: 10px;">レイヤー1 ネイティブコイン（基幹資産）</td>
+          <td style="padding: 10px;">CBC-20 ユーティリティトークン（実用通貨）</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7; background: #fdfbf7;">
+          <td style="padding: 10px; font-weight: bold;">自作PCで例えると</td>
+          <td style="padding: 10px;"><strong>PCケース・電源・マザーボード</strong>（マシンを動かす土台そのもの）</td>
+          <td style="padding: 10px;"><strong>Steamウォレット・各種ゲームキー</strong>（PC上で遊ぶためのコンテンツチケット）</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 10px; font-weight: bold;">MMORPGで例えると</td>
+          <td style="padding: 10px;"><strong>ダンジョンで採掘する「幻の鉱石」</strong>（世界に少しずつ供給される金）</td>
+          <td style="padding: 10px;"><strong>街のギルドや市場で使える「共通ギル・ジェム」</strong>（取引や手数料に使う通貨）</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7; background: #fdfbf7;">
+          <td style="padding: 10px; font-weight: bold;">発行の仕組み</td>
+          <td style="padding: 10px;">PoDEマイニング（CPU計算力で新規採掘）</td>
+          <td style="padding: 10px;"><strong>総発行上限 10億枚（1,000,000,000 CTN）固定</strong></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold;">主な役割</td>
+          <td style="padding: 10px;">チェーン全体のセキュリティ担保、価値の保存</td>
+          <td style="padding: 10px;">dApps利用料、CorePass認証、DeFi、取引所手数料</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    そうなんです！イーサリアムで例えるなら、<strong>XCBは「ETH」、CTNはエコシステム内で流通する「代表的なERC-20トークン（UNIやLINKのような存在）」</strong>と考えると一番しっくりきます！💡
+  </p>
+
+  <hr style="border: none; border-top: 1px dashed #cbd5e0; margin: 30px 0;" />
+
+  <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 30px; color: #1e3a8a;">
+    ⚙️ 2. CTNの基本スペック：なぜ「10億枚固定」でマイニングできないのか？
+  </h3>
+  <p>
+    「えっ、CTNってマイニングで掘れないの！？」と思った方、大正解です！<br>
+    CTNはマイニングマシンで掘り出すコインではなく、Core Blockchainのスマートコントラクト規格である<strong>「CBC-20」</strong>に基づいて発行されたトークンです。
+  </p>
+  <ul>
+    <li><strong>トークン名称:</strong> Core Token (ティッカー: CTN)</li>
+    <li><strong>トークン規格:</strong> CBC-20（Core Blockchain標準ファンジブルトークン）</li>
+    <li><strong>小数点桁数:</strong> 18 decimals</li>
+    <li><strong>最大供給量:</strong> <strong>1,000,000,000 CTN（10億枚）</strong></li>
+  </ul>
+  <p>
+    ビットコインやXCBのようなPoW/PoDEコインは、時間をかけて徐々に採掘されていきますよね。でも、日常的なサービス決済や取引所の手数料に使うトークンが「いつどれだけ採掘されるか分からない」「ガス代の急騰で使いづらい」となると、企業や一般ユーザーがWeb3アプリを使うハードルが跳ね上がってしまいます。
+  </p>
+  <p>
+    そこでCore Blockchainでは、<strong>「チェーンの安全を守る重厚な金庫番（XCB）」</strong>と、<strong>「高速・安価にサービスを循環させる決済エンジン（CTN）」</strong>を明確に切り分けるツイントークン・アーキテクチャを採用したのです！👏✨
+  </p>
+
+  <hr style="border: none; border-top: 1px dashed #cbd5e0; margin: 30px 0;" />
+
+  <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 30px; color: #1e3a8a;">
+    📈 3. 過去の経緯と相場ヒストリー：なぜCTNは1円前後で安定している？
+  </h3>
+  <p>
+    Core Blockchainがメインネットを稼働させた2022年以降、XCBとCTNはそれぞれ全く異なる価格特性を見せてきました。
+  </p>
+  <ul>
+    <li><strong>XCBの価格動向:</strong> 半減期（発行減衰）や世界中のマイナーの参入・難易度急上昇の影響をダイレクトに受け、0.7円から一時は11円超までダイナミックに乱高下する「ボラティリティ型・投資資産」。</li>
+    <li><strong>CTNの価格動向:</strong> 規制準拠取引所PingExchangeの稼働後、主に<strong>0.9円〜1.2円（約0.006〜0.008 USD）</strong>のレンジで非常に安定して推移する「ユーティリティ型・安定資産」。</li>
+  </ul>
+  <div style="background: #f0fdf4; border-left: 5px solid #22c55e; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+    <strong>💡 リコロの相場チェックポイント！</strong><br>
+    マイナー目線で見ると、採掘したXCBが高騰したタイミングで一部をCTNにスワップしておくと、<strong>「相場急落リスクを回避しつつ、いつでもエコシステム内で使える流動性としてプールできる」</strong>という超優秀な避難港（ヘッジ手段）として機能してくれるんです！
+  </div>
+
+  <hr style="border: none; border-top: 1px dashed #cbd5e0; margin: 30px 0;" />
+
+  <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 30px; color: #1e3a8a;">
+    🛠️ 4. エコシステムにおけるCTNの「4大活用シーン」
+  </h3>
+  <p>
+    「具体的にCTNってどこで使うの？」という方のために、今すぐ使える＆これから使える4大ユースケースをまとめました！
+  </p>
+
+  <h4 style="color: #1d4ed8; margin-top: 20px;">① CorePass（分散型デジタルID）の認証・KYC利用料</h4>
+  <p>
+    スマホアプリ「CorePass」でパスポートや身分証を検証し、暗号化IDを発行する際の手数料や、認証連携サービス利用時のデポジットとしてCTNが使われます。
+  </p>
+
+  <h4 style="color: #1d4ed8; margin-top: 20px;">② PingExchangeでの取引手数料割引＆流動性ペア</h4>
+  <p>
+    分散型取引所PingExchangeにおいて、取引手数料をCTNで支払うと大幅割引を受けられるほか、<code>XCB/CTN</code> ペアがメインの基軸通貨ペアとして機能しています。
+  </p>
+
+  <h4 style="color: #1d4ed8; margin-top: 20px;">③ Wall Money（DeFi）でのステーキング＆レンディング</h4>
+  <p>
+    Core BlockchainネイティブのDeFiプラットフォーム「Wall Money」において、CTNを流動性プールにステーキングして利息（イールド）を獲得したり、レンディングの担保資産として活用できます。
+  </p>
+
+  <h4 style="color: #1d4ed8; margin-top: 20px;">④ スマートコントラクト・dApps実行の燃料</h4>
+  <p>
+    ブロックチェーン上でトークンを発行したり、分散型アプリケーション（dApps）を実行する際のサービスチャージとしてCTNが消費・循環されます。
+  </p>
+
+  <hr style="border: none; border-top: 1px dashed #cbd5e0; margin: 30px 0;" />
+
+  <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 30px; color: #1e3a8a;">
+    🚀 5. 2026年以降の超進化ロードマップ：CTNの未来展望
+  </h3>
+  <p>
+    ここからが自作PC女子リコロ的・一番ワクワクする未来の話です！😍✨<br>
+    現在Core開発チームやエンタープライズパートナー（ARAX等）が推進している計画の中で、CTNはさらに大きな役割を担おうとしています。
+  </p>
+
+  <ul>
+    <li><strong>📡 0G通信（TxMS）とオフライン小額決済:</strong><br>
+    インターネットが繋がらない僻地や災害時でも、SMS（ショートメッセージ）だけで安全に暗号資産を送金できる「0Gプロトコル」。ここで日常の缶ジュース1本、屋台の決済などに使われるリアルマネー代替トークンとしてCTNの実装が進められています。</li>
+    <li><strong>🏢 RWA（リアルワールド資産）トークン化の基軸通貨:</strong><br>
+    不動産、金（ゴールド）、カーボンクレジットなどをCore Blockchain上でトークン化する際、その裏付け資産や取引手数料の基準通貨としてCTNが用いられます。</li>
+    <li><strong>🌍 EU環境規制（Euro 7）や欧州公的セクターでの企業利用:</strong><br>
+    バッテリーパスポートや部品トレーサビリティなど、企業がCore Blockchainの台帳にデータを書き込む際のAPI利用ライセンス料としてCTNが実需利用される見通しです。</li>
+  </ul>
+
+  <hr style="border: none; border-top: 1px dashed #cbd5e0; margin: 30px 0;" />
+
+  <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 30px; color: #1e3a8a;">
+    💡 まとめ：XCBで「掘って」、CTNで「使って活かす」のがCore上級者！
+  </h3>
+  <p>
+    いかがでしたか？<br>
+    「XCB＝マイニングで掘り出す貴重なデジタルゴールド」「CTN＝街やアプリで縦横無尽に使える便利なデジタルトークン」という関係性がバッチリ見えてきたのではないでしょうか！
+  </p>
+  <p>
+    自作PCマイナーとしては、<strong>「CPUパワーでXCBをしっかり掘りつつ、PingExchangeで一部をCTNに換えてDeFiや次世代サービスに備える」</strong>というデュアル戦略こそが、Core Blockchainエコシステムを一番美味しく楽しむ勝ちパターンです！🎮💎
+  </p>
+
+  <p style="font-weight: bold; margin-top: 25px; color: #e65100;">
+    それでは、また次回の自作＆マイニング解説記事でお会いしましょう！リコロでした〜！ばいば〜い！🎮👾💻✨
+  </p>
+</div>
+`
+  },
+
+  {
     id: "quantum-resistant-cryptography-core",
     title: "【量子PCでビットコイン破られる説！？】Core Blockchainが「耐量子暗号」を標準装備している理由を限界まで分かりやすく解説！🧠🛡️",
     category: "tech",

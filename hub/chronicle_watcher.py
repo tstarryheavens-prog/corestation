@@ -107,27 +107,28 @@ def generate_article_with_gemini(raw_text, source_url, source_name):
     if not api_key:
         return None, None
 
-    prompt = f"""あなたはCore Blockchainの技術動向やマイニングに精通したCoreStationの技術解説ライターです。
-以下のCore Blockchain (XCB) の公式速報・最新アナウンスを深く読み解き、初心者やマイナー向けに要点を整理し、客観的でわかりやすく親しみやすい解説ブログ記事（HTML形式）を執筆してください。
+    prompt = f"""あなたは自作PCとゲームが大好きな女性技術ライター「リコロ（Ricolo）」です！
+Core Blockchain (XCB) の公式速報・最新アナウンスを深く読み解き、初心者やマイナー向けに要点を整理し、自作PCやゲームの比喩を交えながら明るく親しみやすい女子目線で解説ブログ記事（HTML形式）を執筆してください。
 
 【公式アナウンス原文】
 {raw_text}
 
 【記事の執筆ルール】
-1. 口調・トーン:
-   - 丁寧でわかりやすくテンポの良い口調（「こんにちは！CoreStation技術解説チームです」「今回の重要ポイントをわかりやすく整理して解説していきます」「結論から言うと〜」など）
-   - AI特有の堅苦しさや無機質な文体（「〜と考えられます」「以下の通りです」）は避け、読者に寄り添った自然な解説を行ってください。
-   - ゲームや特定キャラクター（リコ等）の表現は一切使わないでください。
+1. キャラクター＆トーン:
+   - 名前: リコロ（自作PC大好きゲーム女子）
+   - 冒頭の挨拶: 「どうも！自作PC大好きゲーム女子、リコロです！✍🏻🎮💻✨」
+   - トーン: 元気で明るく親しみやすい語り口。自作PC（Ryzen・グラボ・冷却等）やゲーム（放置ゲー・RPG・クラフト等）の例え話を適度に織り交ぜる。
+   - 締めくくり: 「それでは、また次回の解説記事でお会いしましょう！リコロでした〜！ばいば〜い！🎮👾✨」など末尾の表現も自由に生き生きとキャラクターを維持する。
 2. 構成:
-   - つかみ・導入（「公式より最新のアップデート情報が公開されました！」）
+   - つかみ・導入（「公式から激アツなアップデートが届きました〜！」）
    - 原文引用（<blockquote style="margin: 10px 0; padding: 10px; background: #fff; border-left: 3px solid #ffa726; font-size: 14px; color: #555; white-space: pre-wrap;"> で囲み、引用元リンク: {source_url} を明記）
-   - 3行でわかる！今回のポイントまとめ（「何が起きたの？」「何が重要なのか？」を噛み砕く）
-   - マイナー・保有者はどう動くべきか？（具体的なアクション）
+   - 3行でわかる！今回の神アプデ要点まとめ
+   - マイナー・ホルダーはどう動くべきか？（実践アドバイス）
    - 自サイト CoreStation（https://corestation.pages.dev/）への誘導ボタン
-   - 締めくくり（「それでは、また次回の技術更新でお会いしましょう！」）
+   - 締めくくり
 3. 出力フォーマット:
-   - 1行目にタイトルを 【速報・解説】〜 形式で出力（絵文字付き、ゲーム表現なし）
-   - 2行目以降に <div style="line-height: 1.8; font-size: 16px; color: #333;"> で始まるHTMLタグのみを出力してください（Markdownの ```html や ``` のバッククォート囲みは一切出力しないでください）。
+   - 1行目にタイトルを 【速報・解説】〜 形式で出力（絵文字付き 🎮⚡️ など）
+   - 2行目以降に <div style="line-height: 1.8; font-size: 16px; color: #333;"> で始まるHTMLタグのみを出力（Markdownの ```html や ``` バッククォート囲みは一切出力しないでください）。
 """
 
     endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
@@ -201,7 +202,7 @@ def generate_rico_article(update_item):
 {BANNER_HEADER_HTML}
 
   <p style="font-size: 18px; font-weight: bold; color: #0284c7;">
-    こんにちは！CoreStation技術解説チームです。
+    どうも！自作PC大好きゲーム女子、リコロです！✍🏻🎮💻✨
   </p>
 
   <p>
@@ -266,12 +267,12 @@ def generate_rico_article(update_item):
   </p>
 
   <p>
-    それでは、また次回の技術動向レポートでお会いしましょう！今後も最新情報をお届けします。
+    それでは、また次回の更新でお会いしましょう！リコロでした〜！ばいば〜い！🎮👾✨
   </p>
 
 </div>"""
     
-    title = f"【速報・技術解説】Core Blockchain最新アップデート！公式アナウンスの重要ポイント総まとめ⚡️"
+    title = f"【速報・解説】Core Blockchain最新アップデート！公式アナウンスの重要ポイントをリコロが超解説🎮⚡️"
     return title, html
 
 def check_and_publish():
