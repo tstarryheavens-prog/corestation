@@ -872,7 +872,7 @@ WATCHER_STATE = {
     "last_message": "AI Auto-Watcher 待機中 (次回巡回まで待機)",
     "check_count": 0,
     "ai_engine": "Google Gemini 2.5 Flash",
-    "persona": "リコ（@rico_game風 親しみやすい解説）",
+    "persona": "わかりやすい公式最新動向の技術解説",
     "blog_url": "https://corestation.hatenadiary.com/",
     "sources": [
         "Core Blockchain 日本公式アナウンス (Telegram: @Core_Blockchain_Japan)",
@@ -905,7 +905,7 @@ def do_watcher_check():
         WATCHER_STATE["check_count"] += 1
         WATCHER_STATE["last_status"] = "success"
         if published:
-            WATCHER_STATE["last_message"] = "🎉 新着アップデートを検知！リコ風解説記事を執筆してはてなブログへ自動投稿しました。"
+            WATCHER_STATE["last_message"] = "🎉 新着アップデートを検知！最新動向の解説記事を執筆してはてなブログへ自動投稿しました。"
         else:
             WATCHER_STATE["last_message"] = "✅ 巡回完了：新着の未公開アップデートはありません（同期完了・最新状態）"
     except Exception as e:

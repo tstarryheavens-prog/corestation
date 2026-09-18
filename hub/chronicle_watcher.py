@@ -5,8 +5,8 @@
 Core Chronicle Watcher & Auto-Article Generator
 ==============================================
 Core Blockchain（コアクロニクル、公式Telegram、GitHubリリース等）の
-最新情報更新を定期監視し、新着情報を引用・リコ風に噛み砕いて
-はてなブログへ完全自動投稿するエンジン。
+最新情報更新を定期監視し、新着情報を引用・客観的かつ分かりやすく噛み砕いて
+Gemini 2.5 Flashで自動解説記事（HTML形式）を生成し、はてなブログおよびローカルデータへ自動公開・更新する。
 """
 
 import os
@@ -102,31 +102,31 @@ def load_gemini_key():
     return ""
 
 def generate_article_with_gemini(raw_text, source_url, source_name):
-    """Generate authentic Rico-style blog HTML using Google Gemini API."""
+    """Generate professional and accessible blog HTML using Google Gemini API."""
     api_key = load_gemini_key()
     if not api_key:
         return None, None
 
-    prompt = f"""あなたはYouTubeチャンネル「リコ【ゲーム情報紹介】」のリコ（ゲーム廃人）です。
-以下のCore Blockchain (XCB) の公式速報・最新アナウンスを深く読み解き、初心者・ゲーマー・マイナー向けに限界までわかりやすく、かつユーモアと熱量を交えて解説するブログ記事（HTML形式）を執筆してください。
+    prompt = f"""あなたはCore Blockchainの技術動向やマイニングに精通したCoreStationの技術解説ライターです。
+以下のCore Blockchain (XCB) の公式速報・最新アナウンスを深く読み解き、初心者やマイナー向けに要点を整理し、客観的でわかりやすく親しみやすい解説ブログ記事（HTML形式）を執筆してください。
 
 【公式アナウンス原文】
 {raw_text}
 
 【記事の執筆ルール】
 1. 口調・トーン:
-   - 親しみやすくテンポの良い口調（「どうも！みなさんこんにちは、リコです！✍🏻🎮」「ぶっちゃけ〜」「これマジで〜」「〜ですよね！」「結論から言います！」など）
-   - AI特有の堅苦しさや無機質な文体（「〜と考えられます」「以下の通りです」）は絶対に排除してください。
-   - 読者に語りかけるツッコミや感情表現（「これヤバすぎません！？」「私も画面見ながらニヤニヤが止まらないんですけど（笑）」など）を自然に入れてください。
+   - 丁寧でわかりやすくテンポの良い口調（「こんにちは！CoreStation技術解説チームです」「今回の重要ポイントをわかりやすく整理して解説していきます」「結論から言うと〜」など）
+   - AI特有の堅苦しさや無機質な文体（「〜と考えられます」「以下の通りです」）は避け、読者に寄り添った自然な解説を行ってください。
+   - ゲームや特定キャラクター（リコ等）の表現は一切使わないでください。
 2. 構成:
-   - つかみ・導入（「激アツな速報が入ってきました〜！」）
+   - つかみ・導入（「公式より最新のアップデート情報が公開されました！」）
    - 原文引用（<blockquote style="margin: 10px 0; padding: 10px; background: #fff; border-left: 3px solid #ffa726; font-size: 14px; color: #555; white-space: pre-wrap;"> で囲み、引用元リンク: {source_url} を明記）
-   - 3行でわかる！今回のポイントまとめ（「何が起きたの？」「何が凄いの？」を噛み砕く）
-   - 私たちマイナー・保有者はどう動くべきか？（具体的なアクション）
+   - 3行でわかる！今回のポイントまとめ（「何が起きたの？」「何が重要なのか？」を噛み砕く）
+   - マイナー・保有者はどう動くべきか？（具体的なアクション）
    - 自サイト CoreStation（https://corestation.pages.dev/）への誘導ボタン
-   - 明るい締めくくり（読者登録・スターのお願い、「それでは、また次回の更新でお会いしましょう！ばいばーい！👋🎮✨」）
+   - 締めくくり（「それでは、また次回の技術更新でお会いしましょう！」）
 3. 出力フォーマット:
-   - 1行目にタイトルを 【速報・解説】〜 形式で出力（絵文字付き）
+   - 1行目にタイトルを 【速報・解説】〜 形式で出力（絵文字付き、ゲーム表現なし）
    - 2行目以降に <div style="line-height: 1.8; font-size: 16px; color: #333;"> で始まるHTMLタグのみを出力してください（Markdownの ```html や ``` のバッククォート囲みは一切出力しないでください）。
 """
 
@@ -153,7 +153,7 @@ def generate_article_with_gemini(raw_text, source_url, source_name):
     )
     ctx = get_ssl_context()
     try:
-        print("🧠 Google Gemini API を呼び出してリコ風に記事を執筆中...")
+        print("🧠 Google Gemini API を呼び出して解説記事を執筆中...")
         with urllib.request.urlopen(req, context=ctx, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             candidate = data["candidates"][0]["content"]["parts"][0]["text"]
@@ -200,21 +200,21 @@ def generate_rico_article(update_item):
 
 {BANNER_HEADER_HTML}
 
-  <p style="font-size: 18px; font-weight: bold; color: #e65100;">
-    どうも！みなさんこんにちは、リコです！✍🏻🎮
+  <p style="font-size: 18px; font-weight: bold; color: #0284c7;">
+    こんにちは！CoreStation技術解説チームです。
   </p>
 
   <p>
-    Core Blockchain（XCB）に<strong>激アツな最新アップデート情報・公式アナウンス</strong>が飛び込んできました〜！⚡️✨
+    Core Blockchain（XCB）に関する<strong>最新の公式アップデート・アナウンス</strong>が発表されました。
   </p>
 
   <p>
-    「公式の英語や専門用語の発表って、難しくてよくわからない……」という方のために、リコが<strong>超絶わかりやすく要点をギュッと噛み砕いて解説</strong>していきます！
+    「公式の英語発表や技術用語が難しくて分かりにくい」という方のために、<strong>要点をわかりやすく整理して解説</strong>していきます！
   </p>
 
-  <div style="background-color: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 4px;">
-    <strong style="color: #e65100; font-size: 17px;">📢 公式発表の原文引用（コアクロニクル / Telegram速報）</strong>
-    <blockquote style="margin: 10px 0 0 0; padding: 10px; background: #fff; border-left: 3px solid #ffa726; font-size: 14px; color: #555; white-space: pre-wrap;">
+  <div style="background-color: #f0f9ff; border-left: 5px solid #0284c7; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <strong style="color: #0369a1; font-size: 17px;">📢 公式発表の原文引用（Core Chronicle / Telegram速報）</strong>
+    <blockquote style="margin: 10px 0 0 0; padding: 10px; background: #fff; border-left: 3px solid #0ea5e9; font-size: 14px; color: #555; white-space: pre-wrap;">
 {raw_text}
     </blockquote>
     <p style="margin: 8px 0 0 0; font-size: 12px; color: #888;">
@@ -224,37 +224,21 @@ def generate_rico_article(update_item):
 
   <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
 
-  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
-    1. 3行でわかる！今回のポイントまとめ💡
+  <h2 style="border-left: 6px solid #0284c7; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
+    1. 今回の重要ポイントまとめ💡
   </h2>
 
   <div style="background: #e8f5e9; border: 1px solid #81c784; padding: 15px; border-radius: 8px; margin: 15px 0;">
-    <strong>🎯 リコのサクッと要約：</strong>
+    <strong>🎯 重要ポイント要約：</strong>
     <ul style="margin-bottom: 0; padding-left: 20px;">
-      <li>公式コミュニティにて新しい進捗・アナウンスが正式発表されました！</li>
-      <li>ネットワークの健全性や開発エコシステムの拡大が順調に進んでいます。</li>
-      <li>マイナーやホルダーにとって今後の価値向上に繋がる重要なお知らせです！</li>
+      <li>公式コミュニティにて新しい進捗・アナウンスが正式発表されました。</li>
+      <li>ネットワークの健全性や開発エコシステムの拡大が順調に進展しています。</li>
+      <li>マイナーやホルダーにとって今後の価値向上に繋がる重要なお知らせです。</li>
     </ul>
   </div>
 
   <hr style="border: none; border-top: 2px dashed #ddd; margin: 30px 0;">
 
-  <h2 style="border-left: 6px solid #ff9800; padding-left: 12px; margin: 30px 0 15px; color: #212121; font-size: 22px;">
-    2. 私たちマイナー・保有者はどう動くべき？🤔
-  </h2>
-
-  <p>
-    新しい発表が出ると「設定変えなきゃダメ？」「ウォレットの操作必要？」と焦っちゃいますが、<strong>まずは公式の続報を落ち着いて確認するのが一番</strong>です！
-  </p>
-
-  <p>
-    ソフトのアップデートが必要な場合や、マイニングプールの設定変更がある場合は、当ブログでもすぐに最速で解説記事を出しますのでご安心くださいね💪✨
-  </p>
-
-  <div style="background-color: #e3f2fd; border-left: 5px solid #1976d2; padding: 20px; margin: 25px 0; border-radius: 6px;">
-    <h3 style="margin-top: 0; color: #0d47a1; font-size: 19px;">⚡️ マイニング実績の推移は「CoreStation」で！</h3>
-    <p>
-      アップデートによるハッシュレートや為替レートの変動は、無料ツール <strong>CoreStation</strong> でリアルタイム確認できます👇
     </p>
     <p style="text-align: center; margin: 15px 0;">
       <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="background-color: #1976d2; color: white; padding: 12px 24px; font-weight: bold; text-decoration: none; border-radius: 30px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
@@ -282,12 +266,12 @@ def generate_rico_article(update_item):
   </p>
 
   <p>
-    それでは、また次回の更新でお会いしましょう！ばいばーい！👋🎮✨
+    それでは、また次回の技術動向レポートでお会いしましょう！今後も最新情報をお届けします。
   </p>
 
 </div>"""
     
-    title = f"【速報・解説】Core Blockchain最新アップデート！公式アナウンスの重要ポイントをリコが超解説🎮⚡️"
+    title = f"【速報・技術解説】Core Blockchain最新アップデート！公式アナウンスの重要ポイント総まとめ⚡️"
     return title, html
 
 def check_and_publish():

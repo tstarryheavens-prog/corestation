@@ -6,7 +6,7 @@
 window.__CORE_LOCAL_ARTICLES__ = [
   {
     id: "quantum-resistant-cryptography-core",
-    title: "【量子PCでビットコイン破られる説！？】Core Blockchainが「耐量子暗号」を標準装備している理由を限界まで分かりやすく解説！🎮🧠🛡️",
+    title: "【量子PCでビットコイン破られる説！？】Core Blockchainが「耐量子暗号」を標準装備している理由を限界まで分かりやすく解説！🧠🛡️",
     category: "tech",
     categoryName: "技術・セキュリティ",
     date: "2026-09-16",
@@ -20,7 +20,7 @@ window.__CORE_LOCAL_ARTICLES__ = [
 
 <div style="line-height: 1.85; font-size: 16px; color: #2d3748;">
   <p style="font-size: 18px; font-weight: bold; color: #e65100;">
-    どうも！最先端テクノロジーに目がないリコです！✍🏻🎮
+    こんにちは！CoreStation技術解説チームです。
   </p>
 
   <p>
@@ -104,7 +104,7 @@ window.__CORE_LOCAL_ARTICLES__ = [
 
 
   <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 35px; color: #1e3a8a;">
-    🎮 まとめ：私たちがマイニングしているのは「未来の安全な資産」！
+    💡 まとめ：私たちがマイニングしているのは「未来の安全な資産」！
   </h3>
   <p>
     単なる投機的なコインではなく、科学と暗号学の最先端がぎっしり詰まった「強固な未来インフラ」を自分の手で支えて掘り出している……！<br>
@@ -114,14 +114,14 @@ window.__CORE_LOCAL_ARTICLES__ = [
     時代の最先端を走るCore Blockchainの進化、これからも一緒に見守っていきましょう！
   </p>
   <p style="font-weight: bold; margin-top: 25px;">
-    それでは、また次回のブログでお会いしましょう！リコでした〜！ばいば〜い！🎮👋🧠🛡️
+    それでは、また次回の技術解説でお会いしましょう！今後も最新動向をお届けします。
   </p>
 </div>
 `
   },
   {
     id: "xcb-exit-strategy-pingexchange",
-    title: "【出口戦略】掘ったXCBはどうする！？ウォレット保管からPingExchange送金・スワップ・CTN活用法まで実践ルート完全解説🎮💰🔄",
+    title: "【出口戦略】掘ったXCBはどうする！？ウォレット保管からPingExchange送金・スワップ・CTN活用法まで実践ルート完全解説💰🔄",
     category: "ecosystem",
     categoryName: "エコシステム・活用法",
     date: "2026-09-16",
@@ -135,7 +135,7 @@ window.__CORE_LOCAL_ARTICLES__ = [
 
 <div style="line-height: 1.85; font-size: 16px; color: #2d3748;">
   <p style="font-size: 18px; font-weight: bold; color: #e65100;">
-    どうも！みなさんこんにちは、リコです！✍🏻🎮
+    こんにちは！CoreStation技術解説チームです。
   </p>
 
   <p>
@@ -227,21 +227,21 @@ window.__CORE_LOCAL_ARTICLES__ = [
 
 
   <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 35px; color: #1e3a8a;">
-    🎮 まとめ：掘って・使って・楽しむのがWeb3の醍醐味！
+    💡 まとめ：掘って・使って・活用するのがWeb3の醍醐味！
   </h3>
   <p>
     マイニングで得たコインを自分の手で安全にウォレットへ移し、取引所でスワップしたり活用したりする体験は、まさに銀行や仲介者を介さない「自己主権型金融」そのものです！<br>
     ぜひ少額からでも、PingExchangeでのトレードやエコシステムの操作にチャレンジしてみてくださいね！
   </p>
   <p style="font-weight: bold; margin-top: 25px;">
-    それでは、また次回のブログでお会いしましょう！リコでした〜！ばいば〜い！🎮👋💰
+    それでは、また次回の解説記事でお会いしましょう！安全な資産運用をお役立てください。
   </p>
 </div>
 `
   },
   {
     id: "ryzen-eco-mode-mining-efficiency",
-    title: "【電気代VS採掘利益】2026年最新！XCBマイニングは黒字化できるのか！？Ryzenエコモード（65W/105W制限）でワットパフォーマンスを極限まで絞り出す裏ワザ🎮⚡️📉",
+    title: "【電気代VS採掘利益】2026年最新！XCBマイニングは黒字化できるのか！？Ryzenエコモード（65W/105W制限）でワットパフォーマンスを極限まで絞り出す裏ワザ⚡️📉",
     category: "hardware",
     categoryName: "ハードウェア・自作PC",
     date: "2026-09-16",
@@ -255,7 +255,7 @@ window.__CORE_LOCAL_ARTICLES__ = [
 
 <div style="line-height: 1.85; font-size: 16px; color: #2d3748;">
   <p style="font-size: 18px; font-weight: bold; color: #e65100;">
-    どうも！自作PC大好きゲーム女子、リコです！✍🏻🎮
+    こんにちは！CoreStationハードウェア・マイニング技術解説チームです。
   </p>
 
   <p>
@@ -357,7 +357,7 @@ window.__CORE_LOCAL_ARTICLES__ = [
 
 
   <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 35px; color: #1e3a8a;">
-    🎮 まとめ：スマートに掘って賢く残そう！
+    💡 まとめ：スマートに掘って賢く残そう！
   </h3>
   <p>
     「限界までブン回して少しでも多くのコインを掘る」時代は終わりました。<br>
@@ -367,14 +367,14 @@ window.__CORE_LOCAL_ARTICLES__ = [
     まだ定格で回している方は、今すぐBIOSに入ってEco-ModeとCurve Optimizerを設定してみてくださいね！毎月の電気代明細を見るのが怖くなくなりますよ〜！💪🏻📉
   </p>
   <p style="font-weight: bold; margin-top: 25px;">
-    それでは、次回も役立つ自作＆マイニング情報をお届けします！リコでした〜！🎮✨
+    それでは、次回も役立つ自作＆マイニング技術情報をお届けします！
   </p>
 </div>
 `
   },
   {
     id: "nas-decentralized-dashboard",
-    title: "【分散型の真髄】大手ポータル閉鎖でも動じない！自宅NAS（Docker）で自分専用の完全自立型マイニングダッシュボードを作ってみた話🎮🛠️",
+    title: "【分散型の真髄】大手ポータル閉鎖でも動じない！自宅NAS（Docker）で自分専用の完全自立型マイニングダッシュボードを作ってみた話🛠️",
     category: "mining",
     categoryName: "マイニング実践",
     date: "2026-09-16",
@@ -388,12 +388,12 @@ window.__CORE_LOCAL_ARTICLES__ = [
 
 <div style="line-height: 1.85; font-size: 16px; color: #2d3748;">
   <p style="font-size: 18px; font-weight: bold; color: #e65100;">
-    どうも！みなさんこんにちは、リコです！✍🏻🎮
+    こんにちは！CoreStation技術解説チームです。
   </p>
 
   <p>
     Core Blockchain（XCB）マイニング生活、楽しんでますか〜！？✨<br>
-    毎日マイニングマシンがカタカタ働いて、お小遣いがチャリンチャリン増えていくのを見るのは、ゲーマー的にも放置系シミュレーションゲームをやってるみたいで最高にワクワクしますよね！
+    毎日マイニングマシンが稼働し、採掘報酬が着実に蓄積されていく様子を可視化して確認できるのは、自律分散型マイニングならではの大きな魅力です！
   </p>
 
   <p>
@@ -465,14 +465,14 @@ window.__CORE_LOCAL_ARTICLES__ = [
 
 
   <h3 style="border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 35px; color: #1e3a8a;">
-    🎮 まとめ：あなたも「自分専用の秘密基地」を作ろう！
+    💡 まとめ：あなたも「自分専用の運用環境」を作ろう！
   </h3>
   <p>
     マイニングって、ただマシンを動かすだけじゃなくて、こうして自分の手でインフラや監視環境を整えていくプロセスそのものが最高の大人のホビーなんですよね！<br>
     みなさんもぜひ、余っている小型PCや自宅NASを活用して、外部に依存しない最強の自立型マイニング環境を作ってみてくださいね！
   </p>
   <p style="font-weight: bold; margin-top: 25px;">
-    それでは、次回の技術ガイドでお会いしましょう！リコでした〜！ばいば〜い！🎮👋✨
+    それでは、次回の技術ガイドでお会いしましょう！今後も実践的な構築ノウハウをお届けします。
   </p>
 </div>
 `
