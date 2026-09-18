@@ -182,6 +182,17 @@ BANNER_HEADER_HTML = """
 </div>
 """
 
+RICOLO_AUTHOR_BOX_HTML = """
+<!-- Ricolo Official Author Profile Box -->
+<div style="margin-top: 40px; padding: 20px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(56, 189, 248, 0.08) 100%); border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.25); display: flex; align-items: center; gap: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+  <img src="https://cdn-ak.f.st-hatena.com/images/fotolife/c/corestation/20260919/20260919020141.jpg" alt="リコロ (Ricolo)" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #8b5cf6; box-shadow: 0 2px 10px rgba(139, 92, 246, 0.35); flex-shrink: 0;">
+  <div>
+    <div style="font-size: 16px; font-weight: bold; color: #1e293b; margin-bottom: 4px;">この記事を書いた人：リコロ（Ricolo）🎮💻✨</div>
+    <div style="font-size: 13px; color: #64748b; line-height: 1.6;">自作PCとCore Blockchainが大好きなゲーム女子ライター。公式DiscordやTelegramの最新開発情報、PoDE・マイニング検証をわかりやすく解説中！</div>
+  </div>
+</div>
+"""
+
 def generate_rico_article(update_item):
     """Generate friendly Rico-style blog HTML from raw update."""
     raw_text = update_item["text"]
@@ -189,7 +200,7 @@ def generate_rico_article(update_item):
     # Try Gemini first
     ai_title, ai_body = generate_article_with_gemini(raw_text, update_item.get("url", ""), update_item.get("source", ""))
     if ai_title and ai_body:
-        full_html = BANNER_HEADER_HTML + "\n" + ai_body
+        full_html = BANNER_HEADER_HTML + "\n" + ai_body + "\n" + RICOLO_AUTHOR_BOX_HTML
         return ai_title, full_html
 
     lines = [line.strip() for line in raw_text.splitlines() if line.strip()]
@@ -269,6 +280,8 @@ def generate_rico_article(update_item):
   <p>
     それでは、また次回の更新でお会いしましょう！リコロでした〜！ばいば〜い！🎮👾✨
   </p>
+
+{RICOLO_AUTHOR_BOX_HTML}
 
 </div>"""
     
