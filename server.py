@@ -875,7 +875,8 @@ WATCHER_STATE = {
     "persona": "リコロ（自作PC大好きゲーム女子・親しみやすい技術解説）",
     "blog_url": "https://corestation.hatenadiary.com/",
     "sources": [
-        "Core Blockchain 日本公式アナウンス (Telegram: @Core_Blockchain_Japan)",
+        "Core Blockchain / CoDeTech 英語本家アナウンス (Telegram: @codetechcc)",
+        "Core Blockchain 日本公式コミュニティ (Telegram: @Core_Blockchain_Japan)",
         "Core Chronicle (公式開発アップデート・技術進捗)"
     ]
 }

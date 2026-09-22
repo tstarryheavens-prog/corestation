@@ -18,6 +18,7 @@ import re
 import ssl
 from datetime import datetime
 import subprocess
+import html
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_DIR = os.path.join(BASE_DIR, "config")
@@ -28,7 +29,12 @@ PUBLISHER_SCRIPT = os.path.join(BASE_DIR, "hatena_publisher.py")
 # Core Blockchain 情報ソース
 SOURCES = [
     {
-        "name": "Core Blockchain Japan (公式Telegram)",
+        "name": "Core Blockchain / CoDeTech 英語本家アナウンス (Telegram: @codetechcc)",
+        "url": "https://t.me/s/codetechcc",
+        "type": "telegram"
+    },
+    {
+        "name": "Core Blockchain Japan 日本公式コミュニティ (Telegram: @Core_Blockchain_Japan)",
         "url": "https://t.me/s/Core_Blockchain_Japan",
         "type": "telegram"
     }
@@ -54,7 +60,7 @@ def save_last_seen(data):
     with open(LAST_SEEN_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-def fetch_telegram_updates(url):
+def fetch_telegram_updates(url, source_name="Core Blockchain 公式アナウンス"):
     """Fetch public Telegram channel messages without API token."""
     req = urllib.request.Request(
         url,
@@ -64,26 +70,28 @@ def fetch_telegram_updates(url):
     updates = []
     try:
         with urllib.request.urlopen(req, context=ctx, timeout=15) as resp:
-            html = resp.read().decode("utf-8")
+            page_html = resp.read().decode("utf-8")
             
-            # Extract telegram post bubbles
-            posts = re.findall(
-                r'data-post="([^"]+)".*?<div class="tgme_widget_message_text[^>]*>(.*?)</div>',
-                html,
-                re.DOTALL
-            )
-            for post_id, raw_text in posts[-5:]:  # Check last 5 messages
-                clean_text = re.sub(r'<br\s*/?>', '\n', raw_text)
-                clean_text = re.sub(r'<[^>]+>', '', clean_text).strip()
-                if clean_text:
-                    updates.append({
-                        "id": post_id,
-                        "source": "Core Blockchain 公式アナウンス",
-                        "text": clean_text,
-                        "url": f"https://t.me/{post_id}"
-                    })
+            # Extract telegram post bubbles by data-post
+            msg_blocks = page_html.split('data-post="')
+            for b in msg_blocks[1:]:
+                post_id = b.split('"')[0]
+                txt_m = re.search(r'<div class="tgme_widget_message_text[^>]*>(.*?)</div>', b, re.DOTALL)
+                if txt_m:
+                    raw_text = txt_m.group(1)
+                    raw_text = re.sub(r'<br\s*/?>', '\n', raw_text)
+                    clean_text = html.unescape(re.sub(r'<[^>]+>', '', raw_text)).strip()
+                    is_greeting = clean_text.lower() in ["good morning!", "good morning", "good day", "gm"]
+                    # Filter out short noise/greetings unless containing links or substantial info
+                    if clean_text and not is_greeting and (len(clean_text) >= 30 or "http" in clean_text):
+                        updates.append({
+                            "id": post_id,
+                            "source": source_name,
+                            "text": clean_text,
+                            "url": f"https://t.me/{post_id}"
+                        })
     except Exception as e:
-        print(f"⚠️ Telegram fetch error: {e}", file=sys.stderr)
+        print(f"⚠️ Telegram fetch error ({url}): {e}", file=sys.stderr)
     return updates
 
 GEMINI_CONFIG_PATH = os.path.join(CONFIG_DIR, "gemini_config.json")
@@ -110,6 +118,9 @@ def generate_article_with_gemini(raw_text, source_url, source_name):
     prompt = f"""あなたは自作PCとゲームが大好きな女性技術ライター「リコロ（Ricolo）」です！
 Core Blockchain (XCB) の公式速報・最新アナウンスを深く読み解き、初心者やマイナー向けに要点を整理し、自作PCやゲームの比喩を交えながら明るく親しみやすい女子目線で解説ブログ記事（HTML形式）を執筆してください。
 
+【情報ソース】
+{source_name} ({source_url})
+
 【公式アナウンス原文】
 {raw_text}
 
@@ -119,6 +130,7 @@ Core Blockchain (XCB) の公式速報・最新アナウンスを深く読み解�
    - 冒頭の挨拶: 「どうも！自作PC大好きゲーム女子、リコロです！✍🏻🎮💻✨」
    - トーン: 元気で明るく親しみやすい語り口。自作PC（Ryzen・グラボ・冷却等）やゲーム（放置ゲー・RPG・クラフト等）の例え話を適度に織り交ぜる。
    - 締めくくり: 「それでは、また次回の解説記事でお会いしましょう！リコロでした〜！ばいば〜い！🎮👾✨」など末尾の表現も自由に生き生きとキャラクターを維持する。
+   - ※重要【英語原文への対応】: 原文が英語（本家アナウンス等）の場合は、内容の核となる重要ポイントを初心者にも分かりやすい自然で明快な日本語に翻訳・要約した上で、リコロ独自の自作PC・ゲーム目線で解説してください。
 2. 構成:
    - つかみ・導入（「公式から激アツなアップデートが届きました〜！」）
    - 原文引用（<blockquote style="margin: 10px 0; padding: 10px; background: #fff; border-left: 3px solid #ffa726; font-size: 14px; color: #555; white-space: pre-wrap;"> で囲み、引用元リンク: {source_url} を明記）
@@ -297,14 +309,21 @@ def check_and_publish():
     all_updates = []
     for src in SOURCES:
         if src["type"] == "telegram":
-            items = fetch_telegram_updates(src["url"])
+            items = fetch_telegram_updates(src["url"], src["name"])
             all_updates.extend(items)
+
+    # 初回シード保護（過去ログの大量一括投稿を防止：未登録時は最新1件のみ残して既読化）
+    if not seen_ids and all_updates:
+        print(f"📦 初回起動を検知：過去ログ {len(all_updates)-1} 件を既読としてシード設定します。")
+        for u in all_updates[:-1]:
+            seen_ids.add(u["id"])
 
     new_posts = [u for u in all_updates if u["id"] not in seen_ids]
 
     if not new_posts:
         print("✅ 新着の更新はありませんでした。次回巡回まで待機します。")
         last_seen["last_checked"] = datetime.now().isoformat()
+        last_seen["seen_posts"] = list(seen_ids)[-100:]
         save_last_seen(last_seen)
         return False
 
