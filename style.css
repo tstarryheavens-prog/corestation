@@ -1598,6 +1598,16 @@ a:hover {
   color: #ffffff;
 }
 
+.btn-copy-code.copied,
+.copy-btn.copied,
+.btn-secondary.copied,
+.btn-primary.copied {
+  background: #10b981 !important;
+  border-color: #10b981 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4) !important;
+}
+
 .generator-input {
   width: 100%;
   padding: 8px 12px;

@@ -171,6 +171,90 @@
     }, duration);
   }
 
+  // --- Universal Clipboard Helper (HTTPS & HTTP Fallback Safe) ---
+  window.copyToClipboard = function(text, successMsg = "クリップボードにコピーしました", btnElement = null) {
+    if (!text) {
+      showToast("コピーする内容がありません");
+      return;
+    }
+
+    const btn = btnElement || (window.event && window.event.target ? window.event.target.closest("button") : null);
+
+    function flashButton(targetBtn) {
+      if (!targetBtn) return;
+      const originalHtml = targetBtn.innerHTML;
+      targetBtn.innerHTML = "✅ コピー完了！";
+      targetBtn.classList.add("copied");
+      setTimeout(() => {
+        targetBtn.innerHTML = originalHtml;
+        targetBtn.classList.remove("copied");
+      }, 1800);
+    }
+
+    // Try modern Clipboard API if supported and in secure context (or localhost)
+    if (window.isSecureContext && navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(successMsg);
+        flashButton(btn);
+      }).catch((err) => {
+        console.warn("navigator.clipboard.writeText failed, using fallback:", err);
+        fallbackCopy(text, successMsg, btn);
+      });
+    } else {
+      fallbackCopy(text, successMsg, btn);
+    }
+  };
+
+  function fallbackCopy(text, successMsg, btn) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.top = "0";
+    ta.style.left = "0";
+    ta.style.width = "2em";
+    ta.style.height = "2em";
+    ta.style.padding = "0";
+    ta.style.border = "none";
+    ta.style.outline = "none";
+    ta.style.boxShadow = "none";
+    ta.style.background = "transparent";
+    ta.style.fontSize = "16px";
+    ta.setAttribute("readonly", "");
+    document.body.appendChild(ta);
+
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+
+    let successful = false;
+    try {
+      successful = document.execCommand("copy");
+    } catch (err) {
+      console.error("document.execCommand copy error:", err);
+      successful = false;
+    }
+    document.body.removeChild(ta);
+
+    if (successful) {
+      showToast(successMsg);
+      if (btn) {
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = "✅ コピー完了！";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.innerHTML = originalHtml;
+          btn.classList.remove("copied");
+        }, 1800);
+      }
+    } else {
+      try {
+        window.prompt("コピーに失敗しました。下のテキストを選択して Ctrl+C (Cmd+C) でコピーしてください:", text);
+      } catch (e) {
+        showToast("コピーに失敗しました");
+      }
+    }
+  }
+
   // --- AI Auto-Watcher Management ---
   let watcherCountdownTimer = null;
   let watcherRemainingSeconds = 0;
@@ -1998,19 +2082,15 @@
       };
     }
 
-    // Copy command buttons in Mining View
-    document.querySelectorAll(".btn-copy-code").forEach(btn => {
-      btn.onclick = () => {
+    // Copy command buttons with data-copy support (without overwriting other inline onclick buttons)
+    document.querySelectorAll("[data-copy]").forEach(btn => {
+      btn.addEventListener("click", () => {
         const targetId = btn.getAttribute("data-copy");
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
-          navigator.clipboard.writeText(targetEl.textContent).then(() => {
-            showToast("起動コマンドをコピーしました");
-          }).catch(() => {
-            showToast("コピーに失敗しました");
-          });
+          window.copyToClipboard(targetEl.textContent.trim(), "起動コマンドをコピーしました", btn);
         }
-      };
+      });
     });
 
     // Currency Switcher
@@ -2036,11 +2116,7 @@
     // Copy Address
     if (el.copyAddressBtn) {
       el.copyAddressBtn.onclick = () => {
-        navigator.clipboard.writeText(state.walletAddress).then(() => {
-          showToast("アドレスをクリップボードにコピーしました");
-        }).catch(() => {
-          showToast("コピーに失敗しました");
-        });
+        window.copyToClipboard(state.walletAddress, "アドレスをクリップボードにコピーしました", el.copyAddressBtn);
       };
     }
 
@@ -2248,34 +2324,6 @@
 
   // --- Global Utility Helpers ---
   window.openArticleModal = openArticleModal;
-
-  window.copyToClipboard = function(text, successMsg = "クリップボードにコピーしました") {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast(successMsg);
-      }).catch(() => {
-        fallbackCopy(text, successMsg);
-      });
-    } else {
-      fallbackCopy(text, successMsg);
-    }
-  };
-
-  function fallbackCopy(text, successMsg) {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.style.position = "fixed";
-    ta.style.opacity = "0";
-    document.body.appendChild(ta);
-    ta.select();
-    try {
-      document.execCommand("copy");
-      showToast(successMsg);
-    } catch (e) {
-      showToast("コピーに失敗しました");
-    }
-    document.body.removeChild(ta);
-  }
 
   // --- App Initialization ---
   function init() {

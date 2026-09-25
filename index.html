@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CoreStation - Core Blockchain (XCB) ノード＆資産管理ステーション</title>
   <link rel="icon" type="image/svg+xml" href="assets/core-icon.svg">
-  <link rel="stylesheet" href="style.css?v=20260918_1">
+  <link rel="stylesheet" href="style.css?v=20260925_1">
   <!-- Chart.js CDN (with built-in pure Canvas fallback) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Pre-bundled local SQLite data for instant zero-latency loading -->
@@ -799,7 +799,7 @@
                   <div class="article-code-box" style="margin: 0 0 6px 0; padding: 8px 10px; font-size: 13.5px; word-break: break-all;">
                     <code id="cmdRyzen7950x">./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.ryzen7950x@sg.catchthatrabbit.com:8008 -t 30</code>
                   </div>
-                  <button class="btn-secondary btn-sm" style="width: 100%;" onclick="window.copyToClipboard(document.getElementById('cmdRyzen7950x').innerText, 'Ryzen 9 7950X用コマンドをコピーしました');">
+                  <button class="btn-secondary btn-sm" style="width: 100%;" onclick="window.copyToClipboard(document.getElementById('cmdRyzen7950x').innerText, 'Ryzen 9 7950X用コマンドをコピーしました', this);">
                     📋 コマンドをコピー
                   </button>
                 </div>
@@ -833,7 +833,7 @@
                   <div class="article-code-box" style="margin: 0 0 6px 0; padding: 8px 10px; font-size: 13.5px; word-break: break-all;">
                     <code id="cmdCore14900">./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.i9_14900@sg.catchthatrabbit.com:8008 -t 16</code>
                   </div>
-                  <button class="btn-secondary btn-sm" style="width: 100%;" onclick="window.copyToClipboard(document.getElementById('cmdCore14900').innerText, 'Core i9-14900用コマンドをコピーしました');">
+                  <button class="btn-secondary btn-sm" style="width: 100%;" onclick="window.copyToClipboard(document.getElementById('cmdCore14900').innerText, 'Core i9-14900用コマンドをコピーしました', this);">
                     📋 コマンドをコピー
                   </button>
                 </div>
@@ -867,7 +867,7 @@
                   <div class="article-code-box" style="margin: 0 0 6px 0; padding: 8px 10px; font-size: 13.5px; word-break: break-all;">
                     <code id="cmdCore13500">./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.i5_13500@sg.catchthatrabbit.com:8008 -t 11</code>
                   </div>
-                  <button class="btn-secondary btn-sm" style="width: 100%;" onclick="window.copyToClipboard(document.getElementById('cmdCore13500').innerText, 'Core i5-13500用コマンドをコピーしました');">
+                  <button class="btn-secondary btn-sm" style="width: 100%;" onclick="window.copyToClipboard(document.getElementById('cmdCore13500').innerText, 'Core i5-13500用コマンドをコピーしました', this);">
                     📋 コマンドをコピー
                   </button>
                 </div>
@@ -892,7 +892,7 @@
                 <div class="article-code-box" style="margin-bottom: 8px;">
                   <pre id="coreminerCmd" style="margin: 0; white-space: pre-wrap; word-break: break-all;">./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.worker1@sg.catchthatrabbit.com:8008</pre>
                 </div>
-                <button class="btn-secondary btn-sm" onclick="window.copyToClipboard(document.getElementById('coreminerCmd').innerText, 'CoreMiner起動コマンドをコピーしました');">
+                <button class="btn-secondary btn-sm" onclick="window.copyToClipboard(document.getElementById('coreminerCmd').innerText, 'CoreMiner起動コマンドをコピーしました', this);">
                   📋 コマンドをコピー
                 </button>
               </div>
@@ -907,7 +907,7 @@
                 <div class="article-code-box" style="margin-bottom: 8px;">
                   <pre id="srbminerCmd" style="margin: 0; white-space: pre-wrap; word-break: break-all;">./SRBMiner-MULTI --algorithm pode --pool sg.catchthatrabbit.com:8008 --wallet cb57b88d24678c2091332971e3a38cca472dd8aac0cd.worker1 --cpu-threads 0</pre>
                 </div>
-                <button class="btn-secondary btn-sm" onclick="window.copyToClipboard(document.getElementById('srbminerCmd').innerText, 'SRBMiner起動コマンドをコピーしました');">
+                <button class="btn-secondary btn-sm" onclick="window.copyToClipboard(document.getElementById('srbminerCmd').innerText, 'SRBMiner起動コマンドをコピーしました', this);">
                   📋 コマンドをコピー
                 </button>
               </div>
@@ -1074,7 +1074,7 @@
                 <div class="code-snippet-box">
                   <div class="code-snippet-header">
                     <span>PowerShell (管理者)</span>
-                    <button class="btn-copy-code" onclick="window.copyToClipboard('wsl --install -d Ubuntu-24.04', 'STEP 1 コマンドをコピーしました');">📋 コピー</button>
+                    <button class="btn-copy-code" onclick="window.copyToClipboard(this.closest('.code-snippet-box').querySelector('code').textContent.trim(), 'STEP 1 コマンドをコピーしました', this);">📋 コピー</button>
                   </div>
                   <pre class="code-snippet-pre"><code>wsl --install -d Ubuntu-24.04</code></pre>
                 </div>
@@ -1119,7 +1119,7 @@
             <div class="code-snippet-box">
               <div class="code-snippet-header">
                 <span>Ubuntu 24.04 (bash)</span>
-                <button class="btn-copy-code" onclick="window.copyToClipboard('sudo apt update && sudo apt upgrade -y && sudo apt install -y wget tar curl libssl-dev hwloc libhwloc-dev tmux', 'STEP 2 コマンドをコピーしました');">📋 コピー</button>
+                <button class="btn-copy-code" onclick="window.copyToClipboard(this.closest('.code-snippet-box').querySelector('code').textContent.trim(), 'STEP 2 コマンドをコピーしました', this);">📋 コピー</button>
               </div>
               <pre class="code-snippet-pre"><code>sudo apt update && sudo apt upgrade -y && sudo apt install -y wget tar curl libssl-dev hwloc libhwloc-dev tmux</code></pre>
             </div>
@@ -1150,7 +1150,7 @@
               <div class="code-snippet-box">
                 <div class="code-snippet-header">
                   <span>Ubuntu 24.04 (bash)</span>
-                  <button class="btn-copy-code" onclick="window.copyToClipboard('sudo sysctl -w vm.nr_hugepages=1280', 'HugePages即時設定をコピーしました');">📋 コピー</button>
+                  <button class="btn-copy-code" onclick="window.copyToClipboard(this.closest('.code-snippet-box').querySelector('code').textContent.trim(), 'HugePages即時設定をコピーしました', this);">📋 コピー</button>
                 </div>
                 <pre class="code-snippet-pre"><code>sudo sysctl -w vm.nr_hugepages=1280</code></pre>
               </div>
@@ -1161,7 +1161,7 @@
               <div class="code-snippet-box">
                 <div class="code-snippet-header">
                   <span>Ubuntu 24.04 (bash)</span>
-                  <button class="btn-copy-code" onclick="window.copyToClipboard('echo \"vm.nr_hugepages=1280\" | sudo tee -a /etc/sysctl.conf', 'HugePages永続化コマンドをコピーしました');">📋 コピー</button>
+                  <button class="btn-copy-code" onclick="window.copyToClipboard(this.closest('.code-snippet-box').querySelector('code').textContent.trim(), 'HugePages永続化コマンドをコピーしました', this);">📋 コピー</button>
                 </div>
                 <pre class="code-snippet-pre"><code>echo "vm.nr_hugepages=1280" | sudo tee -a /etc/sysctl.conf</code></pre>
               </div>
@@ -1191,7 +1191,7 @@
             <div class="code-snippet-box">
               <div class="code-snippet-header">
                 <span>Ubuntu 24.04 (bash) - 一括ダウンロード＆展開</span>
-                <button class="btn-copy-code" onclick="window.copyToClipboard('mkdir -p ~/coreminer && cd ~/coreminer && wget https://github.com/catchthatrabbit/coreminer/releases/download/v0.19.89/coreminer-linux-x86_64.tar.gz && tar -zxvf coreminer-linux-x86_64.tar.gz && chmod +x coreminer', 'STEP 4 一括コマンドをコピーしました');">📋 コピー</button>
+                <button class="btn-copy-code" onclick="window.copyToClipboard(this.closest('.code-snippet-box').querySelector('code').textContent.trim(), 'STEP 4 一括コマンドをコピーしました', this);">📋 コピー</button>
               </div>
               <pre class="code-snippet-pre"><code>mkdir -p ~/coreminer && cd ~/coreminer
 wget https://github.com/catchthatrabbit/coreminer/releases/download/v0.19.89/coreminer-linux-x86_64.tar.gz
@@ -1204,7 +1204,7 @@ chmod +x coreminer</code></pre>
               <div class="code-snippet-box">
                 <div class="code-snippet-header">
                   <span>Ubuntu 24.04 (bash)</span>
-                  <button class="btn-copy-code" onclick="window.copyToClipboard('./coreminer --version', 'バージョン確認コマンドをコピーしました');">📋 コピー</button>
+                  <button class="btn-copy-code" onclick="window.copyToClipboard(this.closest('.code-snippet-box').querySelector('code').textContent.trim(), 'バージョン確認コマンドをコピーしました', this);">📋 コピー</button>
                 </div>
                 <pre class="code-snippet-pre"><code>./coreminer --version</code></pre>
               </div>
@@ -1304,7 +1304,7 @@ chmod +x coreminer</code></pre>
                 <span style="font-weight: 700; font-size: 14px; color: var(--primary);">
                   💻 生成された起動コマンド（これをUbuntuターミナルで実行）：
                 </span>
-                <button class="btn-primary btn-sm" onclick="window.copyToClipboard(document.getElementById('guideGeneratedCmd').innerText, '起動コマンドをコピーしました！');" style="font-weight: 700;">
+                <button class="btn-primary btn-sm" onclick="window.copyToClipboard(document.getElementById('guideGeneratedCmd').textContent.trim(), '起動コマンドをコピーしました！', this);" style="font-weight: 700;">
                   📋 起動コマンドをコピー
                 </button>
               </div>
@@ -1340,7 +1340,7 @@ chmod +x coreminer</code></pre>
                 <div class="code-snippet-box">
                   <div class="code-snippet-header">
                     <span>Ubuntu 24.04 (bash)</span>
-                    <button class="btn-copy-code" onclick="window.copyToClipboard('tmux new -s miner', 'tmux起動コマンドをコピーしました');">📋 コピー</button>
+                    <button class="btn-copy-code" onclick="window.copyToClipboard(this.closest('.code-snippet-box').querySelector('code').textContent.trim(), 'tmux起動コマンドをコピーしました', this);">📋 コピー</button>
                   </div>
                   <pre class="code-snippet-pre"><code>tmux new -s miner</code></pre>
                 </div>
@@ -1358,7 +1358,7 @@ chmod +x coreminer</code></pre>
                 <div class="code-snippet-box">
                   <div class="code-snippet-header">
                     <span>Ubuntu 24.04 (bash)</span>
-                    <button class="btn-copy-code" onclick="window.copyToClipboard('tmux a -t miner', 'tmuxアタッチコマンドをコピーしました');">📋 コピー</button>
+                    <button class="btn-copy-code" onclick="window.copyToClipboard(this.closest('.code-snippet-box').querySelector('code').textContent.trim(), 'tmuxアタッチコマンドをコピーしました', this);">📋 コピー</button>
                   </div>
                   <pre class="code-snippet-pre"><code>tmux a -t miner</code></pre>
                 </div>
@@ -1391,7 +1391,7 @@ chmod +x coreminer</code></pre>
                 <div class="code-snippet-box">
                   <div class="code-snippet-header">
                     <span>C:\Users\&lt;ユーザー名&gt;\.wslconfig</span>
-                    <button class="btn-copy-code" onclick="window.copyToClipboard('[wsl2]\nmemory=8GB\nprocessors=16\nswap=0', 'wslconfig設定をコピーしました');">📋 コピー</button>
+                    <button class="btn-copy-code" onclick="window.copyToClipboard(this.closest('.code-snippet-box').querySelector('code').textContent.trim(), 'wslconfig設定をコピーしました', this);">📋 コピー</button>
                   </div>
                   <pre class="code-snippet-pre"><code>[wsl2]
 memory=8GB
@@ -2139,6 +2139,6 @@ swap=0</code></pre>
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Application Script -->
-  <script src="app.js?v=20260919_5"></script>
+  <script src="app.js?v=20260925_1"></script>
 </body>
 </html>
