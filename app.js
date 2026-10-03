@@ -623,6 +623,7 @@
   async function fetchApi(path) {
     const sep = path.includes("?") ? "&" : "?";
     const noCacheUrl = `${path}${sep}_t=${Date.now()}`;
+    const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(2500) : undefined;
 
     // 1. Try local NAS API first (permanent & offline-safe)
     try {
@@ -630,7 +631,8 @@
         cache: "no-store",
         headers: {
           "Accept": "application/json"
-        }
+        },
+        signal: timeoutSignal
       });
       if (resLocal.ok) {
         const json = await resLocal.json();
@@ -646,7 +648,8 @@
         cache: "no-store",
         headers: {
           "Accept": "application/json"
-        }
+        },
+        signal: timeoutSignal
       });
       if (resRemote.ok) return await resRemote.json();
     } catch (err) {
@@ -659,16 +662,23 @@
   async function fetchLiveTransactions(wallet) {
     try {
       const url = `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=15&_t=${Date.now()}`;
+      const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined;
       const res = await fetch(url, {
         cache: "no-store",
         headers: {
           "Accept": "application/json"
-        }
+        },
+        signal: timeoutSignal
       });
       if (!res.ok) return null;
       const json = await res.json();
-      if (json && Array.isArray(json.transactions)) {
-        return json.transactions;
+      if (json) {
+        if (json.balance) {
+          state.liveBalanceXcb = divideBy10e18(json.balance);
+        }
+        if (Array.isArray(json.transactions)) {
+          return json.transactions;
+        }
       }
     } catch (e) {
       console.warn("Direct blockindex.net tx fetch failed:", e.message);
@@ -838,7 +848,9 @@
     const todayFiat = todayXcb * rate;
     const todayRank = todayTx ? todayTx.day_rank : "-";
 
-    const totalXcb = todayTx ? todayTx.all_amount : 0;
+    const totalXcb = (typeof state.liveBalanceXcb === "number" && state.liveBalanceXcb > 0)
+      ? state.liveBalanceXcb
+      : (todayTx ? todayTx.all_amount : 0);
     const totalFiat = totalXcb * rate;
     const totalRank = todayTx ? todayTx.all_rank : "-";
 
