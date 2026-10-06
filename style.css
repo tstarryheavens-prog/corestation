@@ -811,6 +811,11 @@ a:hover {
   border-bottom: none;
 }
 
+#articleModalContent table th,
+.modal-body table th {
+  color: #ffffff !important;
+}
+
 /* ==========================================================================
    Badges
    ========================================================================== */
