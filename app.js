@@ -1634,14 +1634,65 @@
   // --- View 2: Network View Renderer ---
   function renderNetworkView() {
     const stats = state.networkStats || {
-      blockHeight: 18891500,
-      difficulty: 440852331,
+      blockHeight: 19325310,
+      difficulty: 495922743,
       totalHashrate: "18.24 Mh/s",
       activeMiners: 216
     };
 
+    // Calculate dynamic supply based on latest blockHeight
+    const currentHeight = Number(stats.blockHeight || 19325310);
+    const baselineHeight = 18891676;
+    const baselineSupply = 397677423;
+    const baselineCirc = 98681863;
+    const deltaBlocks = Math.max(0, currentHeight - baselineHeight);
+    const estimatedTotalSupply = Math.round(baselineSupply + (deltaBlocks * 1.65));
+    const estimatedCircSupply = Math.round(baselineCirc + (deltaBlocks * 1.65));
+    const circRatio = ((estimatedCircSupply / estimatedTotalSupply) * 100).toFixed(1);
+
+    // 1. Dashboard "🌐 Core Blockchain 稼働状況" Card
+    const dHeight = document.getElementById("dashboardNetBlockHeight");
+    if (dHeight && stats.blockHeight) {
+      dHeight.textContent = `#${Number(stats.blockHeight).toLocaleString()}`;
+    }
+
+    const dDiff = document.getElementById("dashboardNetDifficulty");
+    if (dDiff && stats.difficulty) {
+      const diffVal = Number(stats.difficulty);
+      dDiff.textContent = `${(diffVal / 1e6).toFixed(2)} M`;
+    }
+
+    const dBlockTime = document.getElementById("dashboardNetBlockTime");
+    if (dBlockTime) {
+      if (stats.lastBlockTime) {
+        try {
+          const blockDt = new Date(stats.lastBlockTime);
+          const diffSec = Math.max(1, Math.round((Date.now() - blockDt.getTime()) / 1000));
+          const timeAgo = diffSec < 60 ? `${diffSec}秒前` : `${Math.floor(diffSec / 60)}分前`;
+          dBlockTime.textContent = `約 7.0 秒 / 報酬 1.65 XCB (承認: ${timeAgo})`;
+        } catch {
+          dBlockTime.textContent = "約 7.0 秒 / 報酬 1.65 XCB";
+        }
+      } else {
+        dBlockTime.textContent = "約 7.0 秒 / 報酬 1.65 XCB";
+      }
+    }
+
+    const dTotalSupply = document.getElementById("dashboardNetTotalSupply");
+    if (dTotalSupply) {
+      dTotalSupply.textContent = `${comma3(estimatedTotalSupply)} XCB`;
+    }
+
+    const dCircSupply = document.getElementById("dashboardNetCircSupply");
+    if (dCircSupply) {
+      dCircSupply.textContent = `${comma3(estimatedCircSupply)} XCB (${circRatio}%)`;
+    }
+
+    // 2. Subview-Network elements update
     const netDiff = document.getElementById("netDifficulty");
-    if (netDiff) netDiff.textContent = (stats.difficulty / 1e6).toFixed(2) + " M";
+    if (netDiff && stats.difficulty) {
+      netDiff.textContent = (Number(stats.difficulty) / 1e6).toFixed(2) + " M";
+    }
 
     const netHr = document.getElementById("netHashrate");
     if (netHr) netHr.textContent = stats.totalHashrate || "18.24 Mh/s";
@@ -1650,16 +1701,18 @@
     if (netMiners) netMiners.textContent = stats.activeMiners ? stats.activeMiners.toLocaleString() : "216";
 
     const netHeight = document.getElementById("netBlockHeight");
-    if (netHeight) netHeight.textContent = stats.blockHeight ? Number(stats.blockHeight).toLocaleString() : "18,891,676";
+    if (netHeight && stats.blockHeight) {
+      netHeight.textContent = Number(stats.blockHeight).toLocaleString();
+    }
 
     const netTotalSupply = document.getElementById("netTotalSupply");
-    if (netTotalSupply && stats.totalSupply) {
-      netTotalSupply.textContent = `${formatNumber(stats.totalSupply, 2)} XCB`;
+    if (netTotalSupply) {
+      netTotalSupply.textContent = `${comma3(estimatedTotalSupply)} XCB`;
     }
 
     const netCircSupply = document.getElementById("netCirculatingSupply");
-    if (netCircSupply && stats.circulatingSupply) {
-      netCircSupply.textContent = `${formatNumber(stats.circulatingSupply, 2)} XCB`;
+    if (netCircSupply) {
+      netCircSupply.textContent = `${comma3(estimatedCircSupply)} XCB`;
     }
 
     const netDayMined = document.getElementById("netDayMined");

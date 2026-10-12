@@ -447,19 +447,23 @@
                 </div>
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
                   <span style="color: var(--text-muted);">最新ブロック高:</span>
-                  <span class="font-mono" style="font-weight: 700; color: var(--primary);">#18,891,676</span>
+                  <span id="dashboardNetBlockHeight" class="font-mono" style="font-weight: 700; color: var(--primary);">#19,325,310</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
+                  <span style="color: var(--text-muted);">採掘難易度 (Difficulty):</span>
+                  <span id="dashboardNetDifficulty" class="font-mono" style="font-weight: 600;">495.92 M</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
                   <span style="color: var(--text-muted);">ブロック生成間隔:</span>
-                  <span>約 7.0 秒 / 報酬 1.65 XCB</span>
+                  <span id="dashboardNetBlockTime">約 7.0 秒 / 報酬 1.65 XCB</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
                   <span style="color: var(--text-muted);">総供給量:</span>
-                  <span class="font-mono">397,677,423 XCB</span>
+                  <span id="dashboardNetTotalSupply" class="font-mono">398,393,418 XCB</span>
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                   <span style="color: var(--text-muted);">市場流通比率:</span>
-                  <span class="font-mono" style="font-weight: 600; color: var(--success);">98,681,863 XCB (24.8%)</span>
+                  <span id="dashboardNetCircSupply" class="font-mono" style="font-weight: 600; color: var(--success);">99,397,850 XCB (24.9%)</span>
                 </div>
               </div>
             </div>
@@ -2139,6 +2143,6 @@ swap=0</code></pre>
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Application Script -->
-  <script src="app.js?v=20261013_2"></script>
+  <script src="app.js?v=20261013_3"></script>
 </body>
 </html>
