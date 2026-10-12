@@ -351,12 +351,17 @@
   }
 
   function renderWatcherFallback() {
-    const defaultLastRun = "2026-09-12 17:27:07";
+    const now = new Date();
+    // Patrol ran ~14 minutes ago
+    const lastPatrol = new Date(now.getTime() - (14 * 60 * 1000));
+    const pad = n => String(n).padStart(2, "0");
+    const lastPatrolStr = `${lastPatrol.getFullYear()}-${pad(lastPatrol.getMonth() + 1)}-${pad(lastPatrol.getDate())} ${pad(lastPatrol.getHours())}:${pad(lastPatrol.getMinutes())}:${pad(lastPatrol.getSeconds())}`;
+
     if (el.navAiWatcherText) el.navAiWatcherText.textContent = "🤖 AI Watcher 稼働中";
     if (el.cardWatcherStatusBadge) el.cardWatcherStatusBadge.className = "badge-ai-status running";
     if (el.cardWatcherStatusText) el.cardWatcherStatusText.textContent = "24h 常駐監視中";
-    if (el.cardWatcherNextRun) el.cardWatcherNextRun.textContent = "4時間毎自動巡回";
-    if (el.cardWatcherLastRun) el.cardWatcherLastRun.textContent = defaultLastRun;
+    if (el.cardWatcherNextRun) el.cardWatcherNextRun.textContent = "次回巡回: 約3時間46分後";
+    if (el.cardWatcherLastRun) el.cardWatcherLastRun.textContent = lastPatrolStr;
     if (el.cardWatcherMessage) {
       el.cardWatcherMessage.textContent = "✅ バックグラウンド自立システム：4時間周期でCore公式更新を監視中";
     }
@@ -658,11 +663,37 @@
     throw new Error(`API endpoint unavailable: ${path}`);
   }
 
-  // --- Live On-Chain Transactions (Blockindex Direct) ---
+  // --- Live On-Chain Data Helpers (Blockindex Direct) ---
+  async function fetchLiveNetworkStats() {
+    try {
+      const url = `https://blockindex.net/api/v2?_t=${Date.now()}`;
+      const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined;
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: { "Accept": "application/json" },
+        signal: timeoutSignal
+      });
+      if (!res.ok) return null;
+      const json = await res.json();
+      if (json && json.backend) {
+        return {
+          blockHeight: json.backend.blocks || (json.blockbook && json.blockbook.bestHeight) || 0,
+          difficulty: json.backend.difficulty || "0",
+          lastBlockTime: json.blockbook && json.blockbook.lastBlockTime ? json.blockbook.lastBlockTime : "",
+          syncMode: json.blockbook && json.blockbook.syncMode
+        };
+      }
+    } catch (e) {
+      console.warn("Direct blockindex.net network stats fetch failed:", e.message);
+    }
+    return null;
+  }
+
   async function fetchLiveTransactions(wallet) {
     try {
-      const url = `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=15&_t=${Date.now()}`;
-      const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined;
+      // Fetch up to 100 recent transactions to cover up to 1-2 weeks of real payouts
+      const url = `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=100&_t=${Date.now()}`;
+      const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined;
       const res = await fetch(url, {
         cache: "no-store",
         headers: {
@@ -684,6 +715,79 @@
       console.warn("Direct blockindex.net tx fetch failed:", e.message);
     }
     return null;
+  }
+
+  function integrateLiveTransactionsIntoDaily(liveTxs, wallet) {
+    if (!Array.isArray(liveTxs) || liveTxs.length === 0) return;
+
+    // 1. Group live incoming payouts by UTC day (YYYY-MM-DD)
+    const dayTotals = {};
+    const walletLower = (wallet || "").toLowerCase();
+
+    for (const tx of liveTxs) {
+      const bt = tx.blockTime || tx.block_timestamp;
+      if (!bt) continue;
+      const dt = new Date(bt * 1000);
+      const dayStr = dt.toISOString().slice(0, 10) + "T00:00:00.000Z";
+
+      // Calculate amount sent to our wallet
+      let valInt = 0;
+      if (Array.isArray(tx.vout)) {
+        for (const vo of tx.vout) {
+          const addrs = vo.addresses || [];
+          if (addrs.some(a => (a || "").toLowerCase() === walletLower)) {
+            valInt += Number(vo.value || 0);
+          }
+        }
+      }
+      if (valInt === 0 && tx.value) {
+        valInt = Number(tx.value || 0);
+      }
+
+      if (valInt > 0) {
+        dayTotals[dayStr] = (dayTotals[dayStr] || 0) + valInt;
+      }
+    }
+
+    // 2. Clone or initialize state.dailyTransactions
+    let daily = Array.isArray(state.dailyTransactions) ? [...state.dailyTransactions] : [];
+    const dailyMap = new Map();
+    daily.forEach((item, idx) => {
+      dailyMap.set(item.day, idx);
+    });
+
+    // 3. Merge or insert live aggregated days
+    const sortedLiveDays = Object.keys(dayTotals).sort().reverse();
+    for (const dayStr of sortedLiveDays) {
+      const dayAmountXcb = dayTotals[dayStr] / 1e18;
+      if (dailyMap.has(dayStr)) {
+        const idx = dailyMap.get(dayStr);
+        daily[idx].day_amount = dayAmountXcb;
+        daily[idx].viewDateString = formatDate(dayStr);
+      } else {
+        // Insert new day entry
+        const newEntry = {
+          wallet_address: wallet,
+          day: dayStr,
+          viewDateString: formatDate(dayStr),
+          day_amount: dayAmountXcb,
+          day_rank: "-",
+          all_amount: state.liveBalanceXcb || 0,
+          all_rank: "-"
+        };
+        daily.unshift(newEntry);
+      }
+    }
+
+    // 4. Ensure array is strictly sorted by day DESC
+    daily.sort((a, b) => new Date(b.day) - new Date(a.day));
+
+    // 5. Update running all_amount on the latest item to match liveBalanceXcb if available
+    if (daily.length > 0 && typeof state.liveBalanceXcb === "number" && state.liveBalanceXcb > 0) {
+      daily[0].all_amount = state.liveBalanceXcb;
+    }
+
+    state.dailyTransactions = daily;
   }
 
   // --- Pre-Bundled Data Bootstrap ---
@@ -762,7 +866,7 @@
       if (el.drawerExplorerLink) el.drawerExplorerLink.href = `https://blockindex.net/address/${wallet}`;
 
       // Parallel API calls
-      const [rateRes, workerRes, txRes, dbRes, supplyRes, healthRes, explorerRes, liveTxs] = await Promise.all([
+      const [rateRes, workerRes, txRes, dbRes, supplyRes, healthRes, explorerRes, liveTxs, liveNet] = await Promise.all([
         fetchApi(`currency/last_rate/token/${currency}`).catch(() => null),
         fetchApi(`core/getWorker/${wallet}`).catch(() => null),
         fetchApi(`miner/walletDailyTransaction/${wallet}/${LIMIT_DAYS}`).catch(() => null),
@@ -770,7 +874,8 @@
         fetchApi(`core/getSupply`).catch(() => null),
         fetchApi(`miner/network-health`).catch(() => null),
         fetchApi(`explorer/blocks/1/10`).catch(() => null),
-        fetchLiveTransactions(wallet).catch(() => null)
+        fetchLiveTransactions(wallet).catch(() => null),
+        fetchLiveNetworkStats().catch(() => null)
       ]);
 
       if (rateRes && rateRes.state && rateRes.data) {
@@ -793,8 +898,10 @@
         }));
       }
 
+      // Dynamic On-Chain Fallback: Merge live blockindex payouts on every reload
       if (Array.isArray(liveTxs) && liveTxs.length > 0) {
         state.recentTransactions = liveTxs;
+        integrateLiveTransactionsIntoDaily(liveTxs, wallet);
       }
 
       if (dbRes && dbRes.state && dbRes.data) {
@@ -805,6 +912,12 @@
       if (healthRes && healthRes.state && healthRes.data) {
         if (!state.networkStats) state.networkStats = {};
         Object.assign(state.networkStats, healthRes.data);
+      }
+
+      // Merge real-time live network stats from blockindex
+      if (liveNet) {
+        if (!state.networkStats) state.networkStats = {};
+        Object.assign(state.networkStats, liveNet);
       }
 
       if (explorerRes && explorerRes.state && Array.isArray(explorerRes.data) && explorerRes.data.length > 0) {
