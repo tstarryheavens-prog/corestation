@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core Blockchain (XCB) 半減期・供給量・価値遷移の時系列完全クロニクル | CoreStation ナレッジ</title>
+  <meta name="description" content="2022年のメインネット創成期から2026年現在までのXCB供給量、半減・発行減衰メカニズム、PingExchangeにおける価格推移（0.7円〜11.6円）、採掘難易度と日次採掘量の激変を時系列表と詳細分析で完全総括。">
+  <link rel="canonical" href="https://corestation.pages.dev/articles/tokenomics-halving-history.html">
+  <link rel="icon" type="image/svg+xml" href="../assets/core-icon.svg">
+  
+  <!-- OGP / Social Sharing -->
+  <meta property="og:title" content="Core Blockchain (XCB) 半減期・供給量・価値遷移の時系列完全クロニクル">
+  <meta property="og:description" content="2022年のメインネット創成期から2026年現在までのXCB供給量、半減・発行減衰メカニズム、PingExchangeにおける価格推移（0.7円〜11.6円）、採掘難易度と日次採掘量の激変を時系列表と詳細分析で完全総括。">
+  <meta property="og:url" content="https://corestation.pages.dev/articles/tokenomics-halving-history.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Google AdSense Verification & Auto-Ads Tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1988464307898443" crossorigin="anonymous"></script>
+
+  <!-- A8.net 広告掲載URL管理・リンクマネージャー (A8 Link Manager) -->
+  <script src="//statics.8me.jp/a8link/a8linkmgr.js"></script>
+  <script>
+    a8linkmgr({ "config_id": "AiCzxW5LM9avBb8VJ393" });
+  </script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../style.css?v=20261006_4">
+  <link rel="stylesheet" href="article.css?v=20261015_1">
+
+  <!-- Schema.org JSON-LD (Article & Breadcrumb) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "Core Blockchain (XCB) 半減期・供給量・価値遷移の時系列完全クロニクル",
+        "description": "2022年のメインネット創成期から2026年現在までのXCB供給量、半減・発行減衰メカニズム、PingExchangeにおける価格推移（0.7円〜11.6円）、採掘難易度と日次採掘量の激変を時系列表と詳細分析で完全総括。",
+        "datePublished": "2026-09-06T00:00:00+09:00",
+        "dateModified": "2026-09-06T00:00:00+09:00",
+        "author": {
+          "@type": "Person",
+          "name": "リコロ (Ricolo)"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "CoreStation",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://corestation.pages.dev/assets/core-icon.svg"
+          }
+        },
+        "mainEntityOfPage": "https://corestation.pages.dev/articles/tokenomics-halving-history.html"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "ホーム (ダッシュボード)",
+            "item": "https://corestation.pages.dev/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "ナレッジアーカイブ",
+            "item": "https://corestation.pages.dev/#articles"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Core Blockchain (XCB) 半減期・供給量・価値遷移の時系列完全クロニクル",
+            "item": "https://corestation.pages.dev/articles/tokenomics-halving-history.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="article-page-body">
+
+  <!-- Header Navigation -->
+  <header class="article-header-nav">
+    <a href="../#dashboard" class="article-brand">
+      <img src="../assets/core-icon.svg" alt="CoreStation Logo">
+      <span>CoreStation</span>
+    </a>
+    <nav class="article-nav-links">
+      <a href="../#dashboard">📊 ダッシュボード</a>
+      <a href="../#articles">📚 記事一覧</a>
+      <a href="../#guide">🚀 導入手順</a>
+      <a href="../about.html">🏢 運営者情報</a>
+    </nav>
+  </header>
+
+  <main class="article-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="../">ホーム</a>
+      <span class="sep">&gt;</span>
+      <a href="../#articles">ナレッジアーカイブ</a>
+      <span class="sep">&gt;</span>
+      <span>トークノミクス</span>
+    </nav>
+
+    <!-- Main Article Card -->
+    <article class="article-card-main">
+      <header class="article-meta-header">
+        <span class="article-badge">トークノミクス</span>
+        <h1 class="article-main-title">Core Blockchain (XCB) 半減期・供給量・価値遷移の時系列完全クロニクル</h1>
+        <div class="article-submeta">
+          <span>📅 公開日: 2026-09-06</span>
+          <span>✍️ 執筆: リコロ (Ricolo)</span>
+          <span>🔒 監修: CoreStation 技術検証チーム</span>
+        </div>
+      </header>
+
+      <!-- Article Content Body -->
+      <div class="article-content-body">
+        
+      <div class="article-alert info">
+        <strong>📊 結論：XCBの半減期と価値形成の本質</strong><br>
+        Core Blockchain（XCB）は、ビットコインのような単なる4年ごとの機械的半減期とは異なり、<strong>「PoDE (Proof of Distributed Efficiency) による難易度連動減衰」</strong>と<strong>「実需主導の循環供給制約（全供給の約25%のみ市場流通）」</strong>によって価値が形成されています。<br>
+        2023年夏の「1日20〜24 XCB」から、2024年の「1日10 XCB」、そして2026年現在の「1日1.5〜7 XCB」へと、<strong>採掘難易度の急上昇と実質半減サイクル</strong>が進行しています。
+      </div>
+
+      <h3>1. 通貨供給量（サプライ）の現状と基本仕様</h3>
+      <table class="article-table">
+        <tbody>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">ブロック高 (Block Height)</th><td>約 <strong>18,891,500 ブロック</strong> (約7秒ごとに生成)</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">総供給量 (Total Supply)</th><td><strong>397,677,423 XCB</strong> (約3.97億 XCB)</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">循環供給量 (Circulating Supply)</th><td><strong>98,681,863 XCB</strong> (約9,868万 XCB、全体の約24.8%)</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">累計採掘済みXCB (Total Mined)</th><td><strong>84,642,360 XCB</strong> (約8,464万 XCB)</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">基本ブロック報酬</th><td>1ブロックあたり <strong>5 XCB</strong>（マイナープール分配: 約 <strong>1.65 XCB</strong>）</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">主要取引所</th><td><strong>PingExchange</strong> (分散型P2P取引所、XCB/USDCペア)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>2. XCB 価値遷移・半減期時系列クロニクル (2022年〜2026年)</h3>
+      <p>創成期から現在に至るまでの主要なマイルストーン、時価レート、採掘難易度、および1日あたりの採掘量の変遷です。</p>
+
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">年代・フェーズ</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">時期</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">主な出来事・マイルストーン</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">XCB時価 (USD / JPY)</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">1日採掘量目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>第1期：メインネット創成期</strong></td>
+            <td>2022年<br>5月〜12月</td>
+            <td>
+              ・Core Blockchain PoDEメインネット稼働開始<br>
+              ・CorePass 分散型ID構想発表<br>
+              ・公式CoreMiner (v0.19.60) オープンソース公開<br>
+              ・Apple Silicon (M1/M2) ネイティブ対応
+            </td>
+            <td><strong>$0.005 〜 $0.015</strong><br>(約 0.7 〜 2.0 円)</td>
+            <td>50〜100+ XCB/日<br>(黎明期独占状態)</td>
+          </tr>
+          <tr>
+            <td><strong>第2期：エコシステム確立期</strong></td>
+            <td>2023年<br>1月〜12月</td>
+            <td>
+              ・Catch That Rabbit 公式プール本格稼働<br>
+              ・PingExchangeでのXCB/USDC P2P取引開始<br>
+              ・CoreGeeksマイニングポータル開設<br>
+              ・日本コミュニティ（Telegram, note）の急拡大
+            </td>
+            <td><strong>$0.015 〜 $0.035</strong><br>(約 2.2 〜 5.2 円)</td>
+            <td><strong>約 20 〜 24 XCB/日</strong><br>(安定採掘の黄金期)</td>
+          </tr>
+          <tr>
+            <td><strong>第3期：第1次半減・難易度急騰期</strong></td>
+            <td>2024年<br>1月〜12月</td>
+            <td>
+              ・<strong>【重要】実質半減期到来:</strong> マイナー激増によりDifficultyが急騰、採掘量が10 XCB/日、さらに一時2 XCB/日へ激減<br>
+              ・RPCメソッドを <code>eth_getWork</code> から <code>xcb_getWork</code> へ公式改修<br>
+              ・RandomY を最新 RandomX 1.2.1 ベースへ全面刷新<br>
+              ・希少性急上昇により価格が11円台へ高騰
+            </td>
+            <td><strong>$0.030 〜 $0.075</strong><br>(約 4.5 〜 <strong>11.6 円</strong> 最高値圏)</td>
+            <td><strong>約 2 〜 12 XCB/日</strong><br>(難易度急騰による逓減)</td>
+          </tr>
+          <tr>
+            <td><strong>第4期：DePIN・RWA実用化期</strong></td>
+            <td>2025年<br>1月〜12月</td>
+            <td>
+              ・DePIN（分散型物理インフラ）およびRWA（実世界資産）連携構想<br>
+              ・ネットワーク総ハッシュレートが18〜20 Mh/sへ定着<br>
+              ・CoreMiner v0.19.89 リリース（クラウド自動構築・ARM64高速化）<br>
+              ・Wall Money DeFi基盤のテストネット展開
+            </td>
+            <td><strong>$0.040 〜 $0.080</strong><br>(約 6.0 〜 12.0 円)</td>
+            <td>約 8 〜 12 XCB/日<br>(リグ増設マイナーが優勢)</td>
+          </tr>
+          <tr>
+            <td><strong>第5期：自立分散・安定成熟期</strong></td>
+            <td>2026年<br>(現在)</td>
+            <td>
+              ・総供給量3.97億XCB、市場流通約9,868万XCB（約25%）到達<br>
+              ・累計採掘量8,464万XCB突破<br>
+              ・core-geeks.com廃止に伴う本NAS自立分散型管理への完全移行<br>
+              ・確定申告用取引履歴（4,215件）の資産保全
+            </td>
+            <td><strong>$0.0319</strong><br>(約 <strong>4.81 〜 5.00 円</strong>)</td>
+            <td>約 1.5 〜 7.1 XCB/日<br>(定常採掘期)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>3. 価値（価格）が上昇・維持される3大ドライバー</h3>
+      <ol>
+        <li>
+          <strong>流通供給量の厳格なロック（低浮動株構造）:</strong><br>
+          総供給量3.97億XCBのうち、市場に流通しているのはわずか **約24.8%（約9,868万XCB）** です。残りはエコシステム基盤や長期ステーキング、DePINノード担保として拘束されているため、売り圧力が極めて限定的です。
+        </li>
+        <li>
+          <strong>マイニング報酬の自然半減（ディケイ効果）:</strong><br>
+          2023年の「1日20XCB超」から、2024〜2026年には「1日1〜7XCB」へと採掘難易度が劇的に上昇。1枚あたりのXCBを採掘するために必要な電気代・計算コスト（限界費用）が数倍に跳ね上がったことで、市場価格のフロア（下値支持線）が切り上がりました。
+        </li>
+        <li>
+          <strong>CorePass ID & PingExchange の実需ユーティリティ:</strong><br>
+          XCBは単なる投機コインではなく、CorePassでのKYC暗号化署名、PingExchangeでのガス代（0.000021 XCB）、およびスマートコントラクト実行手数料として日々消費されています。
+        </li>
+      </ol>
+
+      <h3>4. 今後の見通し：2026年後半〜2030年の供給・実需・価格予測</h3>
+      <p>過去4年間のデータ推移（発行減衰、難易度上昇、流通量制約）に基づき、今後のCore Blockchain（XCB）における<strong>採掘環境、実需エコシステム、および価格シナリオ</strong>を多角的に分析・予測します。</p>
+
+      <h4>① 採掘環境・供給曲線の見通し：さらなる希少化と原価切り上がり</h4>
+      <ul>
+        <li><strong>新規発行インフレ率の極小化:</strong> 現在すでに総供給約3.97億XCBのうち累計採掘が8,400万XCBを超え、年間の新規供給ペースは急速に鈍化しています。2027〜2028年にかけて年間インフレ率は1.5%〜2.0%以下へ収束する見込みです。</li>
+        <li><strong>マイナーの損益分岐点（原価）の上昇:</strong> 採掘難易度の上昇に伴い、1 XCBを獲得するために要する消費電力は年々増加しています。現在の実効原価（約4〜5円）は、2027年には<strong>8円〜12円水準</strong>へ切り上がると見込まれ、これが強力な価格の下値支持線（フロアプライス）となります。</li>
+        <li><strong>マイニングハードウェアの世代交代:</strong> 電力効率の低い旧世代CPUは順次採掘停止に追い込まれ、AMD Zen 4 (7950X) / Zen 5 や高効率ARM64サーバーノードへの集約が決定づけられます。</li>
+      </ul>
+
+      <h4>② エコシステム・実需ドライバーの進展</h4>
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">成長エンジン</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">時期・ターゲット</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">XCB需要への直接的影響</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>DePIN & RWA 統合</strong></td>
+            <td>2026年後半〜2027年</td>
+            <td>実世界のIoTセンサー・物理インフラの検証ノード担保としてXCBがロックされ、市場流通量がさらにタイト化。</td>
+          </tr>
+          <tr>
+            <td><strong>CorePass DID 企業採用</strong></td>
+            <td>2027年〜2028年</td>
+            <td>分散型個人認証（KYC）のピアツーピア署名時にXCBガスが恒常的にバーン・消費される実需ループの定着。</td>
+          </tr>
+          <tr>
+            <td><strong>Wall Money (DeFi) 本格稼働</strong></td>
+            <td>2026年末〜2027年</td>
+            <td>XCB/CTNペアのレンディング、ステーブルコイン流動性プール展開によるオンチェーンTVL（預かり資産）の急拡大。</td>
+          </tr>
+          <tr>
+            <td><strong>PingExchange 流動性拡張</strong></td>
+            <td>継続展開</td>
+            <td>P2P板取引に加え、自動マーケットメーカー（AMM）機能や法定通貨オンランプの強化による参加障壁の低下。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>③ 2026〜2030年の市場価格シナリオ別予測</h4>
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">シナリオ</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">想定価格帯 (USD / JPY)</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">発生条件・カタリスト</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">実現確率目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>基本シナリオ<br>(堅調な実需成長)</strong></td>
+            <td><strong>$0.06 〜 $0.15</strong><br>(約 <strong>9円 〜 22円</strong>)</td>
+            <td>
+              ・流通量制約（約1億XCB固定）とマイナーの原価切り上がりが継続。<br>
+              ・過去最高値（11.6円）を安定奪還し、DePIN実証ノードの拡大に伴い年率20〜30%のペースで価格レンジが上昇。
+            </td>
+            <td><span class="badge-online; background:#0284c7;">60% (最有力)</span></td>
+          </tr>
+          <tr>
+            <td><strong>強気シナリオ<br>(エコシステム爆発期)</strong></td>
+            <td><strong>$0.25 〜 $0.50</strong><br>(約 <strong>38円 〜 75円</strong>)</td>
+            <td>
+              ・大手国際暗号資産取引所（グローバルCEX）への上場・流動性供給。<br>
+              ・欧州・アジア圏でのCorePass身元認証の大規模公的採用、DePINノードの世界的普及。
+            </td>
+            <td><span class="badge-online; background:#16a34a;">25%</span></td>
+          </tr>
+          <tr>
+            <td><strong>保守・弱気シナリオ<br>(市況低迷・成長鈍化)</strong></td>
+            <td><strong>$0.025 〜 $0.035</strong><br>(約 <strong>3.8円 〜 5.2円</strong>)</td>
+            <td>
+              ・暗号資産市場全体の長期低迷期、または新機能実装の遅延。<br>
+              ・ただしマイナーの電気代損益分岐点（約4円）が強力な岩盤支持線として機能。
+            </td>
+            <td><span class="badge-online; background:#64748b;">15%</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>④ マイナーがとるべき実践的運用戦略</h4>
+      <ol>
+        <li><strong>「電気代のみ最小限換金、残りは中長期HODL」が鉄則:</strong><br>
+        マイニングの最大の利点は「市場価格に関わらず毎日原価でXCBを積立取得できる」点にあります。日々の電気代相当分のみをPingExchangeで売却（または自費補填）し、残りのXCBは流通供給がタイト化する次期上昇サイクルまで手元で安全に保管するのが最も期待値の高い戦略です。</li>
+        <li><strong>本NASアプリによる確定申告・取得原価の正確な保全:</strong><br>
+        将来XCBの価値が上昇した際、過去の取得単価（時価）が明確でないと税務上過剰な課税リスクを負うことになります。本システムで保存している全4,215件の確定申告用CSVを定期的にバックアップしておくことが極めて重要です。</li>
+        <li><strong>高効率CPU（Ryzen 9 7950X等）へのリグ更新:</strong><br>
+        難易度が上昇し続ける局面では、ワットパフォーマンス（H/s per Watt）がマイナーの生存率を決定づけます。エコモード105W等の低電圧チューニングを徹底してください。</li>
+      </ol>
+    
+      </div>
+
+      <!-- Bottom CTA Banner -->
+      <section class="article-bottom-cta">
+        <h3>⚡ Core Blockchain (XCB) の最新データをチェック！</h3>
+        <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">
+          リアルタイム採掘報酬、最新ブロック高、難易度推移、確定申告CSV生成は「CoreStation」で完全無料公開中！
+        </p>
+        <a href="../#dashboard" class="article-cta-btn">🚀 CoreStation ダッシュボードへ戻る</a>
+      </section>
+
+      <!-- Related Articles Section -->
+      <section class="article-related-section">
+        <h3 style="color: #f1f5f9; font-size: 1.25rem; border-left: 4px solid #38bdf8; padding-left: 12px;">📚 関連記事・おすすめトピック</h3>
+        <div class="related-grid">
+          
+          <a href="corepass-kyb-launch-corporate-did.html" class="related-card">
+            <div class="related-card-title">【世界初クラス！？】企業専用の分散型ID「CorePass KYB」が遂に正式ローンチ！実社会の法人がWeb3に合流する革命的仕組みを自作PC女子リコロが徹底解剖！🏢🎮🛡️</div>
+            <div class="related-card-date">📅 2026-10-10</div>
+          </a>
+        
+          <a href="wall-money-quality-first-security-update.html" class="related-card">
+            <div class="related-card-title">【品質最優先の決断！】Wall Moneyの一般公開延期とセキュリティ基準の真相！妥協を許さない開発陣と決済・Swaptopiaの最新進捗を自作PC女子リコロが熱血レポート！🎬🏦🛡️</div>
+            <div class="related-card-date">📅 2026-09-29</div>
+          </a>
+        
+          <a href="corepass-connector-launch-web2-web3-bridge.html" class="related-card">
+            <div class="related-card-title">【外部Webサービスと繋がる！】「CorePass Connector」が正式公開！パスワードもGoogle連携も不要になる次世代ログイン革命を自作PC女子リコロが徹底解説！🚀🔑✨</div>
+            <div class="related-card-date">📅 2026-09-25</div>
+          </a>
+        
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="article-footer">
+    <div class="article-footer-links">
+      <a href="../">ダッシュボード</a>
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="../about.html">運営者情報・お問い合わせ</a>
+      <a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer">公式ブログ (はてな) ↗</a>
+    </div>
+    <div>&copy; 2026 CoreStation / Ricolo. All Rights Reserved.</div>
+  </footer>
+
+</body>
+</html>

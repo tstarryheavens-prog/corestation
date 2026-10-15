@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core Blockchain (XCB) マイニング設定完全ガイド (PoDE / Catch That Rabbit) | CoreStation ナレッジ</title>
+  <meta name="description" content="耐ASICコンセンサスアルゴリズム「PoDE (Ouroboros-X)」の基礎、Catch That Rabbit プールの接続先サーバー、SRBMiner-MULTI / CoreMiner の推奨設定・最適化コマンドを解説。">
+  <link rel="canonical" href="https://corestation.pages.dev/articles/mining-setup.html">
+  <link rel="icon" type="image/svg+xml" href="../assets/core-icon.svg">
+  
+  <!-- OGP / Social Sharing -->
+  <meta property="og:title" content="Core Blockchain (XCB) マイニング設定完全ガイド (PoDE / Catch That Rabbit)">
+  <meta property="og:description" content="耐ASICコンセンサスアルゴリズム「PoDE (Ouroboros-X)」の基礎、Catch That Rabbit プールの接続先サーバー、SRBMiner-MULTI / CoreMiner の推奨設定・最適化コマンドを解説。">
+  <meta property="og:url" content="https://corestation.pages.dev/articles/mining-setup.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Google AdSense Verification & Auto-Ads Tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1988464307898443" crossorigin="anonymous"></script>
+
+  <!-- A8.net 広告掲載URL管理・リンクマネージャー (A8 Link Manager) -->
+  <script src="//statics.8me.jp/a8link/a8linkmgr.js"></script>
+  <script>
+    a8linkmgr({ "config_id": "AiCzxW5LM9avBb8VJ393" });
+  </script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../style.css?v=20261006_4">
+  <link rel="stylesheet" href="article.css?v=20261015_1">
+
+  <!-- Schema.org JSON-LD (Article & Breadcrumb) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "Core Blockchain (XCB) マイニング設定完全ガイド (PoDE / Catch That Rabbit)",
+        "description": "耐ASICコンセンサスアルゴリズム「PoDE (Ouroboros-X)」の基礎、Catch That Rabbit プールの接続先サーバー、SRBMiner-MULTI / CoreMiner の推奨設定・最適化コマンドを解説。",
+        "datePublished": "2026-09-06T00:00:00+09:00",
+        "dateModified": "2026-09-06T00:00:00+09:00",
+        "author": {
+          "@type": "Person",
+          "name": "リコロ (Ricolo)"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "CoreStation",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://corestation.pages.dev/assets/core-icon.svg"
+          }
+        },
+        "mainEntityOfPage": "https://corestation.pages.dev/articles/mining-setup.html"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "ホーム (ダッシュボード)",
+            "item": "https://corestation.pages.dev/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "ナレッジアーカイブ",
+            "item": "https://corestation.pages.dev/#articles"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Core Blockchain (XCB) マイニング設定完全ガイド (PoDE / Catch That Rabbit)",
+            "item": "https://corestation.pages.dev/articles/mining-setup.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="article-page-body">
+
+  <!-- Header Navigation -->
+  <header class="article-header-nav">
+    <a href="../#dashboard" class="article-brand">
+      <img src="../assets/core-icon.svg" alt="CoreStation Logo">
+      <span>CoreStation</span>
+    </a>
+    <nav class="article-nav-links">
+      <a href="../#dashboard">📊 ダッシュボード</a>
+      <a href="../#articles">📚 記事一覧</a>
+      <a href="../#guide">🚀 導入手順</a>
+      <a href="../about.html">🏢 運営者情報</a>
+    </nav>
+  </header>
+
+  <main class="article-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="../">ホーム</a>
+      <span class="sep">&gt;</span>
+      <a href="../#articles">ナレッジアーカイブ</a>
+      <span class="sep">&gt;</span>
+      <span>マイニング設定</span>
+    </nav>
+
+    <!-- Main Article Card -->
+    <article class="article-card-main">
+      <header class="article-meta-header">
+        <span class="article-badge">マイニング設定</span>
+        <h1 class="article-main-title">Core Blockchain (XCB) マイニング設定完全ガイド (PoDE / Catch That Rabbit)</h1>
+        <div class="article-submeta">
+          <span>📅 公開日: 2026-09-06</span>
+          <span>✍️ 執筆: リコロ (Ricolo)</span>
+          <span>🔒 監修: CoreStation 技術検証チーム</span>
+        </div>
+      </header>
+
+      <!-- Article Content Body -->
+      <div class="article-content-body">
+        
+      <h3>1. PoDE (Proof of Distributed Efficiency) と Ouroboros-X</h3>
+      <p>Core Blockchainは、専用ASICによるハッシュパワーの独占を排除し、世界中の一般ハードウェア（CPU/GPU）によって分散化を維持するために設計された<strong>「Ouroboros-X」</strong>暗号アルゴリズムを採用しています。</p>
+      <ul>
+        <li><strong>アルゴリズム:</strong> Ouroboros-X (PoDE)</li>
+        <li><strong>対応ハードウェア:</strong> 高性能CPU（AVX-512 / AVX2推奨）、AMD / NVIDIA GPU</li>
+        <li><strong>ブロック生成間隔:</strong> 約14秒</li>
+        <li><strong>報酬分配:</strong> マイニングプール経由で約2時間ごとに自動分配</li>
+      </ul>
+
+      <h3>2. Catch That Rabbit (CTR) プール接続情報</h3>
+      <p>最も安定した公式対応プール「Catch That Rabbit」の推奨エンドポイント一覧です。日本国内からは<strong>シンガポール</strong>または<strong>香港</strong>ノードが最小レイテンシとなります。</p>
+      
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">地域</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">Stratum ホスト</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">ポート</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">プール手数料</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>シンガポール (日本推奨)</strong></td>
+            <td><code>sg.catchthatrabbit.com</code></td>
+            <td><code>8008</code></td>
+            <td>1.0%</td>
+          </tr>
+          <tr>
+            <td><strong>香港 (アジア近接)</strong></td>
+            <td><code>hk.catchthatrabbit.com</code></td>
+            <td><code>8008</code></td>
+            <td>1.0%</td>
+          </tr>
+          <tr>
+            <td><strong>北米 (US East)</strong></td>
+            <td><code>us.catchthatrabbit.com</code></td>
+            <td><code>8008</code></td>
+            <td>1.0%</td>
+          </tr>
+          <tr>
+            <td><strong>欧州 (ドイツ)</strong></td>
+            <td><code>eu.catchthatrabbit.com</code></td>
+            <td><code>8008</code></td>
+            <td>1.0%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>3. SRBMiner-MULTI 推奨コマンドライン</h3>
+      <p>SRBMiner-MULTIを使用する場合の起動スクリプト例です。ウォレットアドレスの後に <code>.Worker名</code> を付与します。</p>
+
+      <div class="article-code-box">
+        <pre><code># Linux / HiveOS
+./SRBMiner-MULTI --algorithm ouroboros \
+  --pool stratum+tcp://sg.catchthatrabbit.com:8008 \
+  --wallet cb57b88d24678c2091332971e3a38cca472dd8aac0cd.Rig01 \
+  --password x --cpu-threads 0
+
+# Windows (.bat)
+SRBMiner-MULTI.exe --algorithm ouroboros ^
+  --pool stratum+tcp://sg.catchthatrabbit.com:8008 ^
+  --wallet cb57b88d24678c2091332971e3a38cca472dd8aac0cd.Rig01 ^
+  --password x --cpu-threads 0</code></pre>
+      </div>
+
+      <h3>4. CoreMiner (C++ 公式オープンソース) 起動例</h3>
+      <div class="article-code-box">
+        <pre><code>./coreminer -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.Rig01@sg.catchthatrabbit.com:8008</code></pre>
+      </div>
+
+      <h3>5. Worker監視とステータス反映</h3>
+      <p>プールに有効なシェア（Accepted Shares）が送信されると、Catch That Rabbitのプール管理画面（<code>https://catchthatrabbit.com/wallet/{アドレス}</code>）にリアルタイムでハッシュレートとWorker名が反映されます。マシン停止時は約10〜15分でプール側ステータスがオフラインになります。</p>
+    
+      </div>
+
+      <!-- Bottom CTA Banner -->
+      <section class="article-bottom-cta">
+        <h3>⚡ Core Blockchain (XCB) の最新データをチェック！</h3>
+        <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">
+          リアルタイム採掘報酬、最新ブロック高、難易度推移、確定申告CSV生成は「CoreStation」で完全無料公開中！
+        </p>
+        <a href="../#dashboard" class="article-cta-btn">🚀 CoreStation ダッシュボードへ戻る</a>
+      </section>
+
+      <!-- Related Articles Section -->
+      <section class="article-related-section">
+        <h3 style="color: #f1f5f9; font-size: 1.25rem; border-left: 4px solid #38bdf8; padding-left: 12px;">📚 関連記事・おすすめトピック</h3>
+        <div class="related-grid">
+          
+          <a href="corepass-kyb-launch-corporate-did.html" class="related-card">
+            <div class="related-card-title">【世界初クラス！？】企業専用の分散型ID「CorePass KYB」が遂に正式ローンチ！実社会の法人がWeb3に合流する革命的仕組みを自作PC女子リコロが徹底解剖！🏢🎮🛡️</div>
+            <div class="related-card-date">📅 2026-10-10</div>
+          </a>
+        
+          <a href="wall-money-quality-first-security-update.html" class="related-card">
+            <div class="related-card-title">【品質最優先の決断！】Wall Moneyの一般公開延期とセキュリティ基準の真相！妥協を許さない開発陣と決済・Swaptopiaの最新進捗を自作PC女子リコロが熱血レポート！🎬🏦🛡️</div>
+            <div class="related-card-date">📅 2026-09-29</div>
+          </a>
+        
+          <a href="corepass-connector-launch-web2-web3-bridge.html" class="related-card">
+            <div class="related-card-title">【外部Webサービスと繋がる！】「CorePass Connector」が正式公開！パスワードもGoogle連携も不要になる次世代ログイン革命を自作PC女子リコロが徹底解説！🚀🔑✨</div>
+            <div class="related-card-date">📅 2026-09-25</div>
+          </a>
+        
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="article-footer">
+    <div class="article-footer-links">
+      <a href="../">ダッシュボード</a>
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="../about.html">運営者情報・お問い合わせ</a>
+      <a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer">公式ブログ (はてな) ↗</a>
+    </div>
+    <div>&copy; 2026 CoreStation / Ricolo. All Rights Reserved.</div>
+  </footer>
+
+</body>
+</html>

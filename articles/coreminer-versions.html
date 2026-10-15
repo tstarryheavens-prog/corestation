@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoreMiner (catchthatrabbit) 全バージョン詳細更新履歴＆技術変遷分析 | CoreStation ナレッジ</title>
+  <meta name="description" content="v0.19.60から最新v0.19.89までの全30リリースを徹底分析。RandomY (RandomX 1.2.1) アルゴリズム刷新、xcb_getWork へのRPCプロトコル移行、Apple Silicon (macOS ARM64) 対応、systemd自動起動、cloud-init自動配備など、マイニング効率と安定性に直結する技術的進化を完全解剖。">
+  <link rel="canonical" href="https://corestation.pages.dev/articles/coreminer-versions.html">
+  <link rel="icon" type="image/svg+xml" href="../assets/core-icon.svg">
+  
+  <!-- OGP / Social Sharing -->
+  <meta property="og:title" content="CoreMiner (catchthatrabbit) 全バージョン詳細更新履歴＆技術変遷分析">
+  <meta property="og:description" content="v0.19.60から最新v0.19.89までの全30リリースを徹底分析。RandomY (RandomX 1.2.1) アルゴリズム刷新、xcb_getWork へのRPCプロトコル移行、Apple Silicon (macOS ARM64) 対応、systemd自動起動、cloud-init自動配備など、マイニング効率と安定性に直結する技術的進化を完全解剖。">
+  <meta property="og:url" content="https://corestation.pages.dev/articles/coreminer-versions.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Google AdSense Verification & Auto-Ads Tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1988464307898443" crossorigin="anonymous"></script>
+
+  <!-- A8.net 広告掲載URL管理・リンクマネージャー (A8 Link Manager) -->
+  <script src="//statics.8me.jp/a8link/a8linkmgr.js"></script>
+  <script>
+    a8linkmgr({ "config_id": "AiCzxW5LM9avBb8VJ393" });
+  </script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../style.css?v=20261006_4">
+  <link rel="stylesheet" href="article.css?v=20261015_1">
+
+  <!-- Schema.org JSON-LD (Article & Breadcrumb) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "CoreMiner (catchthatrabbit) 全バージョン詳細更新履歴＆技術変遷分析",
+        "description": "v0.19.60から最新v0.19.89までの全30リリースを徹底分析。RandomY (RandomX 1.2.1) アルゴリズム刷新、xcb_getWork へのRPCプロトコル移行、Apple Silicon (macOS ARM64) 対応、systemd自動起動、cloud-init自動配備など、マイニング効率と安定性に直結する技術的進化を完全解剖。",
+        "datePublished": "2026-09-06T00:00:00+09:00",
+        "dateModified": "2026-09-06T00:00:00+09:00",
+        "author": {
+          "@type": "Person",
+          "name": "リコロ (Ricolo)"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "CoreStation",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://corestation.pages.dev/assets/core-icon.svg"
+          }
+        },
+        "mainEntityOfPage": "https://corestation.pages.dev/articles/coreminer-versions.html"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "ホーム (ダッシュボード)",
+            "item": "https://corestation.pages.dev/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "ナレッジアーカイブ",
+            "item": "https://corestation.pages.dev/#articles"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "CoreMiner (catchthatrabbit) 全バージョン詳細更新履歴＆技術変遷分析",
+            "item": "https://corestation.pages.dev/articles/coreminer-versions.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="article-page-body">
+
+  <!-- Header Navigation -->
+  <header class="article-header-nav">
+    <a href="../#dashboard" class="article-brand">
+      <img src="../assets/core-icon.svg" alt="CoreStation Logo">
+      <span>CoreStation</span>
+    </a>
+    <nav class="article-nav-links">
+      <a href="../#dashboard">📊 ダッシュボード</a>
+      <a href="../#articles">📚 記事一覧</a>
+      <a href="../#guide">🚀 導入手順</a>
+      <a href="../about.html">🏢 運営者情報</a>
+    </nav>
+  </header>
+
+  <main class="article-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="../">ホーム</a>
+      <span class="sep">&gt;</span>
+      <a href="../#articles">ナレッジアーカイブ</a>
+      <span class="sep">&gt;</span>
+      <span>マイナー分析</span>
+    </nav>
+
+    <!-- Main Article Card -->
+    <article class="article-card-main">
+      <header class="article-meta-header">
+        <span class="article-badge">マイナー分析</span>
+        <h1 class="article-main-title">CoreMiner (catchthatrabbit) 全バージョン詳細更新履歴＆技術変遷分析</h1>
+        <div class="article-submeta">
+          <span>📅 公開日: 2026-09-06</span>
+          <span>✍️ 執筆: リコロ (Ricolo)</span>
+          <span>🔒 監修: CoreStation 技術検証チーム</span>
+        </div>
+      </header>
+
+      <!-- Article Content Body -->
+      <div class="article-content-body">
+        
+      <div class="article-alert info">
+        <strong>⚡ 結論：現在どのバージョンを使うべきか？</strong><br>
+        必ず<strong>最新版（v0.19.89）または最低でも v0.19.87 以降</strong>を使用してください。<br>
+        v0.19.84以前の古いバージョンでは、ノードのRPCが旧イーサリアム互換（<code>eth_getWork</code>）のままとなっており、最新プールやノードでリジェクトされる致命的な問題があるほか、RandomYの旧エンジンによりハッシュレート効率が低下します。
+      </div>
+
+      <h3>1. CoreMiner バージョン進化の4大フェーズ</h3>
+      <p>公式リポジトリ（<code>catchthatrabbit/coreminer</code>）は、Core Blockchainのメインネット稼働とプール（Catch That Rabbit）の発展に伴い、以下の4つの世代を経て進化してきました。</p>
+
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">フェーズ・世代</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">バージョン範囲</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">主な進化と技術的マイルストーン</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>第1期：基盤構築とクロスプラットフォーム化</strong></td>
+            <td><code>v0.19.60</code> 〜 <code>v0.19.72</code><br>(2022年5月〜10月)</td>
+            <td>
+              ・Apple Silicon（Darwin ARM64 / M1, M2）のネイティブコンパイル・実行対応。<br>
+              ・スレッド細分化パラメータ（<code>-t</code>, <code>--mining-threads</code>）の実装。<br>
+              ・DockerコンテナのAlpine Linux化による極小化（約20MB）。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>第2期：自動化・耐障害性と運用安定化</strong></td>
+            <td><code>v0.19.73</code> 〜 <code>v0.19.84</code><br>(2023年2月〜9月)</td>
+            <td>
+              ・Alpine環境（musl libc）でのビルドエラー解消（<code>execinfo.h</code> 依存排除）。<br>
+              ・CLIでのバージョン確認（<code>--version</code>）と更新通知機能の実装。<br>
+              ・設定ファイル（<code>config.json</code>）による複数プール・ドングル設定の拡張。<br>
+              ・Linux <code>systemd</code> による自動起動（autostart）ユニット追加。<br>
+              ・<code>mine.sh</code> の切断復帰時における無限ループ不具合の修正。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>第3期：コア暗号エンジン刷新とプロトコル革新</strong></td>
+            <td><code>v0.19.85</code> 〜 <code>v0.19.88</code><br>(2024年10月〜11月)</td>
+            <td>
+              ・<strong>【重要】RandomY 刷新:</strong> RandomX 1.2.1 をベースとした最新暗号エンジンへ移行。JIT最適化とキャッシュ効率の劇的向上。<br>
+              ・<strong>【重要】RPCメソッド変更:</strong> 旧来の <code>eth_getWork</code> から Core Blockchain 正式仕様の <strong><code>xcb_getWork</code></strong> へ完全移行。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>第4期：現代的CI/CD・クラウド自動配備</strong></td>
+            <td><code>v0.19.89</code> 〜 現在<br>(2025年5月〜)</td>
+            <td>
+              ・GitHub Actionsに <code>ubuntu-24.04-arm</code> ホストを採用し、ARM64バイナリの自動生成を高速化。<br>
+              ・<code>cloud-init-coreminer.yaml</code> を追加し、クラウドVPSでの1クリック自動構築に対応。<br>
+              ・<code>mine.sh</code> に対話型ワーカー名設定（プレーン名、Fediverse形式、ランダム名）を追加。<br>
+              ・外部監視用 JSON-RPC API ドキュメント（<code>miner_getstatdetail</code>, <code>miner_ping</code>）の完全整備。
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2. 最重要アップデートの詳細技術分析</h3>
+
+      <h4>① RPCメソッドの変更：<code>eth_getWork</code> から <code>xcb_getWork</code> へ（v0.19.87）</h4>
+      <p>CoreMinerは初期、イーサリアム系のマイナー構造（<code>ethminer</code>）からフォークして開発されていたため、プールやローカルノードとの採掘ジョブ通信に <code>{"method": "eth_getWork"}</code> を使用していました。</p>
+      <p>しかし、Core Blockchain独自のノード（<code>core-coin/core</code>）がネイティブ仕様へと完全に分離・アップデートされたことで、<strong><code>xcb_getWork</code></strong> への呼出名変更が行われました。この変更を含む v0.19.87 以降でないと、最新のCoreブロックチェーンノードと直接マイニングを行うことができません。</p>
+
+      <h4>② RandomY (RandomX 1.2.1) へのエンジン刷新（v0.19.85〜v0.19.86）</h4>
+      <p>Core BlockchainのPoDEコンセンサスアルゴリズムは、Monero等で実績のあるRandomX系アルゴリズム「RandomY」を採用しています。</p>
+      <ul>
+        <li><strong>JITコンパイラの改善:</strong> x86_64およびARM64における実行時マシンコード生成が高速化。</li>
+        <li><strong>Huge Pages (大容量メモリページ) との親和性向上:</strong> 2MB / 1GB ページ利用時のTLBミスヒットを大幅に削減。</li>
+        <li><strong>命令セット最適化:</strong> 最新CPU（AMD Zen3/Zen4/Zen5, Intel Core 12〜14世代, Apple Mシリーズ）でのAVX2 / AVX-512 演算スループットが向上。</li>
+      </ul>
+
+      <h4>③ Apple Silicon (Darwin ARM64) ネイティブ対応（v0.19.60）</h4>
+      <p>M1/M2/M3/M4などのApple Silicon Macで、Rosetta 2を介さずネイティブARM64バイナリとして動作可能になりました。これにより消費電力あたりの採掘効率（ワットパフォーマンス）が極めて高くなっています。</p>
+
+      <h3>3. 全バージョン変更履歴対照表（v0.19.60 〜 v0.19.89）</h3>
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">バージョン</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">公開日</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">変更内容・コミット要約</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">影響度</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>v0.19.89</code></td>
+            <td>2025-05-27</td>
+            <td>ubuntu-24.04-arm GitHubランナー採用、Boost URL修正、cloud-init対応、mine.sh対話ワーカー命名、APIドキュメント拡充</td>
+            <td><span class="badge-online; background:#16a34a;">推奨</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.88</code></td>
+            <td>2024-11-02</td>
+            <td>xcb_getWork 反映後の公式安定リリースビルドの生成</td>
+            <td><span class="badge-online; background:#16a34a;">安定</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.87</code></td>
+            <td>2024-11-01</td>
+            <td><strong>RPC通信メソッドを eth_getWork から xcb_getWork へ変更</strong>、CMake 3.5ビルド調整</td>
+            <td><span class="badge-online; background:#dc2626;">重大</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.86</code></td>
+            <td>2024-10-31</td>
+            <td>最新RandomYエンジンを搭載した公式Dockerイメージの自動ビルド構築</td>
+            <td><span class="badge-online; background:#ea580c;">高</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.85</code></td>
+            <td>2024-10-31</td>
+            <td><strong>RandomX 1.2.1 ベースの最新 RandomY エンジンへサブモジュール刷新</strong></td>
+            <td><span class="badge-online; background:#dc2626;">重大</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.84</code></td>
+            <td>2023-09-28</td>
+            <td>公式README更新・ドキュメント整備（プール接続ガイド更新）</td>
+            <td><span>通常</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.83</code></td>
+            <td>2023-08-25</td>
+            <td>Core Blockchainコア開発者 Rastislav によるドキュメント最適化</td>
+            <td><span>通常</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.82</code></td>
+            <td>2023-08-16</td>
+            <td><strong>mine.sh ラッパースクリプトの切断時無限ループ不具合を修正</strong></td>
+            <td><span class="badge-online; background:#ea580c;">高</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.81</code></td>
+            <td>2023-05-11</td>
+            <td>Linux systemd 向け autostart（自動起動サービス）機能の追加</td>
+            <td><span class="badge-online; background:#0284c7;">機能追加</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.80</code></td>
+            <td>2023-02-24</td>
+            <td>config.json 拡張（複数プールプリセット、外付けドングル暗号キー対応）</td>
+            <td><span class="badge-online; background:#0284c7;">機能追加</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.79</code></td>
+            <td>2023-02-13</td>
+            <td>--version オプション実装、バージョン更新チェック機能の追加</td>
+            <td><span>通常</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.73〜78</code></td>
+            <td>2023-02-08〜11</td>
+            <td>Hunterキャッシュ活用、Alpine(musl)ビルド修正(execinfo.h排除)、CMakeビルド版数引数化</td>
+            <td><span>改善</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.72</code></td>
+            <td>2022-10-06</td>
+            <td>公式Dockerイメージを alpine:latest ベースに移行（軽量化＆スキャン）</td>
+            <td><span>改善</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.71</code></td>
+            <td>2022-09-22</td>
+            <td>pool.sh スクリプトへ $ARGS 引数透過機能を追加</td>
+            <td><span>通常</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.69〜70</code></td>
+            <td>2022-09-13</td>
+            <td>tar.gz 自動アーカイブおよびGitHubリリースタグ連携のCI整備</td>
+            <td><span>改善</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.64〜68</code></td>
+            <td>2022-08-22〜25</td>
+            <td>スレッド指定オプション -t / --threads 実装、起動スクリプトの引数同期</td>
+            <td><span class="badge-online; background:#0284c7;">機能追加</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.61〜63</code></td>
+            <td>2022-08-10〜11</td>
+            <td>--mining-threads パラメータ追加、Stratum接続パスの正規化</td>
+            <td><span>改善</span></td>
+          </tr>
+          <tr>
+            <td><code>v0.19.60</code></td>
+            <td>2022-05-07〜07-07</td>
+            <td>初期オープンソース公開版、Apple Silicon (Darwin ARM64) ネイティブ対応追加</td>
+            <td><span class="badge-online; background:#16a34a;">起点</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4. マイナー向け実践的チューニングTips</h3>
+      <ol>
+        <li>
+          <strong>Huge Pages (2MB) の有効化（Linux/HiveOS）:</strong><br>
+          RandomYは高速メモリアクセスを多用するため、OS側でHuge Pagesを有効にすることでハッシュレートが <strong>20〜30% 向上</strong> します：
+          <div class="article-code-box">
+            <pre><code>sudo sysctl -w vm.nr_hugepages=1280
+echo "vm.nr_hugepages=1280" | sudo tee -a /etc/sysctl.conf</code></pre>
+          </div>
+        </li>
+        <li>
+          <strong>スレッド数設定の黄金比:</strong><br>
+          単純にCPUの論理コア数（スレッド数）を最大に設定すると、L3キャッシュ競合によって逆にハッシュレートが低下します。<br>
+          <strong>「CPUのL3キャッシュ総容量 ÷ 2MB」</strong>（例: L3が32MBなら 16スレッド）を目安に <code>-t</code> を設定するのが最も高効率です。
+        </li>
+        <li>
+          <strong>SRBMiner-MULTI との比較:</strong><br>
+          CoreMinerは公式C++実装で極めて安定しており、CPU専業リグやmacOS環境で抜群の安定性を誇ります。一方、GPU（AMD/NVIDIA）との同時マイニングを行いたい場合は SRBMiner-MULTI も選択肢となります。
+        </li>
+      </ol>
+    
+      </div>
+
+      <!-- Bottom CTA Banner -->
+      <section class="article-bottom-cta">
+        <h3>⚡ Core Blockchain (XCB) の最新データをチェック！</h3>
+        <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">
+          リアルタイム採掘報酬、最新ブロック高、難易度推移、確定申告CSV生成は「CoreStation」で完全無料公開中！
+        </p>
+        <a href="../#dashboard" class="article-cta-btn">🚀 CoreStation ダッシュボードへ戻る</a>
+      </section>
+
+      <!-- Related Articles Section -->
+      <section class="article-related-section">
+        <h3 style="color: #f1f5f9; font-size: 1.25rem; border-left: 4px solid #38bdf8; padding-left: 12px;">📚 関連記事・おすすめトピック</h3>
+        <div class="related-grid">
+          
+          <a href="corepass-kyb-launch-corporate-did.html" class="related-card">
+            <div class="related-card-title">【世界初クラス！？】企業専用の分散型ID「CorePass KYB」が遂に正式ローンチ！実社会の法人がWeb3に合流する革命的仕組みを自作PC女子リコロが徹底解剖！🏢🎮🛡️</div>
+            <div class="related-card-date">📅 2026-10-10</div>
+          </a>
+        
+          <a href="wall-money-quality-first-security-update.html" class="related-card">
+            <div class="related-card-title">【品質最優先の決断！】Wall Moneyの一般公開延期とセキュリティ基準の真相！妥協を許さない開発陣と決済・Swaptopiaの最新進捗を自作PC女子リコロが熱血レポート！🎬🏦🛡️</div>
+            <div class="related-card-date">📅 2026-09-29</div>
+          </a>
+        
+          <a href="corepass-connector-launch-web2-web3-bridge.html" class="related-card">
+            <div class="related-card-title">【外部Webサービスと繋がる！】「CorePass Connector」が正式公開！パスワードもGoogle連携も不要になる次世代ログイン革命を自作PC女子リコロが徹底解説！🚀🔑✨</div>
+            <div class="related-card-date">📅 2026-09-25</div>
+          </a>
+        
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="article-footer">
+    <div class="article-footer-links">
+      <a href="../">ダッシュボード</a>
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="../about.html">運営者情報・お問い合わせ</a>
+      <a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer">公式ブログ (はてな) ↗</a>
+    </div>
+    <div>&copy; 2026 CoreStation / Ricolo. All Rights Reserved.</div>
+  </footer>
+
+</body>
+</html>

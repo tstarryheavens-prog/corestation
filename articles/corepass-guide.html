@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CorePass ウォレット &amp; PingExchange 連携・セキュリティガイド | CoreStation ナレッジ</title>
+  <meta name="description" content="分散型デジタルID「CorePass」の作成手順、本人確認（KYC）、リカバリーフレーズのオフライン保全、および分散型取引所「PingExchange」での取引・スワップ手順を整理。">
+  <link rel="canonical" href="https://corestation.pages.dev/articles/corepass-guide.html">
+  <link rel="icon" type="image/svg+xml" href="../assets/core-icon.svg">
+  
+  <!-- OGP / Social Sharing -->
+  <meta property="og:title" content="CorePass ウォレット &amp; PingExchange 連携・セキュリティガイド">
+  <meta property="og:description" content="分散型デジタルID「CorePass」の作成手順、本人確認（KYC）、リカバリーフレーズのオフライン保全、および分散型取引所「PingExchange」での取引・スワップ手順を整理。">
+  <meta property="og:url" content="https://corestation.pages.dev/articles/corepass-guide.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Google AdSense Verification & Auto-Ads Tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1988464307898443" crossorigin="anonymous"></script>
+
+  <!-- A8.net 広告掲載URL管理・リンクマネージャー (A8 Link Manager) -->
+  <script src="//statics.8me.jp/a8link/a8linkmgr.js"></script>
+  <script>
+    a8linkmgr({ "config_id": "AiCzxW5LM9avBb8VJ393" });
+  </script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../style.css?v=20261006_4">
+  <link rel="stylesheet" href="article.css?v=20261015_1">
+
+  <!-- Schema.org JSON-LD (Article & Breadcrumb) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "CorePass ウォレット &amp; PingExchange 連携・セキュリティガイド",
+        "description": "分散型デジタルID「CorePass」の作成手順、本人確認（KYC）、リカバリーフレーズのオフライン保全、および分散型取引所「PingExchange」での取引・スワップ手順を整理。",
+        "datePublished": "2026-09-06T00:00:00+09:00",
+        "dateModified": "2026-09-06T00:00:00+09:00",
+        "author": {
+          "@type": "Person",
+          "name": "リコロ (Ricolo)"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "CoreStation",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://corestation.pages.dev/assets/core-icon.svg"
+          }
+        },
+        "mainEntityOfPage": "https://corestation.pages.dev/articles/corepass-guide.html"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "ホーム (ダッシュボード)",
+            "item": "https://corestation.pages.dev/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "ナレッジアーカイブ",
+            "item": "https://corestation.pages.dev/#articles"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "CorePass ウォレット &amp; PingExchange 連携・セキュリティガイド",
+            "item": "https://corestation.pages.dev/articles/corepass-guide.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="article-page-body">
+
+  <!-- Header Navigation -->
+  <header class="article-header-nav">
+    <a href="../#dashboard" class="article-brand">
+      <img src="../assets/core-icon.svg" alt="CoreStation Logo">
+      <span>CoreStation</span>
+    </a>
+    <nav class="article-nav-links">
+      <a href="../#dashboard">📊 ダッシュボード</a>
+      <a href="../#articles">📚 記事一覧</a>
+      <a href="../#guide">🚀 導入手順</a>
+      <a href="../about.html">🏢 運営者情報</a>
+    </nav>
+  </header>
+
+  <main class="article-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="../">ホーム</a>
+      <span class="sep">&gt;</span>
+      <a href="../#articles">ナレッジアーカイブ</a>
+      <span class="sep">&gt;</span>
+      <span>ウォレット・取引</span>
+    </nav>
+
+    <!-- Main Article Card -->
+    <article class="article-card-main">
+      <header class="article-meta-header">
+        <span class="article-badge">ウォレット・取引</span>
+        <h1 class="article-main-title">CorePass ウォレット &amp; PingExchange 連携・セキュリティガイド</h1>
+        <div class="article-submeta">
+          <span>📅 公開日: 2026-09-06</span>
+          <span>✍️ 執筆: リコロ (Ricolo)</span>
+          <span>🔒 監修: CoreStation 技術検証チーム</span>
+        </div>
+      </header>
+
+      <!-- Article Content Body -->
+      <div class="article-content-body">
+        
+      <h3>1. CorePass とは</h3>
+      <p><strong>CorePass</strong> は、Core Blockchain 上に構築された次世代の分散型デジタルID＆自己主権型ウォレットです。ユーザーは自身の個人データを第三者企業に預けることなく、暗号化されたIDクレデンシャルとして手元で安全に管理できます。</p>
+
+      <h3>2. 初期設定とセキュリティの鉄則</h3>
+      <div class="article-alert warning">
+        <strong>🔐 シードフレーズ（復元用パスフレーズ）の保管</strong><br>
+        アプリ作成時に表示される12〜24単語のシードフレーズは、絶対にスクリーンショットやクラウド（Googleドライブ、iCloud等）に保存しないでください。<strong>必ず物理的な紙またはメタルプレートに手書きで記録し、金庫等の安全な場所に保管</strong>してください。
+      </div>
+
+      <ul>
+        <li><strong>PINコード:</strong> アプリ起動時および送金トランザクション署名時に毎回要求されます。推測されやすい連番や生年月日は避けてください。</li>
+        <li><strong>KYCレベル:</strong> PingExchange等のサービス利用には、CorePass内での公的身分証明書（パスポートや運転免許証）による認証が要求される場合があります。データはピアツーピアで検証され、中央サーバーには保存されません。</li>
+      </ul>
+
+      <h3>3. PingExchange との連携手順</h3>
+      <p>PingExchange（<code>https://ping.exchange</code>）は、Core Blockchain ネイティブのハイブリッド分散型取引所です。</p>
+      <ol>
+        <li>PCブラウザで <a href="https://ping.exchange" target="_blank" rel="noopener noreferrer">https://ping.exchange ↗</a> にアクセスします。</li>
+        <li>画面右上の「Connect Wallet」または「Login with CorePass」を選択します。</li>
+        <li>表示されたQRコードをスマホの CorePass アプリのカメラで読み取ります。</li>
+        <li>CorePass側で承認（Approve）し、PINコードを入力すると即座にセキュアログインが完了します。</li>
+      </ol>
+
+      <h3>4. XCB / CTN の取引と送金</h3>
+      <p>採掘したXCBは、PingExchange上でCTN（Core Token）やステーブルコイン等とスワップ・売却が可能です。送金時のガス代（手数料）は通常 <code>0.000021 XCB</code> と極めて低廉に設定されています。</p>
+    
+      </div>
+
+      <!-- Bottom CTA Banner -->
+      <section class="article-bottom-cta">
+        <h3>⚡ Core Blockchain (XCB) の最新データをチェック！</h3>
+        <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">
+          リアルタイム採掘報酬、最新ブロック高、難易度推移、確定申告CSV生成は「CoreStation」で完全無料公開中！
+        </p>
+        <a href="../#dashboard" class="article-cta-btn">🚀 CoreStation ダッシュボードへ戻る</a>
+      </section>
+
+      <!-- Related Articles Section -->
+      <section class="article-related-section">
+        <h3 style="color: #f1f5f9; font-size: 1.25rem; border-left: 4px solid #38bdf8; padding-left: 12px;">📚 関連記事・おすすめトピック</h3>
+        <div class="related-grid">
+          
+          <a href="corepass-kyb-launch-corporate-did.html" class="related-card">
+            <div class="related-card-title">【世界初クラス！？】企業専用の分散型ID「CorePass KYB」が遂に正式ローンチ！実社会の法人がWeb3に合流する革命的仕組みを自作PC女子リコロが徹底解剖！🏢🎮🛡️</div>
+            <div class="related-card-date">📅 2026-10-10</div>
+          </a>
+        
+          <a href="wall-money-quality-first-security-update.html" class="related-card">
+            <div class="related-card-title">【品質最優先の決断！】Wall Moneyの一般公開延期とセキュリティ基準の真相！妥協を許さない開発陣と決済・Swaptopiaの最新進捗を自作PC女子リコロが熱血レポート！🎬🏦🛡️</div>
+            <div class="related-card-date">📅 2026-09-29</div>
+          </a>
+        
+          <a href="corepass-connector-launch-web2-web3-bridge.html" class="related-card">
+            <div class="related-card-title">【外部Webサービスと繋がる！】「CorePass Connector」が正式公開！パスワードもGoogle連携も不要になる次世代ログイン革命を自作PC女子リコロが徹底解説！🚀🔑✨</div>
+            <div class="related-card-date">📅 2026-09-25</div>
+          </a>
+        
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="article-footer">
+    <div class="article-footer-links">
+      <a href="../">ダッシュボード</a>
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="../about.html">運営者情報・お問い合わせ</a>
+      <a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer">公式ブログ (はてな) ↗</a>
+    </div>
+    <div>&copy; 2026 CoreStation / Ricolo. All Rights Reserved.</div>
+  </footer>
+
+</body>
+</html>

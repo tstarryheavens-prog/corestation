@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core Blockchain 最新開発動向・技術進捗レポート (2025-2026年最新版) | CoreStation ナレッジ</title>
+  <meta name="description" content="gocore v2.2メジャーアップデート、スマートコントラクト標準群（CBC-20/CIP群）の策定、0G(SMS)完全オフライン送金TxMS、Ed448耐量子暗号基盤、Ylem言語、CoreMiner v0.19.89までの最新開発状況を徹底解説。">
+  <link rel="canonical" href="https://corestation.pages.dev/articles/dev-update-2026.html">
+  <link rel="icon" type="image/svg+xml" href="../assets/core-icon.svg">
+  
+  <!-- OGP / Social Sharing -->
+  <meta property="og:title" content="Core Blockchain 最新開発動向・技術進捗レポート (2025-2026年最新版)">
+  <meta property="og:description" content="gocore v2.2メジャーアップデート、スマートコントラクト標準群（CBC-20/CIP群）の策定、0G(SMS)完全オフライン送金TxMS、Ed448耐量子暗号基盤、Ylem言語、CoreMiner v0.19.89までの最新開発状況を徹底解説。">
+  <meta property="og:url" content="https://corestation.pages.dev/articles/dev-update-2026.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Google AdSense Verification & Auto-Ads Tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1988464307898443" crossorigin="anonymous"></script>
+
+  <!-- A8.net 広告掲載URL管理・リンクマネージャー (A8 Link Manager) -->
+  <script src="//statics.8me.jp/a8link/a8linkmgr.js"></script>
+  <script>
+    a8linkmgr({ "config_id": "AiCzxW5LM9avBb8VJ393" });
+  </script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../style.css?v=20261006_4">
+  <link rel="stylesheet" href="article.css?v=20261015_1">
+
+  <!-- Schema.org JSON-LD (Article & Breadcrumb) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "Core Blockchain 最新開発動向・技術進捗レポート (2025-2026年最新版)",
+        "description": "gocore v2.2メジャーアップデート、スマートコントラクト標準群（CBC-20/CIP群）の策定、0G(SMS)完全オフライン送金TxMS、Ed448耐量子暗号基盤、Ylem言語、CoreMiner v0.19.89までの最新開発状況を徹底解説。",
+        "datePublished": "2026-09-12T00:00:00+09:00",
+        "dateModified": "2026-09-12T00:00:00+09:00",
+        "author": {
+          "@type": "Person",
+          "name": "リコロ (Ricolo)"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "CoreStation",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://corestation.pages.dev/assets/core-icon.svg"
+          }
+        },
+        "mainEntityOfPage": "https://corestation.pages.dev/articles/dev-update-2026.html"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "ホーム (ダッシュボード)",
+            "item": "https://corestation.pages.dev/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "ナレッジアーカイブ",
+            "item": "https://corestation.pages.dev/#articles"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Core Blockchain 最新開発動向・技術進捗レポート (2025-2026年最新版)",
+            "item": "https://corestation.pages.dev/articles/dev-update-2026.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="article-page-body">
+
+  <!-- Header Navigation -->
+  <header class="article-header-nav">
+    <a href="../#dashboard" class="article-brand">
+      <img src="../assets/core-icon.svg" alt="CoreStation Logo">
+      <span>CoreStation</span>
+    </a>
+    <nav class="article-nav-links">
+      <a href="../#dashboard">📊 ダッシュボード</a>
+      <a href="../#articles">📚 記事一覧</a>
+      <a href="../#guide">🚀 導入手順</a>
+      <a href="../about.html">🏢 運営者情報</a>
+    </nav>
+  </header>
+
+  <main class="article-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="../">ホーム</a>
+      <span class="sep">&gt;</span>
+      <a href="../#articles">ナレッジアーカイブ</a>
+      <span class="sep">&gt;</span>
+      <span>最新開発動向</span>
+    </nav>
+
+    <!-- Main Article Card -->
+    <article class="article-card-main">
+      <header class="article-meta-header">
+        <span class="article-badge">最新開発動向</span>
+        <h1 class="article-main-title">Core Blockchain 最新開発動向・技術進捗レポート (2025-2026年最新版)</h1>
+        <div class="article-submeta">
+          <span>📅 公開日: 2026-09-12</span>
+          <span>✍️ 執筆: リコロ (Ricolo)</span>
+          <span>🔒 監修: CoreStation 技術検証チーム</span>
+        </div>
+      </header>
+
+      <!-- Article Content Body -->
+      <div class="article-content-body">
+        
+      <h3>1. 公式ノード「gocore」のメジャーアップデート（v2.2系統）</h3>
+      <p>Core Blockchainのコアクライアントである<code>go-core</code>（gocore）は、2025年秋から2026年にかけて相次いでメジャーアップデート（v2.1.12 → v2.2.0 → v2.2.1 → v2.2.2）が実施され、Ethereumフォークからの完全な独自進化を遂げました。</p>
+      
+      <div class="article-alert info">
+        <strong>💡 gocore v2.2の主な技術的マイルストーン</strong><br>
+        <ul>
+          <li><strong>スマートコントラクトAPI（<code>sc.*</code>）の全面実装:</strong> REVM（Rust EVM）ベースのCore Virtual Machine（CVM）とのネイティブ連携が完了し、<code>sc.getKYC</code>や<code>sc.call</code>などの専用名前空間が解放されました。</li>
+          <li><strong>ネイティブトランザクション合成（<code>xcb.composeTransaction</code>）:</strong> 従来の複雑なオフチェーン署名ステップを簡素化し、ウォレット側でエナジー（Energy）計算と22バイトICANアドレス変換を自動処理可能に。</li>
+          <li><strong>リアルタイムWSSサブスクリプション:</strong> ブロック生成・トランザクションイベントのWebSocketプッシュ通知が安定化。</li>
+          <li><strong>Darwin ARM64（Apple Silicon M1〜M4）ネイティブ最適化:</strong> macOS環境でのノード同期速度が大幅に向上。</li>
+        </ul>
+      </div>
+
+      <h3>2. CIP（Core Improvement Proposals）標準規格の大規模策定（2026年9月最新）</h3>
+      <p>2026年9月4日、Core公式よりエコシステムのスマートコントラクトおよびトークン経済を標準化する<strong>包括的なCIP規格群（CIP-20〜CIP-4626）</strong>の最新定義が正式公開されました。これにより、Core Blockchain上でのDeFiやNFT、エンタープライズサービスの開発基盤が完全に整いました。</p>
+
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">規格番号</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">標準名称</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">概要と技術的意義</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CIP-20 (CBC-20)</strong></td>
+            <td>Core Blockchain Contract トークン標準</td>
+            <td>ERC-20を代替するCoreネイティブのファンジブルトークン規格。22バイトICANアドレス（<code>cb...</code>）に完全対応し、Gasではなく「Energy」で手数料を消費する設計。</td>
+          </tr>
+          <tr>
+            <td><strong>CIP-721</strong></td>
+            <td>CoreNFT 非代替性トークン標準</td>
+            <td>デジタルアートや実世界資産（RWA）、CorePass ID連携証明書を発行・移転するためのNFT標準。</td>
+          </tr>
+          <tr>
+            <td><strong>CIP-712 / 2612 / 3009</strong></td>
+            <td>エナジーレス（ガスレス）署名＆メタトランザクション</td>
+            <td>ユーザーがXCB（エナジー）を事前保有していなくても、オフチェーンでのEIP-712互換暗号署名により第三者リレイヤーが手数料を代行支払できる仕組み。DAppsへの参入障壁をゼロ化。</td>
+          </tr>
+          <tr>
+            <td><strong>CIP-4626</strong></td>
+            <td>トークン化イールドVault標準</td>
+            <td>DeFiの利回り・ステーキング資産の運用規格。単一の標準APIで利息計算や預け入れ・引き出しを統一。</td>
+          </tr>
+          <tr>
+            <td><strong>CIP-104</strong></td>
+            <td>分散型オンチェーン価格オラクル規格</td>
+            <td>DEX（分散型取引所）やレンディングプロトコル向けに、PingExchange等のリアルタイム価格データをオンチェーンに安全に提供する標準インターフェース。</td>
+          </tr>
+          <tr>
+            <td><strong>CIP-150 / 151</strong></td>
+            <td>Key-Value メタデータ保存＆トークン追跡</td>
+            <td>ブロックチェーン上に任意のキー・バリューデータを効率的かつ低コストに格納・追跡するストレージ拡張仕様。</td>
+          </tr>
+          <tr>
+            <td><strong>CorePass KYC連携</strong></td>
+            <td>分散型ID（DID）オンチェーン検証</td>
+            <td><code>sc.getKYC()</code> APIを通じて、スマートコントラクト側がユーザーの身元確認状態（AML/CFT準拠）を個人情報を直接露出することなくオンチェーンで直接検証可能。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>3. 画期的イノベーション：0G (SMS) オフライン送金プロトコル（TxMS）</h3>
+      <p>Core Blockchainの開発陣が最も注力している独自技術の一つが、インターネット通信（4G/5G/Wi-Fi）が一切存在しない環境でもトランザクションを実行できる<strong>「0G (TxMS: Transaction via SMS) プロトコル」</strong>です。</p>
+
+      <div class="article-alert success">
+        <strong>📡 TxMS（SMSトランザクション）の仕組みと強み</strong><br>
+        1. <strong>オフライン署名:</strong> スマートフォン端末（CorePass等）内でローカルにEd448秘密鍵を用いてトランザクションを生成・署名。<br>
+        2. <strong>SMSペイロード化:</strong> 署名済みデータを極小バイト数に圧縮し、SMS（ショートメッセージ）の本文に格納。<br>
+        3. <strong>ゲートウェイ中継:</strong> 世界各地に分散配置されたTxMSゲートウェイ局（<code>txms-server</code>）がSMSを受信し、Core Blockchainネットワークへ即座にブロードキャスト。<br>
+        4. <strong>実用シーン:</strong> 地震・津波等の大災害による通信網遮断時、海底ケーブル切断、あるいはインターネットインフラが未整備の僻地・発展途上国でも金融送金が継続可能。
+      </div>
+
+      <h3>4. 224ビット耐量子暗号（Ed448-Goldilocks）と独自言語「Ylem」</h3>
+      <p>BitcoinやEthereumなどの主要ブロックチェーンが採用している楕円曲線暗号<code>secp256k1</code>（128ビットセキュリティ水準）に対し、Core Blockchainは極めて強力な<strong>Ed448-Goldilocks曲線（224ビットセキュリティ水準）</strong>をネイティブ採用しています。</p>
+      <ul>
+        <li><strong>耐量子計算機性能:</strong> Shorのアルゴリズムを用いた量子コンピュータによる攻撃に対しても、従来の暗号資産より遥かに高い安全マージンを確保。</li>
+        <li><strong>SHAKE256ハッシュ関数:</strong> SHA-256ではなく可変長ハッシュ関数SHAKE256を全面採用。アドレス生成やブロックダイジェストに活用。</li>
+        <li><strong>Ylem（イーレム）言語コンパイラ:</strong> Solidityをベースにしつつ、Ed448署名検証やICANアドレス、エナジー体系に特化した独自スマートコントラクト言語「Ylem」の開発が加速（2026年最新版）。</li>
+      </ul>
+
+      <h3>5. マイニング動向（CoreMiner v0.19.89 と DePIN連携）</h3>
+      <p>マイナーにとって最も重要な採掘ソフトウェア・アルゴリズム面でも重要な転換が行われています。</p>
+
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">項目</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">以前の仕様</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">最新の仕様（2025-2026）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>RPCプロトコル</strong></td>
+            <td><code>eth_getWork</code> (Ethereum互換)</td>
+            <td><strong><code>xcb_getWork</code></strong> (Core完全ネイティブ仕様に完全統一)</td>
+          </tr>
+          <tr>
+            <td><strong>マイニングソフト</strong></td>
+            <td>coreminer v0.19.7x / 0.19.85</td>
+            <td><strong>coreminer v0.19.89</strong> (最新RandomYキャッシュ・マルチプラットフォーム最適化)</td>
+          </tr>
+          <tr>
+            <td><strong>採掘アルゴリズム</strong></td>
+            <td>RandomY (初期実装)</td>
+            <td><strong>RandomY (RandomX 1.2.1準拠版)</strong>: メモリ帯域の最適化とCPU負荷の均等化</td>
+          </tr>
+          <tr>
+            <td><strong>ハードウェア展開</strong></td>
+            <td>自作PC / サーバーCPUのみ</td>
+            <td><strong>ORB i2（8W超低消費電力IoTノード）</strong>、LunaMesh分散無線ネットワークとの連携</td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <h3>6. YouTube & Telegram 公式発表（実利用・決済エコシステムの最新進捗）</h3>
+      <p>CoDeTechおよびCore Blockchain開発陣は、公式YouTubeチャンネル（<code>@CoDeTechCC</code>）の独自ドキュメンタリーシリーズ<strong>「Core Chronicle」</strong>や公式Telegramアナウンス（<code>@CoDeTechCC</code>）にて、2026年7月〜8月に相次いで画期的な実利用フェーズへの移行を発表しました。</p>
+
+      <div class="article-alert success">
+        <strong>📺 YouTube最新エピソード「Core Chronicle #13」：ソーシャルID送金の実演</strong><br>
+        2026年7月28日、CoDeTech CEO兼Core Blockchain共同創業者であるOckert Loubser氏により、<strong>「CoreID × Wall Money × Core Settlement Network」</strong>による新送金インフラが公開されました。<br>
+        <ul>
+          <li><strong>ウォレットアドレス・銀行口座番号が不要:</strong> X（旧Twitter）やFediverse（Mastodon等）のSNSアカウント宛てに、直接<strong>XCB、CTN、USDX、EURX、CNYX、THBX</strong>などのデジタル資産をワンクリックで送金・チップ支援可能に。</li>
+          <li>クリエイターやコミュニティが第三者決済サービスを介さず、普段のSNSアカウントそのものを直接受取口座（決済エンドポイント）として利用できます。</li>
+        </ul>
+      </div>
+
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">発表日付</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">公開チャネル</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">発表内容と実用上の意義</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>2026年7月21日</strong></td>
+            <td>公式Telegram</td>
+            <td><strong>4大法定通貨ステーブルコイン（USDX, EURX, CNYX, THBX）正式デプロイ</strong><br>米ドル・ユーロ・中国人民元・タイバーツにペッグされた公式ステーブルトークンがCore Blockchainメインネット上に稼働。</td>
+          </tr>
+          <tr>
+            <td><strong>2026年7月</strong></td>
+            <td>YouTube (CC11 / 11.5)</td>
+            <td><strong>「CorePay」EC決済ゲートウェイ公開（WooCommerce / Shopify連携）</strong><br>世界中のWordPressやShopifyオンラインストアへCore Blockchain決済（XCB/CTN）を導入可能なマーチャント向けプラグインが正式稼働。</td>
+          </tr>
+          <tr>
+            <td><strong>2026年7月12日</strong></td>
+            <td>公式Shorts動画</td>
+            <td><strong>実店舗リアル決済デモ（CorePass → Wall Money → バーチャルカード）</strong><br>CorePassからWall Moneyへ暗号資産を移転し、即座にバーチャルVisaカードへチャージしてスーパーマーケットで食料品を直接購入・決済する完全実利用フローを実演。</td>
+          </tr>
+          <tr>
+            <td><strong>2026年7月8日</strong></td>
+            <td>公式Shorts動画</td>
+            <td><strong>CorePass KYB（法人確認）＆ MoneyX 準備金監査基盤</strong><br>企業向けの身元確認（KYB）機能が実稼働。100%検証可能な法定通貨準備金裏付けを持つステーブル基盤「MoneyX」を統合。</td>
+          </tr>
+          <tr>
+            <td><strong>2026年上半期</strong></td>
+            <td>YouTube (CC8 全4話)</td>
+            <td><strong>「Core Tokenizer」RWA（実世界資産）トークン化シリーズ</strong><br>不動産・金・証券などの現実資産をCore Blockchain上で安全にトークン化・発行するための専用プラットフォーム構想と実装。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>💡 まとめ：エコシステムの成熟とマイナーへの影響</h4>
+      <p>Core Blockchainは、単なる「CPUで採掘できるPoWコイン」の域を脱し、<strong>「耐量子暗号」「オフライン0G送金」「分散型身元認証（CorePass）」「包括的スマートコントラクトDeFi基盤（CIP群）」</strong>を兼ね備えた第3世代の独立レイヤー1ブロックチェーンへと着実に進化しています。</p>
+      <p>マイナーにとっては、今後CBC-20トークンやDAppsのオンチェーントランザクションが増加することにより、ブロック報酬に加えてエナジー消費（取引手数料）としてのXCB還元が期待できる構造へとステップアップしています。</p>
+    
+      </div>
+
+      <!-- Bottom CTA Banner -->
+      <section class="article-bottom-cta">
+        <h3>⚡ Core Blockchain (XCB) の最新データをチェック！</h3>
+        <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">
+          リアルタイム採掘報酬、最新ブロック高、難易度推移、確定申告CSV生成は「CoreStation」で完全無料公開中！
+        </p>
+        <a href="../#dashboard" class="article-cta-btn">🚀 CoreStation ダッシュボードへ戻る</a>
+      </section>
+
+      <!-- Related Articles Section -->
+      <section class="article-related-section">
+        <h3 style="color: #f1f5f9; font-size: 1.25rem; border-left: 4px solid #38bdf8; padding-left: 12px;">📚 関連記事・おすすめトピック</h3>
+        <div class="related-grid">
+          
+          <a href="corepass-kyb-launch-corporate-did.html" class="related-card">
+            <div class="related-card-title">【世界初クラス！？】企業専用の分散型ID「CorePass KYB」が遂に正式ローンチ！実社会の法人がWeb3に合流する革命的仕組みを自作PC女子リコロが徹底解剖！🏢🎮🛡️</div>
+            <div class="related-card-date">📅 2026-10-10</div>
+          </a>
+        
+          <a href="wall-money-quality-first-security-update.html" class="related-card">
+            <div class="related-card-title">【品質最優先の決断！】Wall Moneyの一般公開延期とセキュリティ基準の真相！妥協を許さない開発陣と決済・Swaptopiaの最新進捗を自作PC女子リコロが熱血レポート！🎬🏦🛡️</div>
+            <div class="related-card-date">📅 2026-09-29</div>
+          </a>
+        
+          <a href="corepass-connector-launch-web2-web3-bridge.html" class="related-card">
+            <div class="related-card-title">【外部Webサービスと繋がる！】「CorePass Connector」が正式公開！パスワードもGoogle連携も不要になる次世代ログイン革命を自作PC女子リコロが徹底解説！🚀🔑✨</div>
+            <div class="related-card-date">📅 2026-09-25</div>
+          </a>
+        
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="article-footer">
+    <div class="article-footer-links">
+      <a href="../">ダッシュボード</a>
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="../about.html">運営者情報・お問い合わせ</a>
+      <a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer">公式ブログ (はてな) ↗</a>
+    </div>
+    <div>&copy; 2026 CoreStation / Ricolo. All Rights Reserved.</div>
+  </footer>
+
+</body>
+</html>

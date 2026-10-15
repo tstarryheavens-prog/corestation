@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core i9-14900 / Ryzen 9 7950X / Core i5-13500 推奨マイニング設定＆最適化完全ガイド | CoreStation ナレッジ</title>
+  <meta name="description" content="AMD Ryzen 9 7950X、Intel Core i9-14900、Core i5-13500の3大CPUにおけるXCB (RandomY / PoDE) マイニング推奨スレッド数、BIOS電力制限（PL1/PL2、Eco Mode）、Curve Optimizer、CoreMiner / SRBMiner起動コマンド、想定ハッシュレートを徹底解説。">
+  <link rel="canonical" href="https://corestation.pages.dev/articles/cpu-tuning-guide.html">
+  <link rel="icon" type="image/svg+xml" href="../assets/core-icon.svg">
+  
+  <!-- OGP / Social Sharing -->
+  <meta property="og:title" content="Core i9-14900 / Ryzen 9 7950X / Core i5-13500 推奨マイニング設定＆最適化完全ガイド">
+  <meta property="og:description" content="AMD Ryzen 9 7950X、Intel Core i9-14900、Core i5-13500の3大CPUにおけるXCB (RandomY / PoDE) マイニング推奨スレッド数、BIOS電力制限（PL1/PL2、Eco Mode）、Curve Optimizer、CoreMiner / SRBMiner起動コマンド、想定ハッシュレートを徹底解説。">
+  <meta property="og:url" content="https://corestation.pages.dev/articles/cpu-tuning-guide.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Google AdSense Verification & Auto-Ads Tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1988464307898443" crossorigin="anonymous"></script>
+
+  <!-- A8.net 広告掲載URL管理・リンクマネージャー (A8 Link Manager) -->
+  <script src="//statics.8me.jp/a8link/a8linkmgr.js"></script>
+  <script>
+    a8linkmgr({ "config_id": "AiCzxW5LM9avBb8VJ393" });
+  </script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../style.css?v=20261006_4">
+  <link rel="stylesheet" href="article.css?v=20261015_1">
+
+  <!-- Schema.org JSON-LD (Article & Breadcrumb) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "Core i9-14900 / Ryzen 9 7950X / Core i5-13500 推奨マイニング設定＆最適化完全ガイド",
+        "description": "AMD Ryzen 9 7950X、Intel Core i9-14900、Core i5-13500の3大CPUにおけるXCB (RandomY / PoDE) マイニング推奨スレッド数、BIOS電力制限（PL1/PL2、Eco Mode）、Curve Optimizer、CoreMiner / SRBMiner起動コマンド、想定ハッシュレートを徹底解説。",
+        "datePublished": "2026-09-06T00:00:00+09:00",
+        "dateModified": "2026-09-06T00:00:00+09:00",
+        "author": {
+          "@type": "Person",
+          "name": "リコロ (Ricolo)"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "CoreStation",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://corestation.pages.dev/assets/core-icon.svg"
+          }
+        },
+        "mainEntityOfPage": "https://corestation.pages.dev/articles/cpu-tuning-guide.html"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "ホーム (ダッシュボード)",
+            "item": "https://corestation.pages.dev/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "ナレッジアーカイブ",
+            "item": "https://corestation.pages.dev/#articles"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Core i9-14900 / Ryzen 9 7950X / Core i5-13500 推奨マイニング設定＆最適化完全ガイド",
+            "item": "https://corestation.pages.dev/articles/cpu-tuning-guide.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="article-page-body">
+
+  <!-- Header Navigation -->
+  <header class="article-header-nav">
+    <a href="../#dashboard" class="article-brand">
+      <img src="../assets/core-icon.svg" alt="CoreStation Logo">
+      <span>CoreStation</span>
+    </a>
+    <nav class="article-nav-links">
+      <a href="../#dashboard">📊 ダッシュボード</a>
+      <a href="../#articles">📚 記事一覧</a>
+      <a href="../#guide">🚀 導入手順</a>
+      <a href="../about.html">🏢 運営者情報</a>
+    </nav>
+  </header>
+
+  <main class="article-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="../">ホーム</a>
+      <span class="sep">&gt;</span>
+      <a href="../#articles">ナレッジアーカイブ</a>
+      <span class="sep">&gt;</span>
+      <span>CPU設定ガイド</span>
+    </nav>
+
+    <!-- Main Article Card -->
+    <article class="article-card-main">
+      <header class="article-meta-header">
+        <span class="article-badge">CPU設定ガイド</span>
+        <h1 class="article-main-title">Core i9-14900 / Ryzen 9 7950X / Core i5-13500 推奨マイニング設定＆最適化完全ガイド</h1>
+        <div class="article-submeta">
+          <span>📅 公開日: 2026-09-06</span>
+          <span>✍️ 執筆: リコロ (Ricolo)</span>
+          <span>🔒 監修: CoreStation 技術検証チーム</span>
+        </div>
+      </header>
+
+      <!-- Article Content Body -->
+      <div class="article-content-body">
+        
+      <div class="article-alert info">
+        <strong>⚡ RandomY (PoDE) マイニングにおけるCPU選定・設定の鉄則</strong><br>
+        RandomY（RandomX 1.2.1互換）では、<strong>「スレッドあたり2MBのL3キャッシュ」</strong>を消費します。<br>
+        CPUの論理スレッド数を上限まで指定するのではなく、<strong>「L3キャッシュ総容量 ÷ 2MB」</strong>を上限としてスレッド数（<code>-t</code>）を設定することが、ハッシュレート低下（キャッシュ競合）を防ぐ最大の鍵です。
+      </div>
+
+      <h3>1. AMD Ryzen 9 7950X (Zen 4) 推奨設定</h3>
+      <table class="article-table">
+        <tbody>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">コア / スレッド</th><td>16コア / 32スレッド（全コア同一のフル性能コア）</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">L3キャッシュ</th><td>64MB (32MB CCD × 2基)</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">推奨スレッド数</th><td><strong>30 〜 32 スレッド (<code>-t 30</code> 推奨)</strong></td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">想定ハッシュレート</th><td><strong>約 22,000 〜 25,000 H/s</strong></td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">想定消費電力</th><td>定格: 約200W / 105W Eco Mode時: 約125W</td></tr>
+        </tbody>
+      </table>
+
+      <h4>最適化チューニング手順:</h4>
+      <ol>
+        <li>
+          <strong>105W Eco Mode (PPT 142W / TDC 110A / EDC 150A):</strong><br>
+          BIOS（AMD CBS / Precision Boost Overdrive）で「Eco Mode (105W)」を適用。定格（230W）から消費電力と発熱が40%以上激減する一方、ハッシュレートは95%以上維持されます（ワットパフォーマンス最強設定）。
+        </li>
+        <li>
+          <strong>Curve Optimizer (低電圧化):</strong><br>
+          All Cores <code>-20</code> 〜 <code>-30</code> に設定。動作電圧が下がり、電力制限内でのブーストクロックが向上します。
+        </li>
+        <li>
+          <strong>Huge Pages (2MB) 有効化:</strong><br>
+          Linux/HiveOSでは <code>sudo sysctl -w vm.nr_hugepages=1280</code> を実行。
+        </li>
+      </ol>
+
+      <h4>起動コマンド例:</h4>
+      <div class="article-code-box">
+        <pre><code># CoreMiner (Linux)
+./coreminer -t 30 -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.7950X@sg.catchthatrabbit.com:8008
+
+# SRBMiner-MULTI (Linux / Windows)
+./SRBMiner-MULTI --algorithm pode --pool sg.catchthatrabbit.com:8008 --wallet cb57b88d24678c2091332971e3a38cca472dd8aac0cd.7950X --cpu-threads 30</code></pre>
+      </div>
+
+      <hr style="border:none; border-top: 1px solid #e2e8f0; margin: 28px 0;">
+
+      <h3>2. Intel Core i9-14900 / 14900K 推奨設定</h3>
+      <table class="article-table">
+        <tbody>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">コア / スレッド</th><td>24コア (8 P-cores + 16 E-cores) / 32スレッド</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">L3キャッシュ</th><td>36MB、L2キャッシュ: 32MB</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">推奨スレッド数</th><td><strong>16 〜 18 スレッド (<code>-t 18</code>) ※32スレッド全開は厳禁</strong></td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">想定ハッシュレート</th><td><strong>約 13,500 〜 15,500 H/s</strong></td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">想定消費電力</th><td>電力制限時: 約140W 〜 180W (定格無制限時は300W超で危険)</td></tr>
+        </tbody>
+      </table>
+
+      <h4>最適化チューニング手順:</h4>
+      <div class="article-alert warning">
+        <strong>⚠️ 32スレッド全開によるキャッシュ破綻に注意</strong><br>
+        L3キャッシュが36MBしかないため、36MB ÷ 2MB = <strong>最大18スレッド</strong> が理論限界です。32スレッド指定するとL3キャッシュの衝突（スラッシング）により、ハッシュレートが半減（8,000 H/s以下）することがあります。
+      </div>
+      <ol>
+        <li>
+          <strong>電力制限 (PL1=125W〜150W / PL2=180W):</strong><br>
+          第14世代Core i9特有のVcore過電圧によるCPU劣化やクラッシュを防ぐため、BIOSでIntel Default Profile（Baseline）を適用し、長期間PL1を125W〜150W、PL2を180W、IccMaxを307A〜400Aに確実に制限してください。
+        </li>
+        <li>
+          <strong>Adaptive Vcore Offset (低電圧化):</strong><br>
+          <code>-0.050V</code> 〜 <code>-0.075V</code> のマイナスオフセットを設定し、サーマルスロットリングを回避。
+        </li>
+        <li>
+          <strong>スレッド割り当て:</strong><br>
+          Pコア8個（16スレッド）＋ Eコア2スレッド（合計18スレッド）が最もバランス良くハッシュレートを叩き出します。
+        </li>
+      </ol>
+
+      <h4>起動コマンド例:</h4>
+      <div class="article-code-box">
+        <pre><code># CoreMiner (Linux)
+./coreminer -t 18 -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.14900@sg.catchthatrabbit.com:8008
+
+# SRBMiner-MULTI (Linux / Windows)
+./SRBMiner-MULTI --algorithm pode --pool sg.catchthatrabbit.com:8008 --wallet cb57b88d24678c2091332971e3a38cca472dd8aac0cd.14900 --cpu-threads 18</code></pre>
+      </div>
+
+      <hr style="border:none; border-top: 1px solid #e2e8f0; margin: 28px 0;">
+
+      <h3>3. Intel Core i5-13500 推奨設定</h3>
+      <table class="article-table">
+        <tbody>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">コア / スレッド</th><td>14コア (6 P-cores + 8 E-cores) / 20スレッド</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">L3キャッシュ</th><td>24MB、L2キャッシュ: 11.5MB</td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">推奨スレッド数</th><td><strong>10 〜 12 スレッド (<code>-t 11</code> 推奨)</strong></td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">想定ハッシュレート</th><td><strong>約 6,800 〜 7,800 H/s</strong></td></tr>
+          <tr><th style="background-color: #1e293b !important; color: #ffffff !important;">想定消費電力</th><td>約 65W 〜 85W</td></tr>
+        </tbody>
+      </table>
+
+      <h4>最適化チューニング手順:</h4>
+      <ol>
+        <li>
+          <strong>推奨スレッド数の根拠:</strong><br>
+          L3キャッシュが24MBのため、24MB ÷ 2MB = <strong>最大12スレッド</strong> が上限です。OSのバックグラウンドタスク用に1スレッド残した <strong>11スレッド（<code>-t 11</code>）</strong> が最もフレーム落ちなくスムーズに動作します。
+        </li>
+        <li>
+          <strong>低発熱・高信頼性常時稼働:</strong><br>
+          標準TDPが65W（PL1=65W, PL2=154W）と非常に扱いやすく、BIOSでPL1を65W〜80Wに設定しておけば、小型ケースや安価な空冷クーラーでもCPU温度60℃台で24時間365日静音マイニングが可能です。
+        </li>
+      </ol>
+
+      <h4>起動コマンド例:</h4>
+      <div class="article-code-box">
+        <pre><code># CoreMiner (Linux)
+./coreminer -t 11 -P stratum+tcp://cb57b88d24678c2091332971e3a38cca472dd8aac0cd.13500@sg.catchthatrabbit.com:8008
+
+# SRBMiner-MULTI (Linux / Windows)
+./SRBMiner-MULTI --algorithm pode --pool sg.catchthatrabbit.com:8008 --wallet cb57b88d24678c2091332971e3a38cca472dd8aac0cd.13500 --cpu-threads 11</code></pre>
+      </div>
+
+      <hr style="border:none; border-top: 1px solid #e2e8f0; margin: 28px 0;">
+
+      <h3>4. 3モデルの比較・ワットパフォーマンスまとめ</h3>
+      <table class="article-table">
+        <thead>
+          <tr>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">CPUモデル</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">L3キャッシュ</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">推奨スレッド数</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">想定採掘速度</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">消費電力 (推奨時)</th>
+            <th style="background-color: #1e293b !important; color: #ffffff !important;">ワット効率評価</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Ryzen 9 7950X</strong></td>
+            <td>64 MB</td>
+            <td><strong>30 〜 32</strong></td>
+            <td><strong>22,000〜25,000 H/s</strong></td>
+            <td>約 125 W (Eco Mode)</td>
+            <td>★★★★★ (180 H/s・W)</td>
+          </tr>
+          <tr>
+            <td><strong>Core i9-14900</strong></td>
+            <td>36 MB</td>
+            <td><strong>16 〜 18</strong></td>
+            <td><strong>13,500〜15,500 H/s</strong></td>
+            <td>約 150 W (PL制限時)</td>
+            <td>★★★☆☆ (95 H/s・W)</td>
+          </tr>
+          <tr>
+            <td><strong>Core i5-13500</strong></td>
+            <td>24 MB</td>
+            <td><strong>10 〜 12</strong></td>
+            <td><strong>6,800〜7,800 H/s</strong></td>
+            <td>約 70 W (定格付近)</td>
+            <td>★★★★☆ (105 H/s・W)</td>
+          </tr>
+        </tbody>
+      </table>
+    
+      </div>
+
+      <!-- Bottom CTA Banner -->
+      <section class="article-bottom-cta">
+        <h3>⚡ Core Blockchain (XCB) の最新データをチェック！</h3>
+        <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">
+          リアルタイム採掘報酬、最新ブロック高、難易度推移、確定申告CSV生成は「CoreStation」で完全無料公開中！
+        </p>
+        <a href="../#dashboard" class="article-cta-btn">🚀 CoreStation ダッシュボードへ戻る</a>
+      </section>
+
+      <!-- Related Articles Section -->
+      <section class="article-related-section">
+        <h3 style="color: #f1f5f9; font-size: 1.25rem; border-left: 4px solid #38bdf8; padding-left: 12px;">📚 関連記事・おすすめトピック</h3>
+        <div class="related-grid">
+          
+          <a href="corepass-kyb-launch-corporate-did.html" class="related-card">
+            <div class="related-card-title">【世界初クラス！？】企業専用の分散型ID「CorePass KYB」が遂に正式ローンチ！実社会の法人がWeb3に合流する革命的仕組みを自作PC女子リコロが徹底解剖！🏢🎮🛡️</div>
+            <div class="related-card-date">📅 2026-10-10</div>
+          </a>
+        
+          <a href="wall-money-quality-first-security-update.html" class="related-card">
+            <div class="related-card-title">【品質最優先の決断！】Wall Moneyの一般公開延期とセキュリティ基準の真相！妥協を許さない開発陣と決済・Swaptopiaの最新進捗を自作PC女子リコロが熱血レポート！🎬🏦🛡️</div>
+            <div class="related-card-date">📅 2026-09-29</div>
+          </a>
+        
+          <a href="corepass-connector-launch-web2-web3-bridge.html" class="related-card">
+            <div class="related-card-title">【外部Webサービスと繋がる！】「CorePass Connector」が正式公開！パスワードもGoogle連携も不要になる次世代ログイン革命を自作PC女子リコロが徹底解説！🚀🔑✨</div>
+            <div class="related-card-date">📅 2026-09-25</div>
+          </a>
+        
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="article-footer">
+    <div class="article-footer-links">
+      <a href="../">ダッシュボード</a>
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="../about.html">運営者情報・お問い合わせ</a>
+      <a href="https://corestation.hatenadiary.com/" target="_blank" rel="noopener noreferrer">公式ブログ (はてな) ↗</a>
+    </div>
+    <div>&copy; 2026 CoreStation / Ricolo. All Rights Reserved.</div>
+  </footer>
+
+</body>
+</html>

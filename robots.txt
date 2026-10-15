@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://corestation.pages.dev/sitemap.xml
