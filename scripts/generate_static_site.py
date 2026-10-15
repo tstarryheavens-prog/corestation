@@ -931,8 +931,9 @@ new_footer = """      <div class="footer-legal-links">
 if old_footer in index_content:
     index_content = index_content.replace(old_footer, new_footer)
 
-# 9.4 Update archive title (10 -> 27)
-index_content = index_content.replace("全10記事", f"全{len(articles)}記事")
+# 9.4 Update archive title count dynamically
+import re
+index_content = re.sub(r'全\d+記事', f'全{len(articles)}記事', index_content)
 
 # 9.5 Populate articlesArchiveContainer with static fallback links for crawlers
 static_cards_html = []
@@ -942,7 +943,7 @@ for art in articles:
     art_summary = html.escape(art.get("summary", ""))
     art_cat = html.escape(art.get("categoryName", "ガイド"))
     art_date = html.escape(art.get("date", "2026-09-06"))
-    static_cards_html.append(f'''              <a href="articles/{art_id}.html" class="article-card" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between;" data-article-id="{art_id}">
+    static_cards_html.append(f'''              <a href="articles/{art_id}" class="article-card" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between;" data-article-id="{art_id}">
                 <div>
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <span class="badge-online" style="font-size: 11px; padding: 2px 8px;">{art_cat}</span>
@@ -959,17 +960,18 @@ for art in articles:
 
 static_articles_block = "\n".join(static_cards_html)
 
-import re
-pattern = r'(<div class="article-grid" id="articlesArchiveContainer">)(.*?)(</div>\s*</div>\s*</section>)'
-def repl(m):
-    return f"{m.group(1)}\n{static_articles_block}\n            {m.group(3)}"
-
-new_index_content = re.sub(pattern, repl, index_content, flags=re.DOTALL)
-if new_index_content != index_content:
-    index_content = new_index_content
-    print("[SSG] Replaced articlesArchiveContainer fallback content")
+start_tag = '<div class="article-grid" id="articlesArchiveContainer">'
+end_tag = '</div>\n          </div>\n        </section>'
+start_idx = index_content.find(start_tag)
+if start_idx != -1:
+    end_idx = index_content.find(end_tag, start_idx)
+    if end_idx != -1:
+        index_content = index_content[:start_idx + len(start_tag)] + "\n" + static_articles_block + "\n            " + index_content[end_idx:]
+        print(f"[SSG] Replaced articlesArchiveContainer with {len(articles)} fallback cards")
+    else:
+        print("[SSG] Warning: end_tag for articlesArchiveContainer not found")
 else:
-    print("[SSG] Warning: articlesArchiveContainer regex did not match")
+    print("[SSG] Warning: start_tag for articlesArchiveContainer not found")
 
 with open(index_path, "w", encoding="utf-8") as f:
     f.write(index_content)
