@@ -353,13 +353,13 @@ for i, art in enumerate(articles):
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{title} | CoreStation ナレッジ</title>
   <meta name="description" content="{summary}">
-  <link rel="canonical" href="https://corestation.pages.dev/articles/{art_id}.html">
+  <link rel="canonical" href="https://corestation.pages.dev/articles/{art_id}">
   <link rel="icon" type="image/svg+xml" href="../assets/core-icon.svg">
   
   <!-- OGP / Social Sharing -->
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{summary}">
-  <meta property="og:url" content="https://corestation.pages.dev/articles/{art_id}.html">
+  <meta property="og:url" content="https://corestation.pages.dev/articles/{art_id}">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -400,7 +400,7 @@ for i, art in enumerate(articles):
             "url": "https://corestation.pages.dev/assets/core-icon.svg"
           }}
         }},
-        "mainEntityOfPage": "https://corestation.pages.dev/articles/{art_id}.html"
+        "mainEntityOfPage": "https://corestation.pages.dev/articles/{art_id}"
       }},
       {{
         "@type": "BreadcrumbList",
@@ -421,7 +421,7 @@ for i, art in enumerate(articles):
             "@type": "ListItem",
             "position": 3,
             "name": "{title}",
-            "item": "https://corestation.pages.dev/articles/{art_id}.html"
+            "item": "https://corestation.pages.dev/articles/{art_id}"
           }}
         ]
       }}
@@ -520,7 +520,7 @@ privacy_html = """<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>プライバシーポリシー (Privacy Policy) | CoreStation</title>
   <meta name="description" content="CoreStation（コアステーション）における個人情報保護方針、Cookieの取り扱い、Google AdSense広告配信およびアクセス解析ツールに関するプライバシーポリシーです。">
-  <link rel="canonical" href="https://corestation.pages.dev/privacy.html">
+  <link rel="canonical" href="https://corestation.pages.dev/privacy">
   <link rel="icon" type="image/svg+xml" href="assets/core-icon.svg">
   
   <!-- Google AdSense Verification & Auto-Ads Tag -->
@@ -627,7 +627,7 @@ disclaimer_html = """<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>免責事項・リスク開示 (Disclaimer) | CoreStation</title>
   <meta name="description" content="CoreStation（コアステーション）における投資判断、税務計算、ハードウェア設定チューニング等に関する免責事項およびリスク開示です。">
-  <link rel="canonical" href="https://corestation.pages.dev/disclaimer.html">
+  <link rel="canonical" href="https://corestation.pages.dev/disclaimer">
   <link rel="icon" type="image/svg+xml" href="assets/core-icon.svg">
   
   <!-- Google AdSense Verification & Auto-Ads Tag -->
@@ -719,7 +719,7 @@ about_html = """<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>運営者情報 ＆ お問い合わせ (About & Contact) | CoreStation</title>
   <meta name="description" content="CoreStation（コアステーション）の運営者情報、サイト運営目的、技術検証ハードウェア環境、およびお問い合わせ窓口について。">
-  <link rel="canonical" href="https://corestation.pages.dev/about.html">
+  <link rel="canonical" href="https://corestation.pages.dev/about">
   <link rel="icon" type="image/svg+xml" href="assets/core-icon.svg">
   
   <!-- Google AdSense Verification & Auto-Ads Tag -->
@@ -831,15 +831,15 @@ print("[SSG] Created about.html")
 today = datetime.now().strftime("%Y-%m-%d")
 sitemap_urls = [
     ("https://corestation.pages.dev/", "1.0", "daily"),
-    ("https://corestation.pages.dev/privacy.html", "0.5", "monthly"),
-    ("https://corestation.pages.dev/disclaimer.html", "0.5", "monthly"),
-    ("https://corestation.pages.dev/about.html", "0.7", "monthly"),
+    ("https://corestation.pages.dev/privacy", "0.5", "monthly"),
+    ("https://corestation.pages.dev/disclaimer", "0.5", "monthly"),
+    ("https://corestation.pages.dev/about", "0.7", "monthly"),
 ]
 
 for art in articles:
     art_id = art.get("id")
     date_val = art.get("date", today)
-    sitemap_urls.append((f"https://corestation.pages.dev/articles/{art_id}.html", "0.8", "weekly"))
+    sitemap_urls.append((f"https://corestation.pages.dev/articles/{art_id}", "0.8", "weekly"))
 
 sitemap_xml = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
 for u, priority, changefreq in sitemap_urls:
