@@ -714,6 +714,7 @@
 
   async function fetchLiveTransactions(wallet) {
     const urls = [
+      `/api/address?wallet=${wallet}&pageSize=20&_t=${Date.now()}`,
       `/api/blockindex/address/${wallet}?details=txs&pageSize=20&_t=${Date.now()}`,
       `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=20&_t=${Date.now()}`,
       `https://corsproxy.io/?url=${encodeURIComponent(`https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=20&_t=${Date.now()}`)}`,
@@ -729,7 +730,10 @@
           signal: timeoutSignal
         });
         if (!res.ok) continue;
-        const json = await res.json();
+        let json = await res.json();
+        if (json && json.data) {
+          json = json.data;
+        }
         if (json) {
           if (json.balance) {
             state.liveBalanceXcb = divideBy10e18(json.balance);

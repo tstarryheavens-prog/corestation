@@ -11,8 +11,9 @@ export async function onRequest(context) {
     const response = await fetch(targetUrl, {
       headers: {
         "Accept": "application/json",
-        "User-Agent": "CoreStation-Proxy/1.0"
-      }
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      },
+      cf: { cacheTtl: 15 }
     });
 
     const data = await response.text();
