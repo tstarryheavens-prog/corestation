@@ -1252,6 +1252,24 @@ window.__COREGEEKS_INITIAL_DATA__ = {
   },
   "articlesArchive": [
     {
+      "id": "ping-exchange-business-trading-live",
+      "title": "【速報・解説】Core Blockchainがビジネス取引の新章を開く！Ping Exchangeビジネス取引インフラ稼働の全貌🎮⚡️",
+      "category": "ecosystem",
+      "categoryName": "速報・公式アナウンス",
+      "date": "2026-10-18",
+      "summary": "CorePassの企業分散ID（KYB）が遂にPing Exchangeで実働開始！「ID・権限・説明責任」が一体化した世界初のビジネス取引インフラの全貌と、XCB/CTN経済圏への影響を自作PC女子リコロがわかりやすく深掘り解説。"
+    },
+
+    {
+      "id": "ping-exchange-kyb-maintenance-launch",
+      "title": "【速報・解説】Core BlockchainのPing Exchangeが大型アプデ！新KYB取引サービス正式ローンチの全貌🚀✨",
+      "category": "ecosystem",
+      "categoryName": "速報・公式アナウンス",
+      "date": "2026-10-18",
+      "summary": "2026年10月15日、Ping Exchangeが一時メンテナンスを経て「新KYB取引サービス」を正式ローンチ！企業向け本人確認インフラと取引所が直結し、組織レベルのデジタル資産運用が可能に。重要ポイントとマイナー・ホルダーへの影響を自作PC女子リコロが徹底解説。"
+    },
+
+    {
       "id": "core-blockchain-ecosystem-complete-guide",
       "title": "【2026年最新版】Core Blockchain (XCB) エコシステム徹底解説：CorePass KYB・Ping Exchange・XCB/CTN二重経済モデルの全貌",
       "category": "ecosystem",
