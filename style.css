@@ -1063,25 +1063,72 @@ a:hover {
 
 /* Article Modal Body Typography */
 .article-modal-content {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--text-main);
+}
+
+.article-modal-content h2 {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 32px 0 14px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 8px;
 }
 
 .article-modal-content h3 {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-main);
+  color: var(--primary);
   margin: 24px 0 12px;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 6px;
 }
 
 .article-modal-content h4 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-main);
   margin: 18px 0 10px;
+}
+
+.article-modal-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color);
+}
+
+.article-modal-content th,
+.article-modal-content td {
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.article-modal-content th {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.article-modal-content td {
+  background: #ffffff;
+  color: var(--text-secondary);
+}
+
+.article-modal-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.article-modal-content code {
+  background: var(--bg-hover);
+  color: var(--text-main);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
 }
 
 .article-modal-content p {
