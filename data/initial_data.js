@@ -1252,6 +1252,14 @@ window.__COREGEEKS_INITIAL_DATA__ = {
   },
   "articlesArchive": [
     {
+      "id": "core-blockchain-ecosystem-complete-guide",
+      "title": "【2026年最新版】Core Blockchain (XCB) エコシステム徹底解説：CorePass KYB・Ping Exchange・XCB/CTN二重経済モデルの全貌",
+      "category": "ecosystem",
+      "categoryName": "エコシステム・技術解説",
+      "date": "2026-10-18",
+      "summary": "2026年最新のCore Blockchain (XCB) エコシステムを徹底解説！法人向け分散ID「CorePass KYB」の正式展開、Web2/Web3を繋ぐCorePass Connector、Ping Exchange、そして基軸通貨XCBとユーティリティトークンCTNの二重経済圏の仕組みを自作PC女子リコロがわかりやすく図解。"
+    },
+    {
       "id": "ctn-role-and-ecosystem-guide",
       "title": "【XCBと何が違う？】Core Token（CTN）の役割・10億枚のトークノミクス・誕生の経緯からDeFi/0G決済の未来展望まで自作PC女子リコロが徹底解剖！🎮🪙💎",
       "category": "ecosystem",

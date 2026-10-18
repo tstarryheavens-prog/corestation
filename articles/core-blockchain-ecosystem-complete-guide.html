@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>【2026年最新版】Core Blockchain (XCB) エコシステム徹底解説：CorePass KYB・Ping Exchange・XCB/CTN二重経済モデルの全貌 | CoreStation ナレッジ</title>
+  <meta name="description" content="2026年最新のCore Blockchain (XCB) エコシステムを徹底解説！法人向け分散ID「CorePass KYB」の正式展開、Web2/Web3を繋ぐCorePass Connector、Ping Exchange、そして基軸通貨XCBとユーティリティトークンCTNの二重経済圏の仕組みを自作PC女子リコロがわかりやすく図解。">
+  <link rel="canonical" href="https://corestation.pages.dev/articles/core-blockchain-ecosystem-complete-guide">
+  <link rel="icon" type="image/svg+xml" href="../assets/core-icon.svg">
+  
+  <!-- OGP / Social Sharing -->
+  <meta property="og:title" content="【2026年最新版】Core Blockchain (XCB) エコシステム徹底解説：CorePass KYB・Ping Exchange・XCB/CTN二重経済モデルの全貌">
+  <meta property="og:description" content="法人向け分散ID「CorePass KYB」の正式展開、CorePass Connector、Ping Exchange、そしてXCB/CTN二重経済圏の仕組みを徹底解説！">
+  <meta property="og:url" content="https://corestation.pages.dev/articles/core-blockchain-ecosystem-complete-guide">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Google AdSense Verification & Auto-Ads Tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1988464307898443" crossorigin="anonymous"></script>
+
+  <!-- A8.net 広告掲載URL管理・リンクマネージャー (A8 Link Manager) -->
+  <script src="//statics.8me.jp/a8link/a8linkmgr.js"></script>
+  <script>
+    a8linkmgr({ "config_id": "AiCzxW5LM9avBb8VJ393" });
+  </script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../style.css?v=20261006_4">
+  <link rel="stylesheet" href="article.css?v=20261015_1">
+
+  <!-- Schema.org JSON-LD (Article & Breadcrumb) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "【2026年最新版】Core Blockchain (XCB) エコシステム徹底解説：CorePass KYB・Ping Exchange・XCB/CTN二重経済モデルの全貌",
+        "description": "2026年最新のCore Blockchain (XCB) エコシステムを徹底解説！法人向け分散ID「CorePass KYB」の正式展開、Web2/Web3を繋ぐCorePass Connector、Ping Exchange、そして基軸通貨XCBとユーティリティトークンCTNの二重経済圏の仕組みを自作PC女子リコロがわかりやすく図解。",
+        "datePublished": "2026-10-18T00:00:00+09:00",
+        "dateModified": "2026-10-18T00:00:00+09:00",
+        "author": {
+          "@type": "Person",
+          "name": "リコロ (Ricolo)"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "CoreStation",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://corestation.pages.dev/assets/core-icon.svg"
+          }
+        },
+        "mainEntityOfPage": "https://corestation.pages.dev/articles/core-blockchain-ecosystem-complete-guide"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "ホーム (ダッシュボード)",
+            "item": "https://corestation.pages.dev/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "ナレッジアーカイブ",
+            "item": "https://corestation.pages.dev/#articles"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Core Blockchain エコシステム徹底解説",
+            "item": "https://corestation.pages.dev/articles/core-blockchain-ecosystem-complete-guide"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="article-page-body">
+
+  <!-- Header Navigation -->
+  <header class="article-header-nav">
+    <a href="../#dashboard" class="article-brand">
+      <img src="../assets/core-icon.svg" alt="CoreStation Logo">
+      <span>CoreStation</span>
+    </a>
+    <nav class="article-nav-links">
+      <a href="../#dashboard">📊 ダッシュボード</a>
+      <a href="../#articles">📚 記事一覧</a>
+      <a href="../#guide">🚀 導入手順</a>
+      <a href="../about.html">🏢 運営者情報</a>
+    </nav>
+  </header>
+
+  <main class="article-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="../">ホーム</a>
+      <span class="sep">&gt;</span>
+      <a href="../#articles">ナレッジアーカイブ</a>
+      <span class="sep">&gt;</span>
+      <span>エコシステム・技術アーキテクチャ</span>
+    </nav>
+
+    <!-- Main Article Card -->
+    <article class="article-card-main">
+      <header class="article-meta-header">
+        <span class="article-badge">2026年最新アップデート</span>
+        <h1 class="article-main-title">【2026年最新版】Core Blockchain (XCB) エコシステム徹底解説：CorePass KYB・Ping Exchange・XCB/CTN二重経済モデルの全貌</h1>
+        <div class="article-submeta">
+          <span>📅 公開日: 2026-10-18</span>
+          <span>✍️ 執筆: リコロ (Ricolo)</span>
+          <span>🔒 監修: CoreStation 技術検証チーム</span>
+        </div>
+      </header>
+
+      <!-- Article Content Body -->
+      <div class="article-content-body">
+        
+<p class="lead" style="font-size: 1.15rem; color: #38bdf8; font-weight: 600; line-height: 1.8;">
+みなさん、こんにちは！CoreStation専任アナリスト兼・自作PCマイナーのリコロ（Ricolo）です！<br>
+「Core Blockchain（XCB）って、マイニングができるコインだよね？」と思っていませんか？<br>
+実は2025年後半から2026年にかけて、Core Blockchainを取り巻くエコシステムは<strong>「単なるCPUマイニング用チェーン」から「実社会の企業認証・DeFi・実店舗決済を統合する巨大な産業インフラ」</strong>へと急速な進化を遂げています。
+</p>
+
+<p>
+本記事では、直近で正式ローンチされた<strong>企業向け分散ID「CorePass KYB」</strong>や<strong>外部連携ツール「CorePass Connector」</strong>などの最新ニュースを踏まえながら、Core Blockchainが構築する独自のエコシステム全体像と、基軸コイン「XCB」およびユーティリティトークン「CTN」の二重トークン構造を、初心者の方にも分かりやすく徹底解剖します！
+</p>
+
+<hr style="border: none; border-top: 1px solid #334155; margin: 30px 0;">
+
+<h2>1. 【最新動向】2026年に加速するCore Blockchainの産業実装</h2>
+<p>
+まず、直近で発表・展開されている重要なマイルストーンを整理しておきましょう。
+</p>
+
+<div style="background: rgba(37, 99, 235, 0.08); border-left: 4px solid #2563eb; padding: 18px 20px; margin: 20px 0; border-radius: 6px;">
+  <strong style="color: #60a5fa; font-size: 1.05rem;">🚀 2025-2026年の主要なエコシステムアップデート</strong>
+  <ul style="margin: 10px 0 0; padding-left: 20px; line-height: 1.8;">
+    <li><strong>CorePass KYB (Know Your Business) の正式展開：</strong><br>
+    個人の身元証明（KYC）に続き、法人の登記実態や代表権を暗号学的にオンチェーン検証する「KYB」が利用可能になりました。これにより、一般企業が自社のコンプライアンス要件を満たした上でWeb3トランザクションに参加できるようになりました。</li>
+    <li><strong>CorePass Connector の公開：</strong><br>
+    外部のECサイトやSaaS、Webアプリケーションが、わずか数行のコードで「パスワード不要のCorePass生体ログイン」や「検証済み身元確認」を導入できるSDK/APIが提供開始されました。</li>
+    <li><strong>Ping Exchange &amp; Wall Money（PayTo）の決済連携：</strong><br>
+    中央集権型取引所（CEX）を介さず、オンチェーンの流動性と法定通貨口座をシームレスに繋ぐP2P取引と日常決済のインフラが実稼働段階に入っています。</li>
+  </ul>
+</div>
+
+<p>
+このように、Core Blockchainは「投機的な値動きを狙う仮想通貨」ではなく、<strong>「実社会の契約・認証・決済を効率化する実用チェーン」</strong>として着実に地歩を固めています。
+</p>
+
+<h2>2. Core Blockchain エコシステムの4層アーキテクチャ図解</h2>
+<p>
+Core Blockchainのエコシステムは、以下の4つのレイヤーが有機的に連携することで機能しています。
+</p>
+
+<div style="overflow-x: auto; margin: 25px 0;">
+  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+    <thead>
+      <tr style="background: rgba(59, 130, 246, 0.15); border-bottom: 2px solid #3b82f6;">
+        <th style="padding: 12px; border: 1px solid #334155; width: 22%;">階層（レイヤー）</th>
+        <th style="padding: 12px; border: 1px solid #334155; width: 30%;">構成プロダクト・技術</th>
+        <th style="padding: 12px; border: 1px solid #334155;">役割と特徴</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #334155; font-weight: 700; color: #38bdf8;">① レイヤー1（基盤層）</td>
+        <td style="padding: 12px; border: 1px solid #334155;">Core Blockchain (gocore)<br>PoDE / Ouroboros-X<br>Ed448-Goldilocks</td>
+        <td style="padding: 12px; border: 1px solid #334155;">ゼロから開発された独自L1。ASIC耐性を持つ省電力CPUマイニング（PoDE）と耐量子暗号によって強固な分散セキュリティを提供。</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #334155; font-weight: 700; color: #38bdf8;">② ID・主権層</td>
+        <td style="padding: 12px; border: 1px solid #334155;">CorePass ID / KYB<br>CorePass Connector</td>
+        <td style="padding: 12px; border: 1px solid #334155;">個人・企業のデジタルアイデンティティ（DID）。生体情報をクラウドに送信せず、スマートフォン端末内のセキュア領域に暗号化保存。</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #334155; font-weight: 700; color: #38bdf8;">③ 金融・決済層</td>
+        <td style="padding: 12px; border: 1px solid #334155;">Ping Exchange<br>Wall Money / PayTo<br>Swaptopia DEX</td>
+        <td style="padding: 12px; border: 1px solid #334155;">ハイブリッドP2P取引所と日常のウォレット決済。銀行振込や法定通貨カードとのブリッジを実現。</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #334155; font-weight: 700; color: #38bdf8;">④ アプリケーション層</td>
+        <td style="padding: 12px; border: 1px solid #334155;">Core ETL / Ylem<br>TokTo / DePIN基盤</td>
+        <td style="padding: 12px; border: 1px solid #334155;">耐量子スマートコントラクト言語「Ylem」による実世界資産（RWA）のトークン化やサプライチェーン追跡。</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>3. なぜ2つの通貨があるの？「XCB」と「CTN」の役割分担</h2>
+<p>
+Core Blockchainエコシステムを理解する上で最も重要なのが、<strong>基軸ネイティブコイン「XCB」</strong>と<strong>ユーティリティトークン「CTN」</strong>の明確な棲み分けです。
+</p>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 25px 0;">
+  <!-- XCB Card -->
+  <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid #3b82f6; border-radius: 8px; padding: 20px;">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+      <span style="font-size: 28px;">⛏️</span>
+      <h3 style="margin: 0; color: #60a5fa; font-size: 1.25rem;">Core Coin (XCB)</h3>
+    </div>
+    <ul style="padding-left: 18px; line-height: 1.7; font-size: 0.92rem; margin: 0;">
+      <li><strong>通貨の位置付け：</strong> ブロックチェーンのネイティブ基軸通貨（ビットコインにおけるBTC）</li>
+      <li><strong>発行方式：</strong> 完全プレマインゼロのPoDEマイニング（ブロック報酬）のみで公平発行</li>
+      <li><strong>最大供給量：</strong> 5億 XCB（現在約3.98億XCBが採掘済）</li>
+      <li><strong>主な使途：</strong> ネットワークのマイナー報酬、ブロックチェーンの根幹セキュリティ、価値保存（SoV）、大口の実物資産決済</li>
+    </ul>
+  </div>
+
+  <!-- CTN Card -->
+  <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid #10b981; border-radius: 8px; padding: 20px;">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+      <span style="font-size: 28px;">🔑</span>
+      <h3 style="margin: 0; color: #34d399; font-size: 1.25rem;">Core Token (CTN)</h3>
+    </div>
+    <ul style="padding-left: 18px; line-height: 1.7; font-size: 0.92rem; margin: 0;">
+      <li><strong>通貨の位置付け：</strong> CorePassおよびスマートコントラクト専用のユーティリティトークン</li>
+      <li><strong>発行方式：</strong> スマートコントラクト上で管理される機能性トークン</li>
+      <li><strong>主な使途：</strong>
+        <br>・CorePassでの本人確認・KYCデータ検証手数料
+        <br>・企業がユーザーから属性データを開示してもらう際の支払いインセンティブ
+        <br>・分散型取引所（DEX）やDeFiアプリケーションのガス代</li>
+    </ul>
+  </div>
+</div>
+
+<div style="background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; padding: 14px 18px; margin: 20px 0; border-radius: 6px;">
+  <strong style="color: #34d399;">💡 なぜ1つのコインにまとめないのか？</strong><br>
+  ビットコインやイーサリアムでは、投機によってコイン価格が高騰すると「送金手数料（ガス代）」まで跳ね上がり、日常の小さな決済やID認証で使うのが困難になるというジレンマがありました。<br>
+  Core Blockchainは、<strong>「マイナーの採掘動機となる資産価値（XCB）」と「安定的かつ安価に利用されるべき実用手数料（CTN）」を巧みに分離</strong>することで、価格変動が日常のシステム利用を阻害しない設計を実現しています。
+</div>
+
+<h2>4. 【プライバシーと認証】CorePass が Worldcoin 等と決定的に異なる点</h2>
+<p>
+近年、AIの普及に伴い「人間であることの証明（Proof of Humanity）」や分散型IDが世界的な注目を集めています。その代表例としてSam Altman氏のWorldcoinなどが話題ですが、プライバシー侵害や生体データの漏洩リスクから、各国（中国、インド、スペイン、ポルトガルなど）で規制や差し止めが行われています。
+</p>
+
+<p>
+ここで重要なのが、<strong>「CorePass」のプライバシー保護アーキテクチャの圧倒的な健全性</strong>です。
+</p>
+
+<div style="overflow-x: auto; margin: 20px 0;">
+  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem;">
+    <thead>
+      <tr style="background: rgba(59, 130, 246, 0.15); border-bottom: 2px solid #3b82f6;">
+        <th style="padding: 10px; border: 1px solid #334155;">比較項目</th>
+        <th style="padding: 10px; border: 1px solid #334155;">一般的な生体認証プロジェクト（Worldcoin等）</th>
+        <th style="padding: 10px; border: 1px solid #334155; background: rgba(16, 185, 129, 0.15); color: #34d399;">CorePass (Core Blockchain)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #334155; font-weight: 600;">生体データの保存場所</td>
+        <td style="padding: 10px; border: 1px solid #334155;">専用スキャナ（Orb）から中央クラウドへハッシュ化して保管</td>
+        <td style="padding: 10px; border: 1px solid #334155; font-weight: 600; color: #34d399;">ユーザー自身のスマホのハードウェアセキュアチップ内のみ（クラウド保存ゼロ）</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #334155; font-weight: 600;">暗号方式</td>
+        <td style="padding: 10px; border: 1px solid #334155;">既存の標準楕円曲線暗号（ECDSA/RSA等）</td>
+        <td style="padding: 10px; border: 1px solid #334155; font-weight: 600; color: #34d399;">Ed448-Goldilocks（耐量子暗号耐性）</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #334155; font-weight: 600;">企業向け対応 (KYB)</td>
+        <td style="padding: 10px; border: 1px solid #334155;">個人認証のみに限定</td>
+        <td style="padding: 10px; border: 1px solid #334155; font-weight: 600; color: #34d399;">個人（KYC）＋ 法人実態証明（KYB）の双方に対応</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #334155; font-weight: 600;">規制コンプライアンス</td>
+        <td style="padding: 10px; border: 1px solid #334155;">EU GDPRや個人情報保護法に抵触し活動停止命令が相次ぐ</td>
+        <td style="padding: 10px; border: 1px solid #334155; font-weight: 600; color: #34d399;">GDPR準拠（生体情報を運営者が保持しない自己主権モデル）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+CorePassは「ユーザーのデータを企業が預かる」という従来の危険なWeb2モデルを根本から破壊し、<strong>「認証の鍵はユーザーの手の中にあり、必要な項目（例：20歳以上であるという事実のみ）だけをゼロ知識的に証明する」</strong>という完全な分散プライバシーを実現しています。
+</p>
+
+<h2>5. 出口戦略と実生活での利用：Ping Exchange &amp; Wall Money</h2>
+<p>
+いくらマイニングでXCBを掘っても、それを安全に管理・換金・利用できなければ意味がありません。<br>
+Core Blockchainでは、この「出口」と「実生活利用」にも独自の回答を用意しています。
+</p>
+
+<h3>① Ping Exchange（ハイブリッドP2P取引所）</h3>
+<p>
+FTXの破綻に代表されるように、中央集権型取引所（CEX）に資産を預けっぱなしにするのは極めて危険です。Ping Exchangeは、ユーザーが自身の秘密鍵（CorePass）を手元で管理したまま、ピアツーピアで安全に暗号資産や法定通貨の取引が行えるハイブリッドプラットフォームです。
+</p>
+
+<h3>② Wall Money と日常決済</h3>
+<p>
+スマートフォン決済アプリ「Wall Money」を通じて、マイニングで得た資産を即座に日常の決済や送金に活用できるよう設計されています。QRコード決済や将来的なPayTo機能によって、ブロックチェーンの恩恵をリアル店舗の買い物でも体験できるようになります。
+</p>
+
+<h2>6. まとめ：リコロがCore Blockchainのマイニングを続ける理由</h2>
+<p>
+私は現在、自宅のRyzen 9 7950Xマシンを使って24時間体制でCore BlockchainのPoDEマイニングを稼働させています。<br>
+それは単に「マイニング報酬が得られるから」だけではありません。<br>
+世の中に数万とある暗号資産の中で、
+</p>
+<ul style="line-height: 1.8;">
+  <li><strong>プレマインゼロの真摯なフェアローンチを守り抜いていること</strong></li>
+  <li><strong>最新の耐量子暗号（Ed448）と省電力アルゴリズムを自前で実装していること</strong></li>
+  <li><strong>CorePass KYBやConnectorによって、実社会の法規制や企業ニーズに応え続けていること</strong></li>
+</ul>
+<p>
+という「技術的誠実さ」と「実社会での実需」が揃っている稀有なプロジェクトだからです。
+</p>
+
+<p>
+CoreStationでは、今後もオンチェーンの最新ブロックデータやワーカー稼働状況をリアルタイムで追跡し、客観的で正確な技術情報を発信し続けていきます！
+</p>
+
+      </div>
+
+      <!-- Author Profile Card -->
+      <footer class="article-author-card" style="margin-top: 40px; padding: 24px; background: rgba(15, 23, 42, 0.7); border: 1px solid #334155; border-radius: 12px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <img src="../assets/ricolo-avatar.png" alt="リコロ (Ricolo)" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid #38bdf8; object-fit: cover;">
+        <div style="flex: 1; min-width: 240px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+            <strong style="font-size: 1.15rem; color: #f8fafc;">リコロ (Ricolo)</strong>
+            <span style="font-size: 0.85rem; background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 2px 8px; border-radius: 4px;">自作PC女子 / 暗号資産アナリスト</span>
+          </div>
+          <p style="font-size: 0.92rem; color: #94a3b8; line-height: 1.6; margin: 0;">
+            Ryzen 9 7950X / Xeon E5 を複数台運用し、PoDEマイニングと耐量子ブロックチェーンの検証に没頭するハードウェア好き。難しいブロックチェーンの仕組みを、初心者にもわかりやすくロジカルにお届けします！
+          </p>
+        </div>
+      </footer>
+
+      <!-- Bottom Navigation / Links -->
+      <div style="margin-top: 30px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+        <a href="../#dashboard" class="btn-secondary" style="padding: 10px 18px; border-radius: 8px; text-decoration: none;">← ダッシュボードへ戻る</a>
+        <a href="coreminer-wsl-setup-guide.html" class="btn-primary" style="padding: 10px 18px; border-radius: 8px; text-decoration: none;">CoreMiner導入ガイドを読む →</a>
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer style="margin-top: 60px; padding: 30px 20px; text-align: center; border-top: 1px solid #1e293b; color: #64748b; font-size: 0.9rem;">
+    <p>© 2026 CoreStation. All rights reserved. 独立系ブロックチェーン実測検証ポータル</p>
+  </footer>
+</body>
+</html>
