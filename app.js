@@ -263,6 +263,8 @@
     try {
       const res = await fetch("/api/watcher/status");
       if (!res.ok) throw new Error("Watcher status endpoint unavailable");
+      const ct = res.headers.get("content-type") || "";
+      if (ct.includes("text/html")) throw new Error("HTML fallback returned");
       const json = await res.json();
       if (json && json.state && json.data) {
         updateWatcherUI(json.data);
@@ -640,8 +642,11 @@
         signal: timeoutSignal
       });
       if (resLocal.ok) {
-        const json = await resLocal.json();
-        if (json.state) return json;
+        const ct = resLocal.headers.get("content-type") || "";
+        if (!ct.includes("text/html")) {
+          const json = await resLocal.json();
+          if (json && json.state) return json;
+        }
       }
     } catch (e) {
       // Local server not running or static Web Station

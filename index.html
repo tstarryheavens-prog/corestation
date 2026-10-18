@@ -369,6 +369,24 @@
       <div class="dashboard-grid">
         <!-- Left Column: Mining Activity, Chart, Recent TX -->
         <div class="dashboard-col-left">
+          <!-- Active Workers Summary (Moved to Top for High Visibility) -->
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h2 class="card-title" style="margin: 0;">🖥️ 稼働中ワーカー (Mining Workers)</h2>
+                <span id="workersCountBadge" class="badge-online" style="font-size: 12px; padding: 2px 8px;">検出中</span>
+              </div>
+              <button id="refreshWorkersBtn" class="btn-secondary btn-sm" style="padding: 4px 10px; font-size: 13px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; border-radius: 6px; border: 1px solid var(--border-color); background: #ffffff;" title="ワーカー情報を再取得">
+                <span id="refreshWorkersIcon">🔄</span> 更新
+              </button>
+            </div>
+            <div class="card-content" style="padding: 16px;">
+              <div id="workersContainer">
+                <div style="color: var(--text-muted); font-size: 15.5px;">ワーカー情報を取得中...</div>
+              </div>
+            </div>
+          </div>
+
           <!-- Mining Chart -->
           <div class="card">
             <div class="card-header">
@@ -433,24 +451,6 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Active Workers Summary -->
-          <div class="card">
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <h2 class="card-title" style="margin: 0;">🖥️ 稼働中ワーカー (Mining Workers)</h2>
-                <span id="workersCountBadge" class="badge-online" style="font-size: 12px; padding: 2px 8px;">検出中</span>
-              </div>
-              <button id="refreshWorkersBtn" class="btn-secondary btn-sm" style="padding: 4px 10px; font-size: 13px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; border-radius: 6px; border: 1px solid var(--border-color); background: #ffffff;" title="ワーカー情報を再取得">
-                <span id="refreshWorkersIcon">🔄</span> 更新
-              </button>
-            </div>
-            <div class="card-content" style="padding: 16px;">
-              <div id="workersContainer">
-                <div style="color: var(--text-muted); font-size: 15.5px;">ワーカー情報を取得中...</div>
               </div>
             </div>
           </div>
