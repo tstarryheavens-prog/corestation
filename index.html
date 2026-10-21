@@ -33,6 +33,24 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1988464307898443" crossorigin="anonymous"></script>
 </head>
 <body>
+<!-- AI_COMPANY_MUTUAL_NETWORK_START -->
+<div id="ai-company-network-bar" style="background:linear-gradient(90deg,#0f172a,#1e293b);color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:12px;padding:8px 16px;border-bottom:1px solid #334155;position:relative;z-index:9999;">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;">
+    <div style="display:flex;align-items:center;gap:6px;font-weight:700;">
+      <span>🐼 AIカンパニー相互ネットワーク:</span>
+      <a href="https://ai-living-lab.pages.dev" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;background:rgba(56,189,248,0.15);padding:3px 8px;border-radius:6px;">🏠 Smart AI Life (本社ハブ)</a>
+      <a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" rel="noopener" style="color:#a5b4fc;text-decoration:none;background:rgba(165,180,252,0.15);padding:3px 8px;border-radius:6px;">📚 CoreStation × Smart AI Life EmDash記事一覧</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:11.5px;">
+      <a href="https://ikomainagoyaaichihighschool.pages.dev" target="_blank" rel="noopener" style="color:#cbd5e1;text-decoration:none;">🎓 愛知高校受験ナビ</a>
+      <a href="https://mytoyotahomebottle.pages.dev" target="_blank" rel="noopener" style="color:#cbd5e1;text-decoration:none;">🏠 トヨタホーム10年実録</a>
+      <a href="https://eosinophilicgastroenteritis-ege.pages.dev" target="_blank" rel="noopener" style="color:#cbd5e1;text-decoration:none;">🩺 難病・好酸球性胃腸炎ノート</a>
+      <a href="https://corestation.pages.dev" target="_blank" rel="noopener" style="color:#cbd5e1;text-decoration:none;">💻 CoreStation</a>
+      <a href="https://kurashi-ai.hatenadiary.com/" target="_blank" rel="noopener" style="color:#cbd5e1;text-decoration:none;">📝 公式はてな</a>
+    </div>
+  </div>
+</div>
+<!-- AI_COMPANY_MUTUAL_NETWORK_END -->
   <!-- Sliding Drawer Navigation (Mobile / Full Menu) -->
   <div id="drawerBackdrop" class="drawer-backdrop" style="display: none;">
     <aside class="drawer">
@@ -2261,7 +2279,52 @@ swap=0</code></pre>
   </main>
 
   <!-- Application Footer -->
-  <footer class="app-footer">
+  <!-- AI_COMPANY_EMDASH_FEED_START -->
+<section id="emdash-live-feed-section" style="max-width:1100px;margin:36px auto;padding:24px 20px;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 16px rgba(15,23,42,0.05);font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#0f172a;">
+  <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f1f5f9;">
+    <div>
+      <span style="display:inline-block;background:#eff6ff;color:#1e40af;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;margin-bottom:4px;">🐼 Smart AI Life × EmDash CMS リアルタイム連動</span>
+      <h2 style="font-size:18px;font-weight:800;margin:0;color:#0f172a;">📚 CoreStation × Smart AI Life 統合記事アーカイブ（EmDash D1配信）</h2>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" rel="noopener" style="background:#1e40af;color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;text-decoration:none;">事業部ポータルで全記事を見る ➔</a>
+      <a href="https://ai-living-lab.pages.dev" target="_blank" rel="noopener" style="background:#f8fafc;color:#334155;border:1px solid #cbd5e1;font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;text-decoration:none;">Smart AI Life 本社へ ↗</a>
+    </div>
+  </div>
+  <div id="emdash-feed-grid-smartailife" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
+    <p style="font-size:13px;color:#64748b;">EmDash CMSから最新記事を読み込み中...</p>
+  </div>
+</section>
+<script>
+(function(){
+  var grid = document.getElementById('emdash-feed-grid-smartailife');
+  if (!grid) return;
+  fetch('https://ai-living-lab.pages.dev/_emdash/api/content/posts?site_id=smartailife&limit=6')
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      var items = (res && res.data && res.data.items) ? res.data.items.slice(0, 6) : [];
+      if (!items.length) {
+        grid.innerHTML = '<p style="font-size:13px;color:#64748b;">記事一覧は <a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" style="color:#1e40af;font-weight:700;">Smart AI Life 事業部ページ</a> からご覧いただけます。</p>';
+        return;
+      }
+      grid.innerHTML = items.map(function(it){
+        var url = 'https://ai-living-lab.pages.dev/articles/' + encodeURIComponent(it.slug || it.id);
+        var title = (it.title || '記事詳細').replace(/</g, '&lt;');
+        var excerpt = ((it.excerpt || (it.data && it.data.excerpt) || '') + '').replace(/</g, '&lt;').slice(0, 80);
+        return '<a href="' + url + '" target="_blank" rel="noopener" style="display:flex;flex-direction:column;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-decoration:none;color:inherit;transition:all 0.15s ease;">' +
+          '<div><div style="font-size:10px;font-weight:700;color:#0284c7;margin-bottom:4px;">EmDash CMS記事</div>' +
+          '<h3 style="font-size:14px;font-weight:800;color:#0f172a;margin:0 0 6px 0;line-height:1.4;">' + title + '</h3>' +
+          '<p style="font-size:12px;color:#64748b;margin:0 0 10px 0;line-height:1.5;">' + excerpt + '...</p></div>' +
+          '<div style="font-size:12px;font-weight:700;color:#1e40af;">全文を読む ➔</div></a>';
+      }).join('');
+    })
+    .catch(function(){
+      grid.innerHTML = '<p style="font-size:13px;color:#64748b;"><a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" style="color:#1e40af;font-weight:700;">📚 Smart AI Life 統合記事アーカイブを開く ↗</a></p>';
+    });
+})();
+</script>
+<!-- AI_COMPANY_EMDASH_FEED_END -->
+<footer class="app-footer">
     <div class="app-footer-container">
       <div class="footer-legal-links">
         <a href="privacy.html" class="footer-legal-btn">📜 プライバシーポリシー</a>
