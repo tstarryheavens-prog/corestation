@@ -39,7 +39,7 @@
     <div style="display:flex;align-items:center;gap:6px;font-weight:700;">
       <span>🐼 AIカンパニー相互ネットワーク:</span>
       <a href="https://ai-living-lab.pages.dev" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;background:rgba(56,189,248,0.15);padding:3px 8px;border-radius:6px;">🏠 Smart AI Life (本社ハブ)</a>
-      <a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" rel="noopener" style="color:#a5b4fc;text-decoration:none;background:rgba(165,180,252,0.15);padding:3px 8px;border-radius:6px;">📚 CoreStation × Smart AI Life EmDash記事一覧</a>
+      <a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" rel="noopener" style="color:#a5b4fc;text-decoration:none;background:rgba(165,180,252,0.15);padding:3px 8px;border-radius:6px;">📚 CoreStation × Smart AI Life 特集記事アーカイブ</a>
     </div>
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:11.5px;">
       <a href="https://ikomainagoyaaichihighschool.pages.dev" target="_blank" rel="noopener" style="color:#cbd5e1;text-decoration:none;">🎓 愛知高校受験ナビ</a>
@@ -2283,8 +2283,8 @@ swap=0</code></pre>
 <section id="emdash-live-feed-section" style="max-width:1100px;margin:36px auto;padding:24px 20px;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 16px rgba(15,23,42,0.05);font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#0f172a;">
   <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f1f5f9;">
     <div>
-      <span style="display:inline-block;background:#eff6ff;color:#1e40af;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;margin-bottom:4px;">🐼 Smart AI Life × EmDash CMS リアルタイム連動</span>
-      <h2 style="font-size:18px;font-weight:800;margin:0;color:#0f172a;">📚 CoreStation × Smart AI Life 統合記事アーカイブ（EmDash D1配信）</h2>
+      <span style="display:inline-block;background:#eff6ff;color:#1e40af;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;margin-bottom:4px;">🐼 Smart AI Life リアルタイム連動アーカイブ</span>
+      <h2 style="font-size:18px;font-weight:800;margin:0;color:#0f172a;">📚 CoreStation × Smart AI Life 統合記事アーカイブ（最新特集）</h2>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" rel="noopener" style="background:#1e40af;color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;text-decoration:none;">事業部ポータルで全記事を見る ➔</a>
@@ -2292,7 +2292,7 @@ swap=0</code></pre>
     </div>
   </div>
   <div id="emdash-feed-grid-smartailife" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
-    <p style="font-size:13px;color:#64748b;">EmDash CMSから最新記事を読み込み中...</p>
+    <p style="font-size:13px;color:#64748b;">最新記事を読み込み中...</p>
   </div>
 </section>
 <script>
@@ -2312,7 +2312,7 @@ swap=0</code></pre>
         var title = (it.title || '記事詳細').replace(/</g, '&lt;');
         var excerpt = ((it.excerpt || (it.data && it.data.excerpt) || '') + '').replace(/</g, '&lt;').slice(0, 80);
         return '<a href="' + url + '" target="_blank" rel="noopener" style="display:flex;flex-direction:column;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-decoration:none;color:inherit;transition:all 0.15s ease;">' +
-          '<div><div style="font-size:10px;font-weight:700;color:#0284c7;margin-bottom:4px;">EmDash CMS記事</div>' +
+          '<div><div style="font-size:10px;font-weight:700;color:#0284c7;margin-bottom:4px;">最新特集記事</div>' +
           '<h3 style="font-size:14px;font-weight:800;color:#0f172a;margin:0 0 6px 0;line-height:1.4;">' + title + '</h3>' +
           '<p style="font-size:12px;color:#64748b;margin:0 0 10px 0;line-height:1.5;">' + excerpt + '...</p></div>' +
           '<div style="font-size:12px;font-weight:700;color:#1e40af;">全文を読む ➔</div></a>';
