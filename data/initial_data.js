@@ -1252,6 +1252,15 @@ window.__COREGEEKS_INITIAL_DATA__ = {
   },
   "articlesArchive": [
     {
+      "id": "community-voice-roundup-vol1",
+      "title": "【リコロのコミュニティ定点観測 Vol.1】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リアルな本音を徹底解剖！🎮💬🔥",
+      "category": "community",
+      "categoryName": "コミュニティ・SNS生の声",
+      "date": "2026-10-29",
+      "summary": "Core Blockchain (XCB) の公式チャットやSNS、マイニングプールで今何が話題？CorePass KYBへの期待、Ryzenの採掘効率・Ecoモード検証、フェアローンチへの本音など、コミュニティのリアルな生声を自作PC女子リコロが徹底レポート！"
+    },
+
+    {
       "id": "ping-exchange-business-trading-live",
       "title": "【速報・解説】Core Blockchainがビジネス取引の新章を開く！Ping Exchangeビジネス取引インフラ稼働の全貌🎮⚡️",
       "category": "ecosystem",
