@@ -23,6 +23,8 @@ from datetime import datetime
 import subprocess
 import html
 
+import xml.etree.ElementTree as ET
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 CONFIG_DIR = os.path.join(BASE_DIR, "config")
@@ -50,6 +52,11 @@ SOURCES = [
         "name": "Core Blockchain Japan 日本公式コミュニティ (Telegram: @Core_Blockchain_Japan)",
         "url": "https://t.me/s/Core_Blockchain_Japan",
         "type": "telegram"
+    },
+    {
+        "name": "Core Blockchain / CoDeTech 英語本家公式YouTube (@CoDeTechCC / Core Chronicle)",
+        "channel_id": "UCRvIwSXU04Yaw4rkRzkJNHQ",
+        "type": "youtube"
     }
 ]
 
@@ -102,6 +109,51 @@ def fetch_telegram_updates(url, source_name="Core Blockchain 公式アナウン�
                         })
     except Exception as e:
         print(f"⚠️ Telegram fetch error ({url}): {e}", file=sys.stderr)
+    return updates
+
+def fetch_youtube_updates(channel_id, source_name="Core Blockchain 公式YouTube (CoDeTech)"):
+    """Fetch latest YouTube videos from channel Atom RSS feed without API key."""
+    url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
+    )
+    ctx = get_ssl_context()
+    updates = []
+    try:
+        with urllib.request.urlopen(req, context=ctx, timeout=15) as resp:
+            xml_data = resp.read()
+            root = ET.fromstring(xml_data)
+            ns = {
+                'atom': 'http://www.w3.org/2005/Atom',
+                'yt': 'http://www.youtube.com/xml/schemas/2015',
+                'media': 'http://search.yahoo.com/mrss/'
+            }
+            for entry in root.findall('atom:entry', ns)[:5]:
+                video_id_el = entry.find('yt:videoId', ns)
+                video_id = video_id_el.text if video_id_el is not None else None
+                title_el = entry.find('atom:title', ns)
+                title = title_el.text if title_el is not None else ""
+                link_el = entry.find('atom:link', ns)
+                link = link_el.attrib['href'] if link_el is not None else f"https://www.youtube.com/watch?v={video_id}"
+
+                media_group = entry.find('media:group', ns)
+                desc = ""
+                if media_group is not None:
+                    desc_el = media_group.find('media:description', ns)
+                    if desc_el is not None and desc_el.text:
+                        desc = desc_el.text.strip()
+
+                post_id = f"youtube/{video_id}"
+                text_content = f"【Core Chronicle 公式YouTube動画公開】\nタイトル: {title}\nURL: {link}\n\n概要・説明:\n{desc}"
+                updates.append({
+                    "id": post_id,
+                    "source": source_name,
+                    "text": text_content,
+                    "url": link
+                })
+    except Exception as e:
+        print(f"⚠️ YouTube fetch error ({channel_id}): {e}", file=sys.stderr)
     return updates
 
 GEMINI_CONFIG_PATH = os.path.join(CONFIG_DIR, "gemini_config.json")
@@ -551,6 +603,9 @@ def check_and_publish():
     for src in SOURCES:
         if src["type"] == "telegram":
             items = fetch_telegram_updates(src["url"], src["name"])
+            all_updates.extend(items)
+        elif src["type"] == "youtube":
+            items = fetch_youtube_updates(src["channel_id"], src["name"])
             all_updates.extend(items)
 
     # 初回シード保護（未登録時は最新1件のみ残して既読化）
