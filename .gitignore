@@ -30,6 +30,8 @@ hub/output/*.mp4
 hub/config/hatena_config.json
 hub/config/gemini_config.json
 hub/config/*_credentials.json
+hub/config/social_config.json
+hub/output/social_*.txt
 
 # Server logs
 *.log

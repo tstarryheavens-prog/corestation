@@ -536,6 +536,15 @@ def run_community_digest_pipeline():
     # 4. Deploy to Cloudflare Pages
     deploy_to_cloudflare()
 
+    # 4.5 Dispatch to Make.com & X (Twitter)
+    try:
+        social_script = os.path.join(BASE_DIR, "social_exporter.py")
+        if os.path.exists(social_script):
+            print("🚀 Make.com / Buffer 経由での X 自動配信をトリガー...")
+            subprocess.run([sys.executable, social_script, slug, "--publish"], capture_output=True, text=True, timeout=30)
+    except Exception as e:
+        print(f"⚠️ SNS配信エラー (スキップ): {e}")
+
     # 5. Update state
     last_seen["last_published_date"] = today_str
     last_seen["vol_count"] = vol_num

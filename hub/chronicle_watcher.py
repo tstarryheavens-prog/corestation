@@ -697,6 +697,16 @@ def check_and_publish():
         # 4. Trigger Cloudflare Pages deployment
         deploy_to_cloudflare()
 
+        # 4.5 Dispatch to Make.com & X (Twitter)
+        try:
+            social_script = os.path.join(BASE_DIR, "social_exporter.py")
+            if os.path.exists(social_script) and new_posts:
+                latest_slug = new_posts[0].get("id", "").replace("/", "_")
+                print("🚀 Make.com / Buffer 経由での X 自動配信をトリガー...")
+                subprocess.run([sys.executable, social_script, latest_slug, "--publish"], capture_output=True, text=True, timeout=30)
+        except Exception as e:
+            print(f"⚠️ SNS配信エラー (スキップ): {e}")
+
     last_seen["seen_posts"] = list(seen_ids)[-100:]
     last_seen["last_checked"] = datetime.now().isoformat()
     save_last_seen(last_seen)
