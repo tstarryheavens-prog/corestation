@@ -564,7 +564,7 @@ def integrate_article_to_site(slug, title, summary, date_str, body_html, categor
                 f.write(sitemap_xml)
             print("  ✅ 更新完了: sitemap.xml")
 
-def deploy_to_cloudflare():
+def deploy_to_cloudflare(commit_msg=None):
     """Commit changes and push to origin main to trigger Cloudflare Pages build."""
     print("🚀 Cloudflare Pages への自動デプロイ（Git push）を開始...")
     try:
@@ -576,10 +576,11 @@ def deploy_to_cloudflare():
             print("ℹ️ デプロイ対象の変更差分はありません。")
             return
 
+        msg = commit_msg or f"feat(auto-watcher): auto-publish latest updates from Core Chronicle [{datetime.now().strftime('%Y-%m-%d %H:%M')}]"
         cmd_commit = [
             "git", "-c", "user.name=CoreStation Auto Watcher",
             "-c", "user.email=watcher@corestation.local",
-            "commit", "-m", f"feat(auto-watcher): auto-publish latest updates from Core Chronicle [{datetime.now().strftime('%Y-%m-%d %H:%M')}]"
+            "commit", "-m", msg
         ]
         subprocess.run(cmd_commit, cwd=ROOT_DIR, check=True)
 
@@ -593,9 +594,26 @@ def deploy_to_cloudflare():
     except Exception as e:
         print(f"⚠️ 自動デプロイエラー: {e}", file=sys.stderr)
 
+def sync_onchain_mining_data():
+    """Runs sync.py to ensure initial_data.js and wallet.db have the latest on-chain rewards and worker status."""
+    print("⛓️ オンチェーン採掘データ＆ワーカー最新状態の定期同期を実行中...")
+    try:
+        sync_script = os.path.join(ROOT_DIR, "sync.py")
+        subprocess.run([sys.executable, sync_script], cwd=ROOT_DIR, check=True)
+        print("✅ オンチェーン採掘データ同期が正常に完了しました。")
+        return True
+    except Exception as e:
+        print(f"⚠️ オンチェーン採掘データ同期中にエラー: {e}", file=sys.stderr)
+        return False
+
 def check_and_publish():
     """Main execution loop for checking updates and publishing across all platforms."""
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 🔍 コアクロニクル・公式アップデートの巡回を開始...")
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 🔍 コアクロニクル・公式アップデートの巡回監視＆最新データ同期を開始...")
+
+    # 1. 常にオンチェーン採掘実績＆ワーカー状態を最新化
+    sync_onchain_mining_data()
+
+    # 2. 公式アナウンス・SNSの巡回チェック
     last_seen = load_last_seen()
     seen_ids = set(last_seen.get("seen_posts", []))
 
@@ -617,10 +635,13 @@ def check_and_publish():
     new_posts = [u for u in all_updates if u["id"] not in seen_ids]
 
     if not new_posts:
-        print("✅ 新着の更新はありませんでした。次回巡回まで待機します。")
+        print("✅ 新着の公式更新はありませんでした。オンチェーン採掘データの差分があればデプロイします。")
         last_seen["last_checked"] = datetime.now().isoformat()
         last_seen["seen_posts"] = list(seen_ids)[-100:]
         save_last_seen(last_seen)
+
+        # 新着記事がなくても、オンチェーン採掘データ等の差分があれば即時コミット＆デプロイ
+        deploy_to_cloudflare(f"feat(mining): auto-sync on-chain rewards and worker status [{datetime.now().strftime('%Y-%m-%d %H:%M')}]")
         return False
 
     print(f"🎉 {len(new_posts)} 件の新着アップデートを検知しました！")

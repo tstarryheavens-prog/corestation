@@ -2,7 +2,7 @@
 export async function onRequest(context) {
   const url = new URL(context.request.url);
   const wallet = url.searchParams.get("wallet") || "cb57b88d24678c2091332971e3a38cca472dd8aac0cd";
-  const pageSize = url.searchParams.get("pageSize") || "20";
+  const pageSize = url.searchParams.get("pageSize") || "50";
 
   const targetUrl = `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=${pageSize}`;
 

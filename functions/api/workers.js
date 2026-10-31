@@ -10,9 +10,11 @@ export async function onRequest(context) {
   try {
     // Fetch latest address transaction to check live reward activity
     const targetUrl = `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=5`;
+    const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(2500) : undefined;
     const res = await fetch(targetUrl, {
       headers: { "Accept": "application/json", "User-Agent": "CoreStation/1.0" },
-      cf: { cacheTtl: 30 }
+      signal: timeoutSignal,
+      cf: { cacheTtl: 15 }
     });
 
     if (res.ok) {

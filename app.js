@@ -719,11 +719,11 @@
 
   async function fetchLiveTransactions(wallet) {
     const urls = [
-      `/api/address?wallet=${wallet}&pageSize=20&_t=${Date.now()}`,
-      `/api/blockindex/address/${wallet}?details=txs&pageSize=20&_t=${Date.now()}`,
-      `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=20&_t=${Date.now()}`,
-      `https://corsproxy.io/?url=${encodeURIComponent(`https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=20&_t=${Date.now()}`)}`,
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=20&_t=${Date.now()}`)}`
+      `/api/address?wallet=${wallet}&pageSize=50&_t=${Date.now()}`,
+      `/api/blockindex/address/${wallet}?details=txs&pageSize=50&_t=${Date.now()}`,
+      `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=50&_t=${Date.now()}`,
+      `https://corsproxy.io/?url=${encodeURIComponent(`https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=50&_t=${Date.now()}`)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=50&_t=${Date.now()}`)}`
     ];
 
     for (const url of urls) {
@@ -995,7 +995,7 @@
       }
 
       if (txRes && txRes.state && Array.isArray(txRes.data) && txRes.data.length > 0) {
-        state.dailyTransactions = txRes.data.map(item => ({
+        const fetchedDaily = txRes.data.map(item => ({
           wallet_address: item.wallet_address,
           day: item.day,
           viewDateString: formatDate(item.day),
@@ -1004,6 +1004,18 @@
           all_amount: divideBy10e18(item.all_amount),
           all_rank: item.all_rank
         }));
+
+        // Merge intelligently: preserve newer entries if initial_data had more recent days
+        if (state.dailyTransactions && state.dailyTransactions.length > 0) {
+          const existingMap = new Map();
+          state.dailyTransactions.forEach(d => existingMap.set(d.day, d));
+          fetchedDaily.forEach(d => existingMap.set(d.day, d));
+          const merged = Array.from(existingMap.values());
+          merged.sort((a, b) => new Date(b.day) - new Date(a.day));
+          state.dailyTransactions = merged;
+        } else {
+          state.dailyTransactions = fetchedDaily;
+        }
       }
 
       // Dynamic On-Chain Fallback: Merge live blockindex payouts on every reload
