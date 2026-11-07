@@ -22,6 +22,7 @@ import ssl
 from datetime import datetime
 import subprocess
 import html
+import argparse
 
 import xml.etree.ElementTree as ET
 
@@ -171,6 +172,310 @@ def load_gemini_key():
             pass
     return ""
 
+DRY_RUN = False  # --dry-run / --sample-file で True になる（すべての公開作用を止めるフラグ）
+
+# ============================================================================
+# 長文記事ゲート（純テキスト10,000字未満の記事は公開しない）共有ヘルパー
+# chronicle_watcher.py / community_watcher.py 共通。
+# 依存: os, sys, json, re, urllib.request, ssl, datetime, OUTPUT_DIR,
+#        load_gemini_key(), get_ssl_context(), CONTINUATION_CHAPTERS,
+#        CHAPTERS_PER_ROUND, build_continuation_prompt()
+# ============================================================================
+
+MIN_ARTICLE_CHARS = 10000          # この字数に満たない記事は一切公開しない
+TARGET_ARTICLE_CHARS = 13000       # 生成目標
+MIN_HEADINGS = 8                   # h2 見出しの本数下限（プロンプト側の義務）
+MAX_OUTPUT_TOKENS = 16000          # Gemini 2.5 Flash は 65536 出力可能
+GEMINI_TIMEOUT_SECONDS = 300       # 4000トークン時代は35s。16000トークンは長時間かかる
+MAX_CONTINUATION_ROUNDS = 4        # 追記ラウンドの上限
+MAX_LONGFORM_ATTEMPTS = 6          # 未達記事の自動再試行は最大6回（超えたら人手レビュー対象として打ち切り）
+SHORTFALL_DIR = os.path.join(OUTPUT_DIR, "shortfall")
+os.makedirs(SHORTFALL_DIR, exist_ok=True)
+
+_SCRIPT_STYLE_RE = re.compile(r'<(?:script|style)\b[^>]*>.*?</(?:script|style)\s*>', re.IGNORECASE | re.DOTALL)
+_HTML_COMMENT_RE = re.compile(r'<!--.*?-->', re.DOTALL)
+_HTML_TAG_RE = re.compile(r'<[^>]*>')
+_WHITESPACE_RE = re.compile(r'[\s\u3000\u00a0\ufeff]+')
+_H2_RE = re.compile(r'<h2\b[^>]*>(.*?)</h2>', re.IGNORECASE | re.DOTALL)
+
+
+def strip_article_markup(html_text):
+    """script/style ブロック・HTMLコメント・タグ・空白(全角スペース含む)を除去した本文テキストを返す。"""
+    if not html_text:
+        return ""
+    text = _SCRIPT_STYLE_RE.sub(' ', html_text)
+    text = _HTML_COMMENT_RE.sub(' ', text)
+    text = _HTML_TAG_RE.sub(' ', text)
+    return _WHITESPACE_RE.sub('', text)
+
+
+def plain_char_len(html_text):
+    """記事本文の実質文字数（タグ・空白・全角スペースを除去した文字数）。"""
+    return len(strip_article_markup(html_text))
+
+
+def normalize_heading(text):
+    """見出しの比較用正規化（タグ・空白・記号を落として小文字化）。"""
+    t = _HTML_COMMENT_RE.sub(' ', text or '')
+    t = _HTML_TAG_RE.sub('', t)
+    t = _WHITESPACE_RE.sub('', t)
+    t = re.sub(r'[^\w\u3000-\u30ff\u4e00-\u9fffア-ン・]', '', t, flags=re.UNICODE)
+    return t.lower()
+
+
+def extract_h2_headings(html_text):
+    """本文から h2 見出しの文字列リストを取り出す。"""
+    headings = []
+    for raw in _H2_RE.findall(html_text or ''):
+        txt = _HTML_COMMENT_RE.sub(' ', raw)
+        txt = _HTML_TAG_RE.sub('', txt)
+        txt = _WHITESPACE_RE.sub('', txt).strip()
+        if txt:
+            headings.append(txt)
+    return headings
+
+
+def clean_model_html(text):
+    """コードフェンスや ---META---/---BODY--- の混入を除いて HTML 本文だけ返す。"""
+    if not text:
+        return ""
+    t = text.strip()
+    if '---BODY---' in t:
+        t = t.split('---BODY---', 1)[1]
+    if '---META---' in t:
+        t = t.split('---META---', 1)[0]
+    t = re.sub(r'^[ \t]*```(?:html|HTML)?[ \t]*\r?\n?', '', t, flags=re.MULTILINE)
+    t = re.sub(r'\r?\n?[ \t]*```[ \t]*$', '', t, flags=re.MULTILINE)
+    return t.strip()
+
+
+def append_body_sections(body_html, extra_html):
+    """追加章(<h2>〜)を本文の末尾、外側のラッパ div があればその内側に差し込む。"""
+    extra = (extra_html or '').strip()
+    if not extra:
+        return body_html
+    body = (body_html or '').strip()
+    if not body:
+        return extra
+    if body.rstrip().endswith('</div>'):
+        trimmed = body.rstrip()
+        idx = trimmed.rfind('</div>')
+        return trimmed[:idx].rstrip() + "\n" + extra + "\n" + trimmed[idx:]
+    return body + "\n" + extra
+
+
+def call_gemini_text(prompt, max_output_tokens=MAX_OUTPUT_TOKENS, timeout=GEMINI_TIMEOUT_SECONDS,
+                     temperature=0.7, label=""):
+    """gemini-2.5-flash を呼んで本文テキストを返す。失敗時 None（キーはログに出さない）。"""
+    api_key = load_gemini_key()
+    if not api_key:
+        print("❌ GEMINI_API_KEY が見つかりません。", file=sys.stderr)
+        return None
+
+    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": temperature,
+            "maxOutputTokens": max_output_tokens
+        }
+    }
+    req = urllib.request.Request(
+        endpoint,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST"
+    )
+    ctx = get_ssl_context()
+    started = datetime.now()
+    try:
+        with urllib.request.urlopen(req, context=ctx, timeout=timeout) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        print(f"⚠️ Gemini API呼び出しエラー{label}: {e}", file=sys.stderr)
+        return None
+
+    candidates = data.get("candidates") or []
+    if not candidates:
+        block = (data.get("promptFeedback") or {}).get("blockReason", "n/a")
+        print(f"⚠️ Gemini: 候補なし{label} (blockReason={block})", file=sys.stderr)
+        return None
+
+    parts = (candidates[0].get("content") or {}).get("parts") or []
+    text = "".join(p.get("text", "") for p in parts).strip()
+    usage = data.get("usageMetadata") or {}
+    elapsed = (datetime.now() - started).total_seconds()
+    print(f"🧠 Gemini応答{label}: 応答 {len(text)} 文字 / {elapsed:.1f}s "
+          f"(finishReason={candidates[0].get('finishReason')}, "
+          f"tokens={usage.get('candidatesTokenCount', '?')}/{usage.get('totalTokenCount', '?')})")
+    if not text:
+        return None
+    return text
+
+
+def pick_continuation_chapters(body_html, requested, round_no):
+    """まだ書いていない章を CHAPTERS_PER_ROUND 本選ぶ（依頼済み・既存見出しと重複するものは除外）。"""
+    existing = [normalize_heading(h) for h in extract_h2_headings(body_html)]
+    todo = []
+    for chapter in CONTINUATION_CHAPTERS:
+        norm = normalize_heading(chapter)
+        if not norm or norm in requested:
+            continue
+        if any(e and (norm in e or e in norm) for e in existing):
+            continue
+        todo.append(chapter)
+        if len(todo) >= CHAPTERS_PER_ROUND:
+            break
+    if not todo:
+        # プールを使い切ったら汎用の深掘り章で続行する（重複防止のため毎回新しい章名）
+        todo = [f"追加検証パート{round_no}: 実測手順と失敗パターン、および未確認論点の整理"]
+    return todo
+
+
+def enforce_longform_gate(art, raw_text, source_url, source_name):
+    """本文が MIN_ARTICLE_CHARS に達するまで追記ラウンドを繰り返し、公開可否を art に書き込む。"""
+    if not art:
+        return None
+    body = art.get("body") or ""
+    chars = plain_char_len(body)
+    headings = extract_h2_headings(body)
+    requested = []
+    rounds = 0
+
+    print(f"📏 初回生成の本文字数: {chars} 字 (h2 {len(headings)} 本) / 公開下限 {MIN_ARTICLE_CHARS} 字・目標 {TARGET_ARTICLE_CHARS} 字")
+
+    while chars < MIN_ARTICLE_CHARS and rounds < MAX_CONTINUATION_ROUNDS:
+        round_no = rounds + 1
+        todo = pick_continuation_chapters(body, requested, round_no)
+        requested.extend(normalize_heading(c) for c in todo)
+        remaining = max(TARGET_ARTICLE_CHARS - chars, (MIN_ARTICLE_CHARS - chars) + 1500)
+        prompt = build_continuation_prompt(source_name, source_url, raw_text, body, todo, remaining, round_no)
+        print(f"✍️ 追記ラウンド{round_no}/{MAX_CONTINUATION_ROUNDS}: 不足 {MIN_ARTICLE_CHARS - chars} 字 → 追記ノルマ {remaining} 字 "
+              f"(書く章: {' / '.join(todo)})")
+        extra_raw = call_gemini_text(prompt, label=f" 追記ラウンド{round_no}")
+        extra = clean_model_html(extra_raw)
+        if not extra:
+            print(f"⚠️ 追記ラウンド{round_no}: Gemini から本文を取得できず打ち切り", file=sys.stderr)
+            break
+        before = chars
+        body = append_body_sections(body, extra)
+        chars = plain_char_len(body)
+        headings = extract_h2_headings(body)
+        rounds = round_no
+        print(f"📏 追記ラウンド{round_no} 完了: {before} 字 → {chars} 字 (h2 {len(headings)} 本)")
+
+    art["body"] = body
+    art["chars"] = chars
+    art["longform_rounds"] = rounds + 1
+    art["heading_count"] = len(headings)
+    art["publish_ok"] = chars >= MIN_ARTICLE_CHARS
+
+    if art["publish_ok"]:
+        print(f"✅ 長文ゲート通過: 本文 {chars} 字 / h2 {len(headings)} 本 / Gemini 呼出し {rounds + 1} 回"
+              + ("（目標字数には未達だが下限はクリア）" if chars < TARGET_ARTICLE_CHARS else ""))
+        if len(headings) < MIN_HEADINGS:
+            print(f"⚠️ h2 見出しが {len(headings)} 本しかありません（義務 {MIN_HEADINGS} 本未満）。"
+                  f"文字数ゲートは通過しているため公開されますが、構成の構造確認を推奨します。", file=sys.stderr)
+    else:
+        print(f"🚫 長文ゲート未達: 本文 {chars} 字 < 下限 {MIN_ARTICLE_CHARS} 字 "
+              f"(Gemini 呼出し {rounds + 1} 回, h2 {len(headings)} 本) → 公開しない", file=sys.stderr)
+    return art
+
+
+def save_shortfall_draft(art, post_id="", reason=""):
+    """未達ドラフトを hub/output/shortfall/<slug>.html に保存し、パスを返す（公開はしない）。"""
+    slug = re.sub(r'[^A-Za-z0-9_.-]+', '_', str(art.get("slug") or "untitled")).strip('_.-') or "untitled"
+    path = os.path.join(SHORTFALL_DIR, f"{slug}.html")
+    header = (
+        "<!-- SHORTFALL DRAFT / 非公開（10,000字ゲート未達）\n"
+        f"     generated: {datetime.now().isoformat()}\n"
+        f"     slug: {art.get('slug')}\n"
+        f"     title: {art.get('title')}\n"
+        f"     plain_char_len: {art.get('chars')} (MIN_ARTICLE_CHARS={MIN_ARTICLE_CHARS}, TARGET={TARGET_ARTICLE_CHARS})\n"
+        f"     h2_headings: {art.get('heading_count')} (MIN_HEADINGS={MIN_HEADINGS})\n"
+        f"     gemini_calls: {art.get('longform_rounds')}\n"
+        f"     source_post_id: {post_id}\n"
+        f"     reason: {reason}\n"
+        "-->\n"
+    )
+    meta = (f"---META---\nTITLE: {art.get('title')}\nSLUG: {art.get('slug')}\n"
+            f"SUMMARY: {art.get('summary')}\n---BODY---\n")
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(header + meta + (art.get("body") or ""))
+    except Exception as e:
+        print(f"⚠️ ドラフト保存失敗 ({path}): {e}", file=sys.stderr)
+        return None
+    return path
+
+
+# ============================================================================
+# 長文義務（chronicle 用）: プロンプトに載せる規則・追記章・追記プロンプト生成
+# ============================================================================
+
+CHAPTERS_PER_ROUND = 3
+
+LONGFORM_RULES_TEXT = """2. 記事量と構成の義務（最優先・必須）:
+   - 本文は純テキスト（HTMLタグ・空白・全角スペースを除いた文字数）で10,000字以上。目標13,000字。10,000字に満たない記事は公開しません。
+   - h2見出しを最低8本立てる。各見出しの下には900〜1,500字のかたまりのある解説を書く。
+   - 本文は必ずHTMLで構造化する: 章のタイトルは <h2>、細分区切りは <h3>、段落は <p>、引用は <blockquote>、比較は <table>。タグを使わないプレーンテキストの塊としての出力は禁止。
+   - 箇条書きの羅列で終わらせず、「なぜそうなるのか」「マイナー／ホルダーに何が起きるのか」「具体的にどう動くべきか」という因果関係を説明する段落を中心に構成する。
+   - 原文や公式一次情報で確認できていない数値・固有名詞・日付は、必ず『（要確認）』と明記して推定であることを読者に伝える。
+   - 途中で切り上げず、指定字数に達するまで同じテーマを別の角度（仕組み・実務・検証・リスク・比較）から深掘りして書き切る。"""
+
+CONTINUATION_CHAPTERS = [
+    "公式アナウンスの技術内容をゼロから噛み砕く（用語・仕組み・なぜ必要とされたのか）",
+    "コンセンサス（PoDE）とネットワーク安全性に与える影響",
+    "自作PCハードウェア目線の掘り下げ（CPU選定・電力・発熱と冷却）",
+    "マイニング設定の実務チェックリストと変更手順",
+    "実測データ（ハッシュレート・Difficulty・日産XCB）との照合手順と検証計画",
+    "マイナー／ホルダーが今取るべきアクションと判断の分岐",
+    "想定されるリスク・落とし穴とよくある失敗パターン",
+    "一次情報で確認できない論点の『要確認』一覧と公式での確認方法",
+    "過去のアップデートや他チェーンとの比較から見る今回の変更の重要性",
+    "初心者向けQ&A（よくある質問とリコロの回答）",
+    "CoreStationのダッシュボードでできる検証とデータの見方",
+    "今後の監視計画（どの公式情報をいつ・どう確認するか）",
+]
+
+
+def build_continuation_prompt(source_name, source_url, raw_text, existing_body, todo_chapters,
+                              remaining_chars, round_no):
+    """既存本文へ <h2> 章を追記させるための継続プロンプト。"""
+    existing = extract_h2_headings(existing_body)
+    if existing:
+        existing_txt = "\n".join(f"   - {h}" for h in existing)
+    else:
+        existing_txt = "   - （まだ h2 見出しがありません）"
+    todo_txt = "\n".join(f"{i + 1}. {c}" for i, c in enumerate(todo_chapters))
+
+    return f"""あなたは自作PCとゲームが大好きな女性技術アナリスト兼ライター「リコロ（Ricolo）」です！
+すでに執筆済みの Core Blockchain 解説記事に、<h2> 見出しの新しい章を追記してください（追記ラウンド {round_no}）。
+
+【情報ソース】
+{source_name} ({source_url})
+
+【公式アナウンス原文】
+{raw_text}
+
+【すでに書き終わっている見出し（この内容は書かない。同じ書き出し・同じ自作PC比喩・同じ数値の再利用も禁止）】
+{existing_txt}
+
+【今回あなたが書く章（この順で、すべて <h2> 見出しを立てる）】
+{todo_txt}
+
+【執筆ルール（必須）】
+- 今回のラウンドだけで純テキスト（HTMLタグ・空白・全角スペースを除いた文字数）{remaining_chars}字以上を書く。1章あたり900〜1,500字を目安にする。
+- 記事全体の h2 見出しは合計 {MIN_HEADINGS} 本以上必要。今回はそのうち上記の章を担当する。
+- キャラクターはリコロ（自作PC大好きゲーム女子）のまま。元気で親しみやすいが、技術説明はプロレベルにロジカルに。
+- 段落中心。仕組み→原因→マイナーへの影響→取るべき行動、の順に因果を説明する。見出しごとに150〜350字の段落を3〜5個目安。
+- 原文や公式一次情報で確認できていない数値・固有名詞は必ず『（要確認）』と明記する。
+- 箇条書きを使う場合でも、必ずその前後に説明段落を添える。
+- 既存本文の要約・言い直しは書かない。新しい切り口と新しい情報だけを書く。
+- 冒頭の挨拶（「どうも！自作PC大好きゲーム女子、リコロです！」）と締めくくりの挨拶は記事に既に存在するため書かない。
+- 出力は追記するHTML本文だけ。<h2> 見出し <p> 段落 <blockquote> 引用 <table> などHTMLのみ。コードフェンス（```）、---META---、---BODY---、前置き、説明文、見出しリストの復唱は一切出力しない。"""
+
+
 BANNER_HEADER_HTML = """
 <!-- CoreStation Official Brand Header Banner -->
 <div style="text-align: center; margin-bottom: 25px;">
@@ -191,8 +496,8 @@ RICOLO_AUTHOR_BOX_HTML = """
 </div>
 """
 
-def generate_article_with_gemini(raw_text, source_url, source_name):
-    """Generate structured article content (title, slug, summary, body) using Gemini API."""
+def _generate_article_first_pass(raw_text, source_url, source_name):
+    """初回パス（Gemini 1呼出し）で骨子を生成する。10,000字ゲートは generate_article_with_gemini が担当。"""
     api_key = load_gemini_key()
     if not api_key:
         return None
@@ -213,7 +518,8 @@ Core Blockchain (XCB) の公式速報・最新アナウンスを深く読み解�
    - トーン: 元気で明るく親しみやすい語り口。自作PC（Ryzen・グラボ・冷却等）やゲーム（放置ゲー・RPG・クラフト等）の例え話を適度に織り交ぜる。
    - 締めくくり: 「それでは、また次回の解説記事でお会いしましょう！リコロでした〜！ばいば〜い！🎮👾✨」など末尾の表現も自由に生き生きとキャラクターを維持する。
    - ※重要【英語原文への対応】: 原文が英語（本家アナウンス等）の場合は、内容の核となる重要ポイントを初心者にも分かりやすい自然で明快な日本語に翻訳・要約した上で、リコロ独自の自作PC・ゲーム目線で解説してください。
-2. 構成:
+{LONGFORM_RULES_TEXT}
+3. 構成:
    - つかみ・導入（「公式から激アツなアップデートが届きました〜！」）
    - 原文引用（<blockquote style="margin: 10px 0; padding: 10px; background: #fff; border-left: 3px solid #ffa726; font-size: 14px; color: #555; white-space: pre-wrap;"> で囲み、引用元リンク: {source_url} を明記）
    - 3行でわかる！今回の神アプデ要点まとめ（箇条書き）
@@ -221,14 +527,14 @@ Core Blockchain (XCB) の公式速報・最新アナウンスを深く読み解�
    - マイナー・ホルダーはどう動くべきか？（実践アドバイス）
    - CoreStation（https://corestation.pages.dev/）への誘導
    - 締めくくり
-3. 出力フォーマット（厳密に以下の書式を守ってください）:
+4. 出力フォーマット（厳密に以下の書式を守ってください）:
 ---META---
 TITLE: 【速報・解説】絵文字付きの魅力的なタイトル
 SLUG: 半角英小文字とハイフンのみの簡潔な識別子（例: core-update-20261018）
 SUMMARY: 100〜150文字程度の客観的かつ魅力的な記事要約
 ---BODY---
 <div style="line-height: 1.8; font-size: 16px; color: #333;">
-記事のHTML本文（```htmlなどのコードフェンスは含めないでください）
+記事のHTML本文（<h2> 見出し・<h3> 小見出し・<p> 段落・<blockquote> 引用で構造化すること。```htmlなどのコードフェンスは含めないでください）
 </div>
 """
 
@@ -237,7 +543,7 @@ SUMMARY: 100〜150文字程度の客観的かつ魅力的な記事要約
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature": 0.7,
-            "maxOutputTokens": 4000
+            "maxOutputTokens": MAX_OUTPUT_TOKENS
         }
     }
 
@@ -250,7 +556,7 @@ SUMMARY: 100〜150文字程度の客観的かつ魅力的な記事要約
     ctx = get_ssl_context()
     try:
         print("🧠 Google Gemini API を呼び出して解説記事を執筆中...")
-        with urllib.request.urlopen(req, context=ctx, timeout=35) as resp:
+        with urllib.request.urlopen(req, context=ctx, timeout=GEMINI_TIMEOUT_SECONDS) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             candidate = data["candidates"][0]["content"]["parts"][0]["text"].strip()
             
@@ -277,7 +583,7 @@ SUMMARY: 100〜150文字程度の客観的かつ魅力的な記事要約
                 body_html = re.sub(r'^```(?:html)?\s*', '', body_html, flags=re.MULTILINE)
                 body_html = re.sub(r'\s*```$', '', body_html, flags=re.MULTILINE).strip()
                 
-                print(f"✨ Geminiによる記事執筆が完了しました！ ({title})")
+                print(f"✨ Gemini による初稿が完成しました: {title}")
                 return {
                     "title": title,
                     "slug": slug,
@@ -302,6 +608,18 @@ SUMMARY: 100〜150文字程度の客観的かつ魅力的な記事要約
     except Exception as e:
         print(f"⚠️ Gemini API呼び出しエラー: {e}", file=sys.stderr)
         return None
+
+def generate_article_with_gemini(raw_text, source_url, source_name):
+    """初回執筆 + 長文ゲート（純テキスト10,000字に達するまで追記ラウンドを繰り返す）。
+
+    戻り値は既存互換の dict(title/slug/summary/body) に以下を加えたもの:
+      chars(=plain_char_len), longform_rounds(Gemini呼出し回数), heading_count, publish_ok
+    公開してよいのは publish_ok が True のときだけ。生成失敗時は None（既存と互換）。
+    """
+    art = _generate_article_first_pass(raw_text, source_url, source_name)
+    if not art:
+        return None
+    return enforce_longform_gate(art, raw_text=raw_text, source_url=source_url, source_name=source_name)
 
 def build_standalone_article_html(slug, title, summary, date_str, body_html):
     return f"""<!DOCTYPE html>
@@ -462,6 +780,9 @@ def build_standalone_article_html(slug, title, summary, date_str, body_html):
 
 def integrate_article_to_site(slug, title, summary, date_str, body_html, category="ecosystem", category_name="速報・公式アナウンス"):
     """Integrates new article into standalone HTML, initial_data.js, local_articles.js, index.html, and sitemap.xml."""
+    if DRY_RUN:
+        print("🧪 [dry-run] サイト統合をスキップ: articles/<slug>.html / initial_data.js / local_articles.js / index.html / sitemap.xml")
+        return
     print(f"📁 CoreStation 本サイト側へ記事を統合中: {slug}")
     
     # Clean body for standalone site
@@ -566,6 +887,9 @@ def integrate_article_to_site(slug, title, summary, date_str, body_html, categor
 
 def deploy_to_cloudflare(commit_msg=None):
     """Commit changes and push to origin main to trigger Cloudflare Pages build."""
+    if DRY_RUN:
+        print("🧪 [dry-run] git add/commit/push をスキップ")
+        return
     print("🚀 Cloudflare Pages への自動デプロイ（Git push）を開始...")
     try:
         cmd_add = ["git", "add", "-A"]
@@ -596,6 +920,9 @@ def deploy_to_cloudflare(commit_msg=None):
 
 def sync_onchain_mining_data():
     """Runs sync.py to ensure initial_data.js and wallet.db have the latest on-chain rewards and worker status."""
+    if DRY_RUN:
+        print("🧪 [dry-run] sync.py によるオンチェーン同期をスキップ")
+        return True
     print("⛓️ オンチェーン採掘データ＆ワーカー最新状態の定期同期を実行中...")
     try:
         sync_script = os.path.join(ROOT_DIR, "sync.py")
@@ -606,25 +933,47 @@ def sync_onchain_mining_data():
         print(f"⚠️ オンチェーン採掘データ同期中にエラー: {e}", file=sys.stderr)
         return False
 
-def check_and_publish():
-    """Main execution loop for checking updates and publishing across all platforms."""
+def check_and_publish(sample_file=None):
+    """Main execution loop for checking updates and publishing across all platforms.
+
+    純テキスト10,000字未満の記事は公開しない（はてな投稿 / articles・data・index・sitemap更新 /
+    git push / SNS配信をすべてスキップし、hub/output/shortfall/ にドラフトを保存して再試行に回す）。
+    sample_file を渡すと固定のサンプル raw_text で生成検証する（公開作用は自動スキップ）。
+    """
+    if DRY_RUN:
+        print("🧪 [dry-run] 公開作用（はてな投稿 / sites統合 / git push / SNS / 状態更新 / sync.py）はすべてスキップします。")
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 🔍 コアクロニクル・公式アップデートの巡回監視＆最新データ同期を開始...")
 
-    # 1. 常にオンチェーン採掘実績＆ワーカー状態を最新化
+    # 1. 常にオンチェーン採掘実績＆ワーカー状態を最新化（dry-run ではスキップ）
     sync_onchain_mining_data()
 
     # 2. 公式アナウンス・SNSの巡回チェック
     last_seen = load_last_seen()
     seen_ids = set(last_seen.get("seen_posts", []))
+    attempts = dict(last_seen.get("longform_attempts") or {})  # 長文ゲート未達の試行回数
 
     all_updates = []
-    for src in SOURCES:
-        if src["type"] == "telegram":
-            items = fetch_telegram_updates(src["url"], src["name"])
-            all_updates.extend(items)
-        elif src["type"] == "youtube":
-            items = fetch_youtube_updates(src["channel_id"], src["name"])
-            all_updates.extend(items)
+    if sample_file:
+        with open(sample_file, "r", encoding="utf-8") as f:
+            sample_raw = f.read().strip()
+        if not sample_raw:
+            print(f"❌ サンプル raw_text が空です: {sample_file}", file=sys.stderr)
+            return False
+        all_updates = [{
+            "id": f"sample/{os.path.basename(sample_file)}",
+            "source": "検証用サンプル raw_text (chronicle_watcher --sample-file)",
+            "text": sample_raw,
+            "url": "https://corestation.pages.dev/ (検証用サンプルソース)"
+        }]
+        print(f"🧪 サンプル raw_text ({len(sample_raw)} 字) で生成検証します: {sample_file}")
+    else:
+        for src in SOURCES:
+            if src["type"] == "telegram":
+                items = fetch_telegram_updates(src["url"], src["name"])
+                all_updates.extend(items)
+            elif src["type"] == "youtube":
+                items = fetch_youtube_updates(src["channel_id"], src["name"])
+                all_updates.extend(items)
 
     # 初回シード保護（未登録時は最新1件のみ残して既読化）
     if not seen_ids and all_updates:
@@ -638,7 +987,11 @@ def check_and_publish():
         print("✅ 新着の公式更新はありませんでした。オンチェーン採掘データの差分があればデプロイします。")
         last_seen["last_checked"] = datetime.now().isoformat()
         last_seen["seen_posts"] = list(seen_ids)[-100:]
-        save_last_seen(last_seen)
+        last_seen["longform_attempts"] = {k: v for k, v in attempts.items() if k not in seen_ids}
+        if DRY_RUN:
+            print(f"🧪 [dry-run] 状態ファイルは書き換えません: {LAST_SEEN_FILE}")
+        else:
+            save_last_seen(last_seen)
 
         # 新着記事がなくても、オンチェーン採掘データ等の差分があれば即時コミット＆デプロイ
         deploy_to_cloudflare(f"feat(mining): auto-sync on-chain rewards and worker status [{datetime.now().strftime('%Y-%m-%d %H:%M')}]")
@@ -649,20 +1002,56 @@ def check_and_publish():
     any_published = False
 
     for post in new_posts:
+        post_key = post["id"]
+        prev_attempts = attempts.get(post_key, 0)
+        if MAX_LONGFORM_ATTEMPTS and prev_attempts >= MAX_LONGFORM_ATTEMPTS:
+            print(f"🚫 長文ゲート再試行上限({MAX_LONGFORM_ATTEMPTS}回)到達のため打ち切り: {post_key} "
+                  f"(試行 {prev_attempts} 回) → 既読扱いでスキップ", file=sys.stderr)
+            seen_ids.add(post_key)
+            attempts.pop(post_key, None)
+            continue
+
+        print(f"🔎 新着処理開始: {post_key} (過去の試行 {prev_attempts} 回)")
         art = generate_article_with_gemini(post["text"], post.get("url", ""), post.get("source", ""))
         if not art:
+            attempts[post_key] = prev_attempts + 1
+            print(f"🚫 公開スキップ(生成失敗): post_id={post_key} Gemini応答なし "
+                  f"試行={attempts[post_key]} seen未更新(次回再試行)", file=sys.stderr)
             continue
 
         title = art["title"]
         slug = art["slug"]
         summary = art["summary"]
         body_html = art["body"]
+        chars = art.get("chars", plain_char_len(body_html))
+        rounds = art.get("longform_rounds", 1)
+        heading_count = art.get("heading_count", len(extract_h2_headings(body_html)))
         full_blog_html = BANNER_HEADER_HTML + "\n" + body_html + "\n" + RICOLO_AUTHOR_BOX_HTML
 
-        # 1. Save temp output
+        # 0. 【長文ゲート】10,000字に満たない記事は公開作用をすべてスキップしドラフトだけ保存
+        if not art.get("publish_ok", False):
+            draft_path = save_shortfall_draft(
+                art, post_id=post_key,
+                reason=f"plain_char_len={chars} < MIN_ARTICLE_CHARS={MIN_ARTICLE_CHARS} "
+                       f"(追記 {MAX_CONTINUATION_ROUNDS} ラウンド実施後も未達)")
+            attempts[post_key] = prev_attempts + 1
+            print(f"🚫 公開スキップ(長文ゲート未達): slug={slug} plain_char_len={chars} "
+                  f"< MIN_ARTICLE_CHARS={MIN_ARTICLE_CHARS} h2={heading_count}本 "
+                  f"Gemini呼出し={rounds}回 試行回数={attempts[post_key]} "
+                  f"ドラフト={draft_path} seen未更新=次回再試行 title={title}", file=sys.stderr)
+            continue
+
+        # 1. Save temp output（ドラフト保存。外部公開ではない）
         temp_file = os.path.join(OUTPUT_DIR, f"chronicle_update_{post['id'].replace('/', '_')}.html")
         with open(temp_file, "w", encoding="utf-8") as f:
             f.write(full_blog_html)
+        print(f"📝 ドラフト保存: {temp_file} (本文 {chars} 字 / h2 {heading_count} 本 / Gemini {rounds} 呼)")
+
+        if DRY_RUN:
+            print(f"🧪 [dry-run] 公開作用をスキップ: はてなブログ投稿 / サイト統合 / git push / SNS配信。"
+                  f" 生成字数={chars} 保存先={temp_file}")
+            any_published = True
+            continue
 
         # 2. Publish to Hatena Blog
         print(f"🚀 はてなブログへ自動投稿を実行中: 『{title}』...")
@@ -691,9 +1080,10 @@ def check_and_publish():
         )
 
         seen_ids.add(post["id"])
+        attempts.pop(post_key, None)
         any_published = True
 
-    if any_published:
+    if any_published and not DRY_RUN:
         # 4. Trigger Cloudflare Pages deployment
         deploy_to_cloudflare()
 
@@ -709,8 +1099,28 @@ def check_and_publish():
 
     last_seen["seen_posts"] = list(seen_ids)[-100:]
     last_seen["last_checked"] = datetime.now().isoformat()
-    save_last_seen(last_seen)
+    attempts = {k: v for k, v in attempts.items() if k not in seen_ids}
+    last_seen["longform_attempts"] = attempts
+    if DRY_RUN:
+        print(f"🧪 [dry-run] 状態ファイルは書き換えません（未達の記事は次回実行でも再試行されます）: {LAST_SEEN_FILE}")
+    else:
+        save_last_seen(last_seen)
     return any_published
 
+def parse_cli_args(argv=None):
+    parser = argparse.ArgumentParser(
+        description="Core Chronicle Watcher（純テキスト10,000字以上の記事だけを公開）")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="公開作用（はてなブログ投稿 / articles/HTML / local_articles.js / index.html / "
+                             "sitemap / git push / SNS / 状態ファイル更新 / sync.py）をすべてスキップし、"
+                             "生成字数と保存先だけを出力します")
+    parser.add_argument("--sample-file", dest="sample_file", default=None,
+                        help="固定のサンプル raw_text ファイルで生成検証する（公開作用は自動でスキップ）")
+    return parser.parse_args(argv)
+
+
 if __name__ == "__main__":
-    check_and_publish()
+    cli = parse_cli_args()
+    if cli.dry_run or cli.sample_file:
+        DRY_RUN = True
+    check_and_publish(sample_file=cli.sample_file)

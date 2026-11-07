@@ -38,3 +38,13 @@ hub/output/social_*.txt
 nohup.out
 
 
+
+# 10,000字ゲート未達の非公開ドラフト（公開してはいけない）
+hub/output/shortfall/
+
+# CoreStation 実測コレクターのローカル状態（内容は live_state.json にembedしてコミットする）
+logs/
+data/.dashboard_live.lock
+data/*.tmp
+data/.deploy_gate.json
+data/machine_metrics/

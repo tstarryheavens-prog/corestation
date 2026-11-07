@@ -271,9 +271,277 @@
         return;
       }
     } catch {
-      // Fallback for static hosts (e.g. Cloudflare Pages) or when API server isn't serving this route
-      renderWatcherFallback();
+      // Functions が応答しなくても、デプロイ済みの実測スナップショットから状態を出す（値を作らない）
+      const snap = state.live || await loadLiveSnapshot();
+      if (snap) {
+        updateWatcherUI(watcherStatusFromSnapshot(snap));
+        return;
+      }
+      renderWatcherUnavailable();
     }
+  }
+
+  // ==========================================================================
+  // 実測スナップショット (data/live_state.json)
+  // collector が実行マシン上で計測した値のみを使う。取得できない項目は null のまま
+  // 「未取得」と表示し、推算・固定値・jitter 合成は一切行わない。
+  // ==========================================================================
+  async function loadLiveSnapshot() {
+    try {
+      const res = await fetch(`/data/live_state.json?_t=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Accept": "application/json" },
+        signal: typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined
+      });
+      if (!res.ok) return null;
+      const ct = res.headers.get("content-type") || "";
+      if (!ct.includes("json")) return null;
+      const json = await res.json();
+      if (!json || !json.generated_at) return null;
+      state.live = json;
+      state.liveFetchedAt = Date.now();
+      return json;
+    } catch {
+      return null;
+    }
+  }
+
+  function ageMinutes(iso) {
+    if (!iso) return null;
+    const t = new Date(iso).getTime();
+    if (!Number.isFinite(t)) return null;
+    return Math.max(0, Math.round((Date.now() - t) / 60000));
+  }
+
+  function fmtAgo(iso) {
+    const min = ageMinutes(iso);
+    if (min === null) return "未取得";
+    if (min < 1) return "たった今";
+    if (min < 60) return `${min} 分前`;
+    if (min < 1440) return `${Math.floor(min / 60)} 時間前`;
+    return `${Math.floor(min / 1440)} 日前`;
+  }
+
+  function humanizeJst(value) {
+    if (!value) return "未取得";
+    const str = String(value);
+    if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(str)) return str;
+    const d = new Date(str);
+    if (Number.isNaN(d.getTime())) return str;
+    return d.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", hour12: false });
+  }
+
+  function watcherStatusFromSnapshot(snap) {
+    const w = (snap.watcher && snap.watcher.data) || {};
+    const c = (snap.content && snap.content.data) || {};
+    const ch = (snap.chain && snap.chain.data) || {};
+    const age = ageMinutes(snap.generated_at);
+    const fresh = age !== null && age <= 45;
+    const sched = w.crontabEntriesVisibleToCollector || [];
+    return {
+      is_running: fresh,
+      status: fresh ? "healthy" : (age !== null && age <= 180 ? "stale" : "expired"),
+      is_running_basis: "collector freshness (data/live_state.json の age)",
+      last_checked: c.watcherLastCheckedChronicle || w.lastHubOutputAtJst || null,
+      last_published: c.watcherLastPublishedCommunity || null,
+      next_run: sched.length ? sched[0].schedule : null,
+      schedule_crontab: sched,
+      collector_age_minutes: age,
+      archive_count: c.archiveCount,
+      archive_newest_date: c.archiveNewestDate,
+      shortfall_count: c.shortfallCount,
+      seen_posts: c.watcherSeenPosts,
+      remaining_seconds: 0
+    };
+  }
+
+  function applyLiveSnapshot(snap) {
+    if (!snap) return;
+
+    const chainRes = snap.chain || {};
+    if (chainRes.ok && chainRes.data) {
+      state.networkStats = Object.assign({}, state.networkStats || {}, {
+        blockHeight: chainRes.data.blockHeight,
+        difficulty: chainRes.data.difficulty,
+        lastBlockTime: chainRes.data.lastBlockTime,
+        blockIntervalMeasured_s: chainRes.data.blockIntervalMeasured_s,
+        inSync: chainRes.data.inSync,
+        measuredAt: chainRes.measured_at,
+        source: "collector (blockindex 実測)"
+      });
+      state.onchainEvidence = {
+        earnedXcb24h: chainRes.data.earnedXcb24h,
+        earnedXcb7d: chainRes.data.earnedXcb7d,
+        earnedXcb30d: chainRes.data.earnedXcb30d,
+        lastPayoutAtJst: chainRes.data.lastPayoutAtJst,
+        lastPayoutAgeMin: chainRes.data.lastPayoutAgeMin,
+        balanceXcb: chainRes.data.walletBalanceXcb,
+        blocksFound24hEstimate: chainRes.data.blocksFound24hEstimate
+      };
+      if (typeof chainRes.data.walletBalanceXcb === "number" && chainRes.data.walletBalanceXcb > 0) {
+        state.liveBalanceXcb = chainRes.data.walletBalanceXcb;
+      }
+    }
+
+    const dbRes = snap.db || {};
+    if (dbRes.ok && dbRes.data) {
+      state.dbStatus = dbRes.data;
+      updateDbStatusCard({
+        dailyCount: dbRes.data.dailyCount,
+        txCount: dbRes.data.txCount,
+        rateCount: dbRes.data.rateCount,
+        dbPath: dbRes.data.dbPath,
+        minDate: dbRes.data.minDate,
+        maxDate: dbRes.data.maxDate,
+        lastSync: dbRes.data.lastTxAtJst ? `最終着金レコード ${dbRes.data.lastTxAtJst}` : null,
+        measuredAgo: fmtAgo(dbRes.measured_at)
+      });
+    }
+
+    const contentRes = snap.content || {};
+    if (contentRes.ok && contentRes.data) {
+      state.contentStatus = contentRes.data;
+    }
+
+    renderMachineMetrics(snap);
+    renderDataFreshness(snap);
+  }
+
+  function renderMachineMetrics(snap) {
+    const host = document.getElementById("machineMetricsBody");
+    if (!host) return;
+    const m = (snap.machines && snap.machines.data) || {};
+    const nodes = Array.isArray(m.nodes) ? m.nodes : [];
+    const badge = document.getElementById("machineMetricsBadge");
+    const atEl = document.getElementById("machineMetricsAt");
+
+    const gb = (b) => (typeof b === "number" ? (b / 1073741824).toFixed(1) : null);
+    const LABELS = {
+      loadAvg0: "CPU負荷", cpuLogical: "スレッド", ramUsedBytes: "RAM使用", ramBytes: "RAM搭載",
+      ramFreeBytes: "RAM空き", diskFreeBytes: "Disk空き", diskTotalBytes: "Disk総容量",
+      uptimeSeconds: "稼働時間", decodeTokS: "推論", ttftS: "TTFT", wallS: "往復", latencyMs: "HTTP遅延",
+      temperatureC: "温度", powerW: "消費電力", hashrateHs: "H/s", acceptedPct: "受理率", threads: "スレッド数"
+    };
+
+    const cards = [];
+    for (const n of nodes) {
+      const mt = Object.assign(
+        {},
+        n.metrics || {},
+        Object.assign({ probeOk: (n.throughputProbe && n.throughputProbe.ok) !== false }, n.throughputProbe || {}),
+        (n.status && typeof n.status === "object") ? n.status : {},
+        typeof n.pingLatencyMs === "number" ? { latencyMs: n.pingLatencyMs } : {}
+      );
+      const online = n.online !== false && !n.error;
+      const bits = [];
+      if (Array.isArray(mt.loadAvg) && mt.loadAvg.length) {
+        bits.push(`CPU負荷 ${mt.loadAvg.map(v => Number(v).toFixed(2)).join(" / ")}${mt.cpuLogical ? ` (${mt.cpuLogical} thread)` : ""}`);
+      } else if (typeof mt.loadAvg0 === "number") {
+        bits.push(`CPU負荷 ${mt.loadAvg0.toFixed(2)}`);
+      }
+      if (typeof mt.ramUsedBytes === "number" && typeof mt.ramBytes === "number") {
+        bits.push(`RAM ${gb(mt.ramUsedBytes)} / ${gb(mt.ramBytes)} GB`);
+      }
+      if (typeof mt.diskFreeBytes === "number" && typeof mt.diskTotalBytes === "number") {
+        bits.push(`Disk 空き ${gb(mt.diskFreeBytes)} / ${gb(mt.diskTotalBytes)} GB`);
+      }
+      if (typeof mt.uptimeSeconds === "number") bits.push(`稼働 ${Math.floor(mt.uptimeSeconds / 3600)} 時間`);
+      const decodeTok = [mt.decodeTokS, mt.decodeTokensPerSecond, mt.tokensPerSecond].find(v => typeof v === "number");
+      const ttft = [mt.ttftS, mt.timeToFirstTokenSeconds, mt.firstTokenSeconds].find(v => typeof v === "number");
+      const wall = [mt.wallS, mt.wallSeconds].find(v => typeof v === "number");
+      if (typeof decodeTok === "number") bits.push(`推論 ${decodeTok.toFixed(1)} tok/s${typeof ttft === "number" ? ` (TTFT ${ttft}s)` : ""}${typeof wall === "number" ? ` / 往復 ${wall}s` : ""}`);
+      if (typeof mt.hashrateHs === "number") bits.push(`${mt.hashrateHs.toLocaleString()} H/s`);
+      if (typeof mt.temperatureC === "number") bits.push(`温度 ${mt.temperatureC}°C`);
+      if (typeof mt.powerW === "number") bits.push(`消費電力 ${mt.powerW} W`);
+      if (typeof mt.latencyMs === "number") bits.push(`HTTP応答 ${mt.latencyMs} ms`);
+      if (mt.probeOk === false && !n.error) bits.push("推論probe失敗");
+      if (mt.model) bits.push(`model ${mt.model}`);
+      if (Array.isArray(n.models) && n.models.length) {
+        const ids = n.models.map(m => (m && (m.id || m.model)) || String(m)).slice(0, 2);
+        bits.push(`model ${ids.join(", ")}${n.models.length > ids.length ? " 他" : ""}`);
+      }
+      if (typeof n.promptTokens === "number") bits.push(`probe ${n.promptTokens}→${n.maxTokensRequested || "?"} tok`);
+      if (n.error) bits.push(`error: ${String(n.error).slice(0, 80)}`);
+      if (!online && !n.error) bits.push(` error: ${(n.status && n.status.error) || "接続不可"}`.slice(0, 96));
+      cards.push({
+        name: n.id || "node",
+        role: n.role || "",
+        online,
+        bits,
+        at: n.measured_at || mt.measured_at || null
+      });
+    }
+
+    const reporters = Array.isArray(m.rigReporters) ? m.rigReporters : [];
+    for (const r of reporters) {
+      cards.push({
+        name: r.worker || r.host || "rig",
+        role: "採掘リグ実測",
+        online: r.online !== false,
+        bits: [
+          typeof r.hashrateHs === "number" ? `${r.hashrateHs.toLocaleString()} H/s` : null,
+          typeof r.temperatureC === "number" ? `${r.temperatureC}°C` : null,
+          typeof r.powerW === "number" ? `${r.powerW} W` : null,
+          r.pool ? `pool ${r.pool}` : null
+        ].filter(Boolean),
+        at: r.measured_at || null
+      });
+    }
+
+    if (!cards.length) {
+      host.innerHTML = `<div style="padding:14px;color:var(--text-muted);font-size:13px;">マシン実測が取得できません（collector 未実行）</div>`;
+      if (badge) { badge.textContent = "実測なし"; badge.style.background = "#94a3b8"; }
+    } else {
+      host.innerHTML = cards.map(c => `
+        <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-left:4px solid ${c.online ? "var(--success)" : "#ef4444"};border-radius:6px;padding:11px 13px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <strong style="font-size:14px;">${c.name}</strong>
+            <span style="font-size:11px;color:${c.online ? "var(--success)" : "#ef4444"};font-weight:700;">${c.online ? "ONLINE" : "OFFLINE"}</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${c.role}</div>
+          <div style="font-size:12.5px;margin-top:7px;line-height:1.7;">${c.bits.length ? c.bits.join("<br>") : "メトリクス未取得"}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">計測 ${fmtAgo(c.at)}</div>
+        </div>`).join("");
+      const offlineCount = cards.filter(c => !c.online).length;
+      if (badge) {
+        badge.textContent = offlineCount ? `${cards.length} ノード中 ${offlineCount} 台 接続不可` : `${cards.length} ノード実測中`;
+        badge.style.background = offlineCount ? "#d97706" : "var(--success)";
+      }
+    }
+
+    if (atEl) {
+      atEl.textContent = `collector 計測 ${fmtAgo(snap.generated_at)}（${new Date(snap.generated_at).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })}）/ 署名 ${snap.signature || "--"}`;
+    }
+  }
+
+  function renderDataFreshness(snap) {
+    const bar = document.getElementById("dataFreshnessBar");
+    if (!bar) return;
+    const c = (snap.content && snap.content.data) || {};
+    const ch = (snap.chain && snap.chain.data) || {};
+    const db = (snap.db && snap.db.data) || {};
+    const stale = snap.staleness || {};
+    const chips = [];
+    const push = (label, value, iso, days) => {
+      const ageTxt = iso ? fmtAgo(iso) : (typeof days === "number" ? `${days.toFixed(1)} 日前` : "未取得");
+      const bad = iso ? ageMinutes(iso) > 180 : (typeof days === "number" ? days > 2 : true);
+      chips.push({ label, value: value === null || value === undefined ? "未取得" : value, ageTxt, bad });
+    };
+
+    push("チェーン", ch.blockHeight ? `#${Number(ch.blockHeight).toLocaleString()}` : null, (snap.chain || {}).measured_at);
+    push("着金 (24h)", typeof ch.earnedXcb24h === "number" ? `${ch.earnedXcb24h} XCB` : null, ch.lastPayoutAtJst ? new Date(ch.lastPayoutAtJst.replace(" JST", "+09:00")).toISOString() : null);
+    push("ウォレット残高", typeof ch.walletBalanceXcb === "number" ? `${ch.walletBalanceXcb.toLocaleString()} XCB` : null, (snap.chain || {}).measured_at);
+    push("DB レコード", typeof db.txCount === "number" ? `${db.txCount.toLocaleString()} 件 (日次 ${db.dailyCount || 0})` : null, (snap.db || {}).measured_at);
+    push("アーカイブ記事", c.archiveCount ? `${c.archiveCount} 件 (最新 ${c.archiveNewestDate || "?"})` : null, null, stale.archive_newest_date_age_days);
+    push("巡回最終実行", c.watcherLastCheckedChronicle || null, c.watcherLastCheckedChronicle ? new Date(String(c.watcherLastCheckedChronicle).replace(" ", "T").replace(" JST", "+09:00")).toISOString() : null, stale.watcher_last_run_age_days);
+    push("未達ドラフト", typeof c.shortfallCount === "number" ? `${c.shortfallCount} 件` : null, null);
+
+    bar.innerHTML = chips.map(x => `
+      <span title="${x.label}: ${x.value} / ${x.ageTxt}" style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1px solid ${x.bad ? "#ef4444" : "var(--border-color)"};background:${x.bad ? "rgba(239,68,68,0.08)" : "var(--bg-surface)"};font-size:12px;">
+        <strong>${x.label}</strong>
+        <span style="font-family:var(--font-mono);">${x.value}</span>
+        <span style="color:${x.bad ? "#ef4444" : "var(--text-muted)"};">${x.ageTxt}</span>
+      </span>`).join("");
   }
 
   function formatTimeAgoOrCountdown(seconds) {
@@ -288,36 +556,73 @@
 
   function updateWatcherUI(data) {
     const isRunning = data.is_running;
-    const lastChecked = data.last_checked || "未完了";
-    const nextRun = data.next_run || "--:--:--";
+    const lastChecked = data.last_checked || "未取得";
+    const nextRun = data.next_run || "crontab 未取得";
     watcherRemainingSeconds = typeof data.remaining_seconds === "number" ? data.remaining_seconds : 0;
 
     // 1. Header Button Text & Class
     if (el.navAiWatcherText) {
-      if (isRunning) {
-        el.navAiWatcherText.textContent = "🤖 AI 巡回中...";
-      } else {
-        el.navAiWatcherText.textContent = "🤖 AI Watcher 稼働中";
-      }
+      el.navAiWatcherText.textContent = isRunning ? "🤖 AI Watcher 巡回稼働" : "🤖 AI Watcher 停止/要確認";
     }
 
     // 2. Dashboard Card
     if (el.cardWatcherStatusBadge && el.cardWatcherStatusText) {
-      if (isRunning) {
-        el.cardWatcherStatusBadge.className = "badge-ai-status checking";
-        el.cardWatcherStatusText.textContent = "🔍 巡回チェック中";
-      } else {
+      const st = data.status || (isRunning ? "healthy" : "stale");
+      if (st === "healthy") {
         el.cardWatcherStatusBadge.className = "badge-ai-status running";
-        el.cardWatcherStatusText.textContent = "24h 常駐巡回中";
+        el.cardWatcherStatusText.textContent = "巡回稼働中（実測）";
+      } else if (st === "stale" || st === "expired") {
+        el.cardWatcherStatusBadge.className = "badge-ai-status checking";
+        el.cardWatcherStatusText.textContent = "巡回が止まっている（要確認）";
+      } else {
+        el.cardWatcherStatusBadge.className = "badge-ai-status";
+        el.cardWatcherStatusText.textContent = "状態取得不可";
       }
     }
     if (el.cardWatcherNextRun) el.cardWatcherNextRun.textContent = nextRun;
-    if (el.cardWatcherLastRun) el.cardWatcherLastRun.textContent = lastChecked;
+    if (el.cardWatcherLastRun) el.cardWatcherLastRun.textContent = humanizeJst(lastChecked);
+    if (el.modalWatcherLastRun) el.modalWatcherLastRun.textContent = humanizeJst(lastChecked);
+    const modalInterval = document.getElementById("modalWatcherInterval");
+    if (modalInterval) {
+      const sched = Array.isArray(data.schedule_crontab) && data.schedule_crontab.length
+        ? data.schedule_crontab.map(s => s.schedule).join(" / ")
+        : "未取得";
+      modalInterval.textContent = `巡回間隔 (crontab 実体): ${sched}`;
+    }
+    const modalBadge = document.getElementById("modalWatcherBadgeText");
+    if (modalBadge) {
+      const st = data.status || "unknown";
+      modalBadge.textContent = st === "healthy" ? "巡回稼働中（実測）"
+        : (st === "stale" || st === "expired") ? "巡回が止まっている（要確認）"
+        : "状態取得不可";
+    }
+    const modalMsg = document.getElementById("modalWatcherMessage");
+    if (modalMsg) {
+      const bits = [];
+      if (data.last_published) bits.push(`最終公開 ${data.last_published}`);
+      if (typeof data.archive_count === "number") bits.push(`アーカイブ ${data.archive_count} 件`);
+      if (typeof data.shortfall_count === "number") bits.push(`未達ドラフト ${data.shortfall_count} 件`);
+      if (typeof data.collector_age_minutes === "number") bits.push(`収集 ${data.collector_age_minutes} 分前`);
+      if (data.is_running_basis) bits.push(`判定根拠: ${data.is_running_basis}`);
+      modalMsg.textContent = bits.length ? bits.join(" / ") : "実測値未取得";
+    }
+    const cycleEl = document.getElementById("cardWatcherCycle");
+    if (cycleEl) {
+      const sched = Array.isArray(data.schedule_crontab) && data.schedule_crontab.length
+        ? data.schedule_crontab.map(s => s.schedule).join(" / ")
+        : "crontab 未取得";
+      cycleEl.textContent = sched;
+    }
     if (el.cardWatcherMessage && data.last_message) {
       el.cardWatcherMessage.textContent = data.last_message;
     }
     if (el.cardWatcherCheckCount) {
-      el.cardWatcherCheckCount.textContent = `巡回回数: ${data.check_count || 1}回 | NAS PID常駐中`;
+      const bits = [];
+      if (typeof data.archive_count === "number") bits.push(`アーカイブ ${data.archive_count} 件`);
+      if (data.archive_newest_date) bits.push(`最新 ${data.archive_newest_date}`);
+      if (typeof data.shortfall_count === "number") bits.push(`未達 ${data.shortfall_count} 件`);
+      if (typeof data.collector_age_minutes === "number") bits.push(`収集 ${data.collector_age_minutes} 分前`);
+      el.cardWatcherCheckCount.textContent = bits.length ? bits.join(" | ") : "実測値未取得";
     }
 
     // 3. Modal Details
@@ -337,7 +642,7 @@
     if (el.modalWatcherCountdown) {
       el.modalWatcherCountdown.textContent = `(次回実行まで: ${formatTimeAgoOrCountdown(watcherRemainingSeconds)})`;
     }
-    if (el.modalWatcherLastRun) el.modalWatcherLastRun.textContent = lastChecked;
+    if (el.modalWatcherLastRun) el.modalWatcherLastRun.textContent = humanizeJst(lastChecked);
 
     // Start local 1-sec ticking countdown
     if (!watcherCountdownTimer) {
@@ -352,24 +657,18 @@
     }
   }
 
-  function renderWatcherFallback() {
-    const now = new Date();
-    // Patrol ran ~14 minutes ago
-    const lastPatrol = new Date(now.getTime() - (14 * 60 * 1000));
-    const pad = n => String(n).padStart(2, "0");
-    const lastPatrolStr = `${lastPatrol.getFullYear()}-${pad(lastPatrol.getMonth() + 1)}-${pad(lastPatrol.getDate())} ${pad(lastPatrol.getHours())}:${pad(lastPatrol.getMinutes())}:${pad(lastPatrol.getSeconds())}`;
-
-    if (el.navAiWatcherText) el.navAiWatcherText.textContent = "🤖 AI Watcher 稼働中";
-    if (el.cardWatcherStatusBadge) el.cardWatcherStatusBadge.className = "badge-ai-status running";
-    if (el.cardWatcherStatusText) el.cardWatcherStatusText.textContent = "24h 常駐監視中";
-    if (el.cardWatcherNextRun) el.cardWatcherNextRun.textContent = "次回巡回: 約3時間46分後";
-    if (el.cardWatcherLastRun) el.cardWatcherLastRun.textContent = lastPatrolStr;
+  function renderWatcherUnavailable() {
+    if (el.navAiWatcherText) el.navAiWatcherText.textContent = "🤖 AI Watcher 状態不明";
+    if (el.cardWatcherStatusBadge) el.cardWatcherStatusBadge.className = "badge-ai-status";
+    if (el.cardWatcherStatusText) el.cardWatcherStatusText.textContent = "状態取得不可";
+    if (el.cardWatcherNextRun) el.cardWatcherNextRun.textContent = "未取得";
+    if (el.cardWatcherLastRun) el.cardWatcherLastRun.textContent = "未取得";
+    const cycleEl = document.getElementById("cardWatcherCycle");
+    if (cycleEl) cycleEl.textContent = "未取得";
     if (el.cardWatcherMessage) {
-      el.cardWatcherMessage.textContent = "✅ バックグラウンド自立システム：4時間周期でCore公式更新を監視中";
+      el.cardWatcherMessage.textContent = "⚠️ 巡回状態を実測できない（Functions / live_state.json ともに応答なし）";
     }
-    if (el.cardWatcherCheckCount) {
-      el.cardWatcherCheckCount.textContent = "定期4hデーモン常駐中";
-    }
+    if (el.cardWatcherCheckCount) el.cardWatcherCheckCount.textContent = "実測値未取得";
   }
 
   async function triggerWatcherCheck() {
@@ -695,10 +994,13 @@
         // Handle direct blockindex structure
         if (json && (json.backend || json.blockbook)) {
           return {
-            blockHeight: json.backend?.blocks || json.blockbook?.bestHeight || 19389855,
-            difficulty: json.backend?.difficulty || "361891049",
-            lastBlockTime: json.blockbook?.lastBlockTime || new Date().toISOString(),
-            syncMode: json.blockbook?.syncMode
+            blockHeight: json.backend?.blocks || json.blockbook?.bestHeight || null,
+            difficulty: json.backend?.difficulty || null,
+            lastBlockTime: json.blockbook?.lastBlockTime || null,
+            inSync: json.blockbook?.inSync,
+            measuredAt: new Date().toISOString(),
+            source: "blockindex (direct)"
+
           };
         }
       } catch (e) {
@@ -706,15 +1008,9 @@
       }
     }
 
-    // Dynamic linear estimation fallback so it never stays frozen on old blocks
-    const nowSec = Math.floor(Date.now() / 1000);
-    const estBlocks = 19389855 + Math.max(0, Math.floor((nowSec - 1792295830) / 10));
-    return {
-      blockHeight: estBlocks,
-      difficulty: "361891049",
-      lastBlockTime: new Date().toISOString(),
-      syncMode: true
-    };
+    // 取得失敗時に架空のブロック高・難易度は作らない（実測スナップショットのみを表示）
+    state.networkFetchError = "blockindex / Pages Functions が応答しない";
+    return null;
   }
 
   async function fetchLiveTransactions(wallet) {
@@ -857,45 +1153,40 @@
       }
     }
 
-    // Dynamic on-chain proof & realistic live hashrate variance
-    const jitter = Math.floor(Math.sin(Date.now() / 15000) * 18);
-    const liveHr = 2358 + jitter;
+    // 実測が取れないときに Worker と H/s を捏造しない（リグ報告を待つ）
     return {
       state: true,
       data: {
-        workers: [
-          { workerName: "7950X", pool: "CatchThatRabbit (as.catchthatrabbit.com)", hr: liveHr, offline: false, statusDesc: "稼働中 (ONLINE)" },
-          { workerName: "Z690", pool: "CatchThatRabbit (as1)", hr: 0, offline: true, statusDesc: "スタンバイ" },
-          { workerName: "Z790", pool: "CatchThatRabbit (as1)", hr: 0, offline: true, statusDesc: "スタンバイ" }
-        ],
-        totalHashrate: liveHr,
-        activeCount: 1
+        workers: [],
+        totalHashrate: null,
+        activeCount: 0,
+        totalCount: 0,
+        hashrateMeasured: false,
+        poolApi: { ok: false, reason: "プールAPI 未応答 / リグ報告 (worker_reporter) なし" }
       }
     };
   }
 
-  // Ensure current day row exists in dailyTransactions
+  // Ensure current day row exists — オンチェーン実測（直近24hの実着金）があるときだけ行を追加する
   function ensureLatestDays(wallet) {
     if (!Array.isArray(state.dailyTransactions) || state.dailyTransactions.length === 0) return;
-    const now = new Date();
-    const todayStr = now.toISOString().slice(0, 10) + "T00:00:00.000Z";
-    const hasToday = state.dailyTransactions.some(d => d.day && d.day.startsWith(todayStr.slice(0, 10)));
-    if (!hasToday) {
-      // Calculate realistic day progress
-      const hoursPassed = Math.max(1, now.getUTCHours());
-      const estToday = parseFloat(((hoursPassed / 24) * 15.2).toFixed(4));
-      const prevAll = state.dailyTransactions[0].all_amount || 7459.71;
-      const newEntry = {
-        wallet_address: wallet,
-        day: todayStr,
-        viewDateString: formatDate(todayStr),
-        day_amount: estToday,
-        day_rank: 3,
-        all_amount: prevAll + estToday,
-        all_rank: 3
-      };
-      state.dailyTransactions.unshift(newEntry);
-    }
+    const todayStr = new Date().toISOString().slice(0, 10) + "T00:00:00.000Z";
+    if (state.dailyTransactions.some(d => d.day && d.day.startsWith(todayStr.slice(0, 10)))) return;
+
+    const earned24h = state.onchainEvidence && state.onchainEvidence.earnedXcb24h;
+    if (typeof earned24h !== "number" || earned24h <= 0) return; // 実測がなければ行を作らない
+
+    const prevAll = state.dailyTransactions[0].all_amount || 0;
+    state.dailyTransactions.unshift({
+      wallet_address: wallet,
+      day: todayStr,
+      viewDateString: formatDate(todayStr),
+      day_amount: earned24h,
+      day_rank: 3,
+      all_amount: prevAll + earned24h,
+      all_rank: 3,
+      measuredSource: "onchain (address API: 直近24hの実着金)"
+    });
   }
 
   // --- Pre-Bundled Data Bootstrap ---
@@ -929,7 +1220,8 @@
         state.allTransactions = initData.allTransactions;
       }
 
-      if (initData.networkStats) state.networkStats = initData.networkStats;
+      // 焼き込みの networkStats は表示に使わない（古い値が「今の実測」に見えるのを防ぐ）
+      if (initData.networkStats) state.bootstrapNetworkStats = initData.networkStats;
       if (Array.isArray(initData.recentBlocks)) state.recentBlocks = initData.recentBlocks;
       if (Array.isArray(initData.miningPools)) state.miningPools = initData.miningPools;
       if (Array.isArray(initData.communityLinks)) state.communityLinks = initData.communityLinks;
@@ -972,6 +1264,20 @@
       if (el.explorerLink) el.explorerLink.href = `https://blockindex.net/address/${wallet}`;
       if (el.drawerRabbitLink) el.drawerRabbitLink.href = `https://catchthatrabbit.com/wallet/${wallet}`;
       if (el.drawerExplorerLink) el.drawerExplorerLink.href = `https://blockindex.net/address/${wallet}`;
+
+      // 実測スナップショット（同源・軽量）を先に反映する。重い外部APIのfailoverを待たずに実測が出る。
+      loadLiveSnapshot().then((snap) => {
+        if (!snap) return;
+        applyLiveSnapshot(snap);
+        ensureLatestDays(state.walletAddress);
+        renderNetworkView();
+        renderWorkers();
+        renderDailyTable();
+        renderWalletOverview();
+        renderMiningView();
+        const w = (snap.watcher && snap.watcher.data) ? watcherStatusFromSnapshot(snap) : null;
+        if (w) updateWatcherUI(w);
+      });
 
       // Parallel API calls with multi-tier failovers
       const [rateRes, workerRes, txRes, dbRes, supplyRes, healthRes, explorerRes, liveTxs, liveNet] = await Promise.all([
@@ -1140,11 +1446,20 @@
       return a.offline ? 1 : -1;
     });
 
-    // 1. KPI Card Update
+    // 1. KPI Card Update — 実測がないとき 0 や固定値を出さず「未取得」と明示する
+    const hasMeasurement = workers.length > 0;
+    const evidence = state.onchainEvidence || {};
     if (el.currentHashrate) {
-      el.currentHashrate.textContent = `${comma3(totalHr)} H/s`;
-      if (totalHr >= 1000) {
-        el.currentHashrate.title = `${comma3(totalHr)} H/s (${(totalHr / 1000).toFixed(2)} kH/s)`;
+      if (hasMeasurement) {
+        el.currentHashrate.textContent = `${comma3(totalHr)} H/s`;
+        el.currentHashrate.style.fontSize = "";
+        el.currentHashrate.title = `${comma3(totalHr)} H/s (${(totalHr / 1000).toFixed(2)} kH/s) — リグ/プール実測`;
+      } else {
+        el.currentHashrate.textContent = "実測未取得";
+        el.currentHashrate.style.fontSize = "20px";
+        el.currentHashrate.title = evidence.lastPayoutAtJst
+          ? `リグからの H/s 報告がない。オンチェーン実績: 最終着金 ${evidence.lastPayoutAtJst} / 24h ${evidence.earnedXcb24h || 0} XCB`
+          : "リグで scripts/worker_reporter.py を実行すると実測 H/s が出ます";
       }
     }
     const kpiBadge = el.kpiWorkerBadge || document.getElementById("kpiWorkerBadge");
@@ -1158,6 +1473,10 @@
         kpiBadge.textContent = `${activeWorkers.length}/${workers.length}台 稼働中 (${workers.length - activeWorkers.length}台 停止)`;
         kpiBadge.className = "badge-online";
         kpiBadge.style.background = "#d97706";
+      } else if (workers.length === 0) {
+        kpiBadge.textContent = "リグ報告待ち";
+        kpiBadge.className = "badge-offline";
+        kpiBadge.style.background = "#94a3b8";
       } else {
         kpiBadge.textContent = "全台 停止中";
         kpiBadge.className = "badge-offline";
@@ -1165,7 +1484,13 @@
       }
     }
     if (kpiCount) {
-      kpiCount.textContent = activeWorkers.length > 0 ? "Catch That Rabbit 直結" : "接続待機中";
+      if (activeWorkers.length > 0) {
+        kpiCount.textContent = "リグ/プール実測";
+      } else if (evidence.lastPayoutAtJst) {
+        kpiCount.textContent = `最終着金 ${evidence.lastPayoutAtJst}`;
+      } else {
+        kpiCount.textContent = "実測未取得";
+      }
     }
 
     // 2. Active Workers Card Header Badge
@@ -1192,9 +1517,10 @@
       el.workersContainer.innerHTML = `
         <div class="worker-empty-notice" style="padding: 24px 16px; text-align: center; color: #64748b; font-size: 0.9rem;">
           <div style="font-size: 1.5rem; margin-bottom: 8px; color: #94a3b8;">⛏️</div>
-          <div style="font-weight: 700; font-size: 1rem; color: #475569;">現在稼働中のWorkerはありません (0 H/s)</div>
+          <div style="font-weight: 700; font-size: 1rem; color: #475569;">リグの実測報告がありません（H/s 未取得）</div>
           <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 6px; line-height: 1.5;">
-            マイニングリグ（<code>coreminer</code> 等）が Catch That Rabbit プールに接続されると自動認識されます
+            プールAPI (Catch That Rabbit) とリグ報告のどちらも応答しませんでした。稼働の証拠はオンチェーン実績（着金）で表示しています。<br>
+            リグで <code>python3 scripts/worker_reporter.py --watch</code> を実行すると H/s・温度・消費電力がここに出ます。
           </div>
         </div>
       `;
@@ -1740,75 +2066,85 @@
   // --- DB Status Card ---
   function updateDbStatusCard(status) {
     if (!status) return;
-    if (el.dbDailyCount) el.dbDailyCount.textContent = status.dailyCount ? status.dailyCount.toLocaleString() : "510";
-    if (el.dbTxCount) el.dbTxCount.textContent = status.txCount ? status.txCount.toLocaleString() : "4,215";
-    if (el.dbRateCount) el.dbRateCount.textContent = status.rateCount ? status.rateCount.toLocaleString() : "51,840";
+    if (el.dbDailyCount) el.dbDailyCount.textContent = status.dailyCount ? status.dailyCount.toLocaleString() : "--";
+    if (el.dbTxCount) el.dbTxCount.textContent = status.txCount ? status.txCount.toLocaleString() : "--";
+    if (el.dbRateCount) el.dbRateCount.textContent = status.rateCount ? status.rateCount.toLocaleString() : "--";
     if (el.dbFilePath) el.dbFilePath.textContent = status.dbPath || "/volume1/Docker/CoreGeeksEXp/data/wallet.db";
     if (el.dbDateRange && status.minDate && status.maxDate) {
       el.dbDateRange.textContent = `${status.minDate.substring(0, 10)} 〜 ${status.maxDate.substring(0, 10)} (約3年分)`;
     }
     if (el.dbLastSync) el.dbLastSync.textContent = status.lastSync || "正常同期済み";
     if (el.dbStatusBadge) {
-      el.dbStatusBadge.textContent = "● 正常稼働中 (SQLite)";
-      el.dbStatusBadge.className = "badge-online";
+      const dbOk = !!status.txCount || !!status.rateCount;
+      el.dbStatusBadge.textContent = dbOk
+        ? `● 実測同期済み (SQLite)${status.measuredAgo ? ` / 計測 ${status.measuredAgo}` : ""}`
+        : "● 状態未取得";
+      el.dbStatusBadge.className = dbOk ? "badge-online" : "badge-offline";
+      el.dbStatusBadge.style.background = dbOk ? "var(--success)" : "#94a3b8";
     }
   }
 
   // --- View 2: Network View Renderer ---
   function renderNetworkView() {
-    const stats = state.networkStats || {
-      blockHeight: 19325310,
-      difficulty: 495922743,
-      totalHashrate: "18.24 Mh/s",
-      activeMiners: 216
-    };
+    const stats = state.networkStats || {};
 
-    // Calculate dynamic supply based on latest blockHeight
-    const currentHeight = Number(stats.blockHeight || 19325310);
+    // Calculate dynamic supply based on latest blockHeight（実測ブロック高があるときだけ推算する）
+    const currentHeight = Number(stats.blockHeight || 0);
+    const heightMeasured = currentHeight > 0;
     const baselineHeight = 18891676;
     const baselineSupply = 397677423;
     const baselineCirc = 98681863;
     const deltaBlocks = Math.max(0, currentHeight - baselineHeight);
-    const estimatedTotalSupply = Math.round(baselineSupply + (deltaBlocks * 1.65));
-    const estimatedCircSupply = Math.round(baselineCirc + (deltaBlocks * 1.65));
-    const circRatio = ((estimatedCircSupply / estimatedTotalSupply) * 100).toFixed(1);
+    const estimatedTotalSupply = heightMeasured ? Math.round(baselineSupply + (deltaBlocks * 1.65)) : null;
+    const estimatedCircSupply = heightMeasured ? Math.round(baselineCirc + (deltaBlocks * 1.65)) : null;
+    const circRatio = estimatedTotalSupply ? ((estimatedCircSupply / estimatedTotalSupply) * 100).toFixed(1) : null;
 
     // 1. Dashboard "🌐 Core Blockchain 稼働状況" Card
     const dHeight = document.getElementById("dashboardNetBlockHeight");
-    if (dHeight && stats.blockHeight) {
-      dHeight.textContent = `#${Number(stats.blockHeight).toLocaleString()}`;
-    }
+    if (dHeight) dHeight.textContent = heightMeasured ? `#${currentHeight.toLocaleString()}` : "未取得";
 
     const dDiff = document.getElementById("dashboardNetDifficulty");
-    if (dDiff && stats.difficulty) {
-      const diffVal = Number(stats.difficulty);
-      dDiff.textContent = `${(diffVal / 1e6).toFixed(2)} M`;
+    if (dDiff) {
+      dDiff.textContent = stats.difficulty ? `${(Number(stats.difficulty) / 1e6).toFixed(2)} M` : "未取得";
+    }
+
+    const dStamp = document.getElementById("dashboardNetMeasuredAt");
+    if (dStamp) {
+      dStamp.textContent = stats.measuredAt
+        ? `実測 ${new Date(stats.measuredAt).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })} (${stats.source || "live"})`
+        : "実測値未取得";
     }
 
     const dBlockTime = document.getElementById("dashboardNetBlockTime");
     if (dBlockTime) {
+      const intervalS = typeof stats.blockIntervalMeasured_s === "number" ? stats.blockIntervalMeasured_s : null;
+      const base = intervalS
+        ? `直近実測 ${(intervalS / 60).toFixed(1)} 分 / 報酬 1.65 XCB`
+        : "ブロック生成間隔 未取得 / 報酬 1.65 XCB";
       if (stats.lastBlockTime) {
         try {
           const blockDt = new Date(stats.lastBlockTime);
           const diffSec = Math.max(1, Math.round((Date.now() - blockDt.getTime()) / 1000));
           const timeAgo = diffSec < 60 ? `${diffSec}秒前` : `${Math.floor(diffSec / 60)}分前`;
-          dBlockTime.textContent = `約 7.0 秒 / 報酬 1.65 XCB (承認: ${timeAgo})`;
+          dBlockTime.textContent = `${base} (最新承認: ${timeAgo})`;
         } catch {
-          dBlockTime.textContent = "約 7.0 秒 / 報酬 1.65 XCB";
+          dBlockTime.textContent = base;
         }
       } else {
-        dBlockTime.textContent = "約 7.0 秒 / 報酬 1.65 XCB";
+        dBlockTime.textContent = base;
       }
     }
 
     const dTotalSupply = document.getElementById("dashboardNetTotalSupply");
     if (dTotalSupply) {
-      dTotalSupply.textContent = `${comma3(estimatedTotalSupply)} XCB`;
+      dTotalSupply.textContent = estimatedTotalSupply ? `${comma3(estimatedTotalSupply)} XCB (推算)` : "推算不可";
     }
 
     const dCircSupply = document.getElementById("dashboardNetCircSupply");
     if (dCircSupply) {
-      dCircSupply.textContent = `${comma3(estimatedCircSupply)} XCB (${circRatio}%)`;
+      dCircSupply.textContent = estimatedCircSupply
+        ? `${comma3(estimatedCircSupply)} XCB (${circRatio}%) (推算)`
+        : "推算不可";
     }
 
     // 2. Subview-Network elements update
@@ -1818,10 +2154,14 @@
     }
 
     const netHr = document.getElementById("netHashrate");
-    if (netHr) netHr.textContent = stats.totalHashrate || "18.24 Mh/s";
+    if (netHr) netHr.textContent = stats.totalHashrate || "未取得";
+    const netHrNote = document.getElementById("netHashrateNote");
+    if (netHrNote && !stats.totalHashrate) {
+      netHrNote.textContent = "上流API (catchthatrabbit / network-health) が 522・証明書失効で応答せず";
+    }
 
     const netMiners = document.getElementById("netActiveMiners");
-    if (netMiners) netMiners.textContent = stats.activeMiners ? stats.activeMiners.toLocaleString() : "216";
+    if (netMiners) netMiners.textContent = stats.activeMiners ? stats.activeMiners.toLocaleString() : "未取得";
 
     const netHeight = document.getElementById("netBlockHeight");
     if (netHeight && stats.blockHeight) {
@@ -2510,14 +2850,17 @@
           renderWorkers();
           renderWalletOverview();
 
-          const w7950 = (state.workers || []).find(w => w.workerName === "7950X");
-          const hrText = w7950 && w7950.hr > 0 ? `${Number(w7950.hr).toLocaleString()} H/s` : "2,358 H/s";
-          showToast(`⚡ リアルタイム同期完了: 7950X 正常稼働中 (${hrText})`);
+          const ws = state.workers || [];
+          const hrTotal = ws.reduce((a, w) => a + (Number(w.hr) || 0), 0);
+          const ev = state.onchainEvidence || {};
+          showToast(hrTotal > 0
+            ? `⚡ 同期完了: ${ws.filter(w => !w.offline).length}/${ws.length} 台 実測 ${hrTotal.toLocaleString()} H/s`
+            : `⚡ 同期完了: リグの H/s 実測なし（最終着金 ${ev.lastPayoutAtJst || "未取得"} / 24h ${ev.earnedXcb24h !== undefined ? ev.earnedXcb24h : "--"} XCB）`);
         } catch (e) {
           console.warn("Worker refresh fallback:", e);
           renderWorkers();
           renderWalletOverview();
-          showToast("⚡ ワーカー状態を同期しました (7950X 稼働中)");
+          showToast("⚡ 同期失敗: 表示している値は更新されていません");
         } finally {
           if (icon) icon.classList.remove("spin");
           refreshWrkBtn.disabled = false;
@@ -2663,12 +3006,26 @@
     // 3. Dynamic background poll for newest data
     loadData();
 
-    // 4. Auto-refresh periodically (every 20 seconds) without manual reload
-    setInterval(loadData, 20000);
+    // 4. 重い外部 API 群は 5 分毎
+    setInterval(loadData, 300000);
 
-    // 5. Dynamic AI Auto-Watcher status poll (instant + every 15s)
+    // 5. 実測スナップショット（軽量・同源）は 60 秒毎に反映
+    setInterval(async () => {
+      const snap = await loadLiveSnapshot();
+      if (!snap) return;
+      applyLiveSnapshot(snap);
+      const w = (snap.watcher && snap.watcher.data) ? watcherStatusFromSnapshot(snap) : null;
+      if (w) updateWatcherUI(w);
+      ensureLatestDays(state.walletAddress);
+      renderWalletOverview();
+      renderDailyTable();
+      renderCharts();
+      renderMiningView();
+    }, 60000);
+
+    // 6. AI Auto-Watcher 状態（実測のみ）
     fetchWatcherStatus();
-    setInterval(fetchWatcherStatus, 15000);
+    setInterval(fetchWatcherStatus, 60000);
   }
 
   // --- Legal / Policy Modals (Google AdSense Compliance) ---

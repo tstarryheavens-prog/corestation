@@ -221,7 +221,26 @@
     <div id="view-dashboard" class="app-view active">
       
       <!-- AI Auto-Watcher Status Banner (NAS Background System) -->
-      <div class="card ai-watcher-card" style="margin-bottom: 20px; border-left: 4px solid #8b5cf6; background: linear-gradient(135deg, rgba(139, 92, 246, 0.04) 0%, rgba(56, 189, 248, 0.04) 100%);">
+            <!-- 実計測パネル: collector (MacBook / NAS / Tailscale 越し) の実測のみ表示 -->
+      <section class="card" id="machineMetricsCard" style="margin-bottom: 20px; border-left: 4px solid var(--primary);">
+        <div class="card-header" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <h2 class="card-title">🖥️ マイマシン計測 & データ鮮度（実測）</h2>
+            <span id="machineMetricsBadge" style="background: #94a3b8; color: #fff; font-size: 12.5px; padding: 3px 9px; border-radius: 999px; font-weight: 700;">--</span>
+          </div>
+          <span style="font-size: 12px; color: var(--text-muted);" id="machineMetricsAt">実測スナップショット未取得</span>
+        </div>
+        <div class="card-content" style="padding: 14px 16px;">
+          <div id="machineMetricsBody" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;"></div>
+          <div id="dataFreshnessBar" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;"></div>
+          <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.65;">
+            数値はすべて collector（<code>scripts/dashboard_live.py</code>）が実行マシン上で計測した実測値です。取得できない項目は補完せず <strong>未取得</strong> のまま表示します。
+            採掘 H/s・温度・消費電力は採掘リグで <code>python3 scripts/worker_reporter.py --watch</code> を実行すると追加されます。
+          </div>
+        </div>
+      </section>
+
+<div class="card ai-watcher-card" style="margin-bottom: 20px; border-left: 4px solid #8b5cf6; background: linear-gradient(135deg, rgba(139, 92, 246, 0.04) 0%, rgba(56, 189, 248, 0.04) 100%);">
         <div class="card-content" style="padding: 14px 18px;">
           <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
             <div style="display: flex; align-items: center; gap: 14px;">
@@ -235,11 +254,11 @@
                   </h3>
                   <span class="badge-ai-status running" id="cardWatcherStatusBadge">
                     <span class="pulse-dot pulse-ai"></span>
-                    <span id="cardWatcherStatusText">24h 常駐巡回中</span>
+                    <span id="cardWatcherStatusText">状態取得中…</span>
                   </span>
                 </div>
                 <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                  <span>🔄 巡回サイクル: <strong style="color: var(--text-main);">4時間毎</strong></span>
+                  <span>🔄 巡回サイクル: <strong id="cardWatcherCycle" style="color: var(--text-main);">未取得</strong></span>
                   <span>⏱️ 次回巡回予定: <strong id="cardWatcherNextRun" style="color: var(--primary);">計算中...</strong></span>
                   <span>📝 最終巡回: <span id="cardWatcherLastRun">確認中...</span></span>
                   <span>🧠 AI執筆: <strong style="color: #8b5cf6;">Gemini 2.5 Flash (リコロ)</strong></span>
@@ -264,8 +283,8 @@
 
           <!-- Watcher live notification line -->
           <div id="cardWatcherMessageBox" style="margin-top: 10px; padding: 7px 12px; border-radius: 6px; background: var(--bg-surface); border: 1px solid var(--border-color); font-size: 12.5px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
-            <span id="cardWatcherMessage">✅ 状態: バックグラウンド常駐デーモンが稼働中（待機中）</span>
-            <span style="font-size: 11px; opacity: 0.75;" id="cardWatcherCheckCount">巡回回数: -- 回 | NAS PID稼働中</span>
+            <span id="cardWatcherMessage">状態: 実測スナップショットを読み込み中…</span>
+            <span style="font-size: 11px; opacity: 0.75;" id="cardWatcherCheckCount">実測値を読み込み中…</span>
           </div>
         </div>
       </div>
@@ -502,23 +521,28 @@
                 </div>
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
                   <span style="color: var(--text-muted);">最新ブロック高:</span>
-                  <span id="dashboardNetBlockHeight" class="font-mono" style="font-weight: 700; color: var(--primary);">#19,325,310</span>
+                  <span id="dashboardNetBlockHeight" class="font-mono" style="font-weight: 700; color: var(--primary);">--</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
                   <span style="color: var(--text-muted);">採掘難易度 (Difficulty):</span>
-                  <span id="dashboardNetDifficulty" class="font-mono" style="font-weight: 600;">495.92 M</span>
+                  <span id="dashboardNetDifficulty" class="font-mono" style="font-weight: 600;">--</span>
                 </div>
+                
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
                   <span style="color: var(--text-muted);">ブロック生成間隔:</span>
-                  <span id="dashboardNetBlockTime">約 7.0 秒 / 報酬 1.65 XCB</span>
+                  <span id="dashboardNetBlockTime">実測取得中… / 報酬 1.65 XCB</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
+                  <span style="color: var(--text-muted);">その数値の実測時刻:</span>
+                  <span id="dashboardNetMeasuredAt" class="font-mono" style="font-size: 13px; color: var(--text-muted);">未取得</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
                   <span style="color: var(--text-muted);">総供給量:</span>
-                  <span id="dashboardNetTotalSupply" class="font-mono">398,393,418 XCB</span>
+                  <span id="dashboardNetTotalSupply" class="font-mono">推算中…</span>
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                   <span style="color: var(--text-muted);">市場流通比率:</span>
-                  <span id="dashboardNetCircSupply" class="font-mono" style="font-weight: 600; color: var(--success);">99,397,850 XCB (24.9%)</span>
+                  <span id="dashboardNetCircSupply" class="font-mono" style="font-weight: 600; color: var(--success);">推算中…</span>
                 </div>
               </div>
             </div>
@@ -677,7 +701,7 @@
           <div class="card-header">
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
               <h2 class="card-title">💾 ローカルSQLiteデータベース接続状況 (Asustor NAS)</h2>
-              <span class="badge-online" id="dbStatusBadge" style="background: var(--success); font-size: 13.5px;">● 正常稼働中</span>
+              <span class="badge-online" id="dbStatusBadge" style="background: #94a3b8; font-size: 13.5px;">● 状態未取得</span>
             </div>
             <button id="openTaxGuideFromDetailsBtn" class="btn-secondary btn-sm" onclick="window.openArticleModal('tax-guide');">
               📖 確定申告マニュアルを読む
@@ -686,23 +710,23 @@
           <div class="card-content">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 18px;">
               <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px;">
-                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--primary);" id="dbDailyCount">510</div>
+                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--primary);" id="dbDailyCount">--</div>
                 <div style="font-size: 13.5px; color: var(--text-muted); text-transform: uppercase;">日次集計レコード</div>
               </div>
               <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px;">
-                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--success);" id="dbTxCount">4,215</div>
+                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--success);" id="dbTxCount">--</div>
                 <div style="font-size: 13.5px; color: var(--text-muted); text-transform: uppercase;">個別着金トランザクション</div>
               </div>
               <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px;">
-                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--text-secondary);" id="dbRateCount">51,840</div>
+                <div style="font-size: 22px; font-weight: 800; font-family: var(--font-mono); color: var(--text-secondary);" id="dbRateCount">--</div>
                 <div style="font-size: 13.5px; color: var(--text-muted); text-transform: uppercase;">蓄積為替レート (PingExchange)</div>
               </div>
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; color: var(--text-muted); margin-bottom: 16px;">
               <div><strong>DB保存パス:</strong> <code class="font-mono" id="dbFilePath">/volume1/Docker/CoreGeeksEXp/data/wallet.db</code></div>
-              <div><strong>蓄積期間:</strong> <span id="dbDateRange">2023/08/20 〜 2026/09/05 (約3年分)</span></div>
-              <div><strong>最終同期日時:</strong> <span id="dbLastSync">2026-09-06 12:23 JST</span></div>
+              <div><strong>蓄積期間:</strong> <span id="dbDateRange">取得中…</span></div>
+              <div><strong>最終同期日時:</strong> <span id="dbLastSync">取得中…</span></div>
             </div>
 
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -1554,7 +1578,7 @@ swap=0</code></pre>
               <span class="hero-kpi-label">採掘難易度 (Difficulty)</span>
               <span>⚡</span>
             </div>
-            <div class="hero-kpi-val" id="netDifficulty">440.85 M</div>
+            <div class="hero-kpi-val" id="netDifficulty">未取得</div>
             <div class="hero-kpi-sub">PoDE 自動難易度調整</div>
           </div>
           <div class="hero-kpi-card">
@@ -1562,24 +1586,24 @@ swap=0</code></pre>
               <span class="hero-kpi-label">全網総ハッシュレート</span>
               <span>⛏️</span>
             </div>
-            <div class="hero-kpi-val" id="netHashrate">18.24 Mh/s</div>
-            <div class="hero-kpi-sub">アクティブマイナー: <span id="netActiveMiners">216</span></div>
+            <div class="hero-kpi-val" id="netHashrate">未取得</div>
+            <div class="hero-kpi-sub">アクティブマイナー: <span id="netActiveMiners">未取得</span> <span id="netHashrateNote" style="font-size:11px;color:var(--text-muted);"></span></div>
           </div>
           <div class="hero-kpi-card">
             <div class="hero-kpi-header">
               <span class="hero-kpi-label">最新ブロック高</span>
               <span>🧱</span>
             </div>
-            <div class="hero-kpi-val" id="netBlockHeight">18,891,676</div>
-            <div class="hero-kpi-sub">生成間隔 約7秒</div>
+            <div class="hero-kpi-val" id="netBlockHeight">未取得</div>
+            <div class="hero-kpi-sub">生成間隔: <span id="netIntervalSub">未取得</span></div>
           </div>
           <div class="hero-kpi-card">
             <div class="hero-kpi-header">
               <span class="hero-kpi-label">総供給量 / 流通量</span>
               <span>🪙</span>
             </div>
-            <div class="hero-kpi-val" style="font-size: 1.3rem;" id="netCirculatingSupply">98,681,863 XCB</div>
-            <div class="hero-kpi-sub">総供給: <span id="netTotalSupply">397,677,423 XCB</span></div>
+            <div class="hero-kpi-val" style="font-size: 1.3rem;" id="netCirculatingSupply">推算中…</div>
+            <div class="hero-kpi-sub">総供給: <span id="netTotalSupply">推算中…</span></div>
           </div>
         </div>
 
@@ -2692,12 +2716,10 @@ swap=0</code></pre>
             <span style="font-size: 14px; font-weight: 700; color: var(--text-muted);">現在の稼働状態:</span>
             <span class="badge-ai-status running" id="modalWatcherBadge">
               <span class="pulse-dot pulse-ai"></span>
-              <span id="modalWatcherBadgeText">24時間自立監視中 (RUNNING)</span>
+              <span id="modalWatcherBadgeText">状態取得中…</span>
             </span>
           </div>
-          <div id="modalWatcherMessage" style="font-size: 13.5px; color: var(--text-main); line-height: 1.5; background: rgba(139, 92, 246, 0.08); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.2);">
-            ✅ 待機中: バックグラウンド常駐デーモンが正常稼働しています
-          </div>
+          <div id="modalWatcherMessage" style="font-size: 13.5px; color: var(--text-main); line-height: 1.5; background: rgba(139, 92, 246, 0.08); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.2);">実測状態を読み込み中…（Pages Functions / live_state.json のいずれかから取得）</div>
         </div>
 
         <!-- Metric Grid -->
@@ -2710,7 +2732,7 @@ swap=0</code></pre>
           <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
             <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">📝 最終巡回実行</div>
             <div id="modalWatcherLastRun" style="font-size: 15px; font-weight: 700; color: var(--text-main);">確認中...</div>
-            <div style="font-size: 11.5px; color: var(--success); margin-top: 2px;">4時間間隔 (14,400秒)</div>
+            <div id="modalWatcherInterval" style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">巡回間隔: 未取得</div>
           </div>
         </div>
 
@@ -2732,7 +2754,7 @@ swap=0</code></pre>
               はてなブログ (corestation.hatenadiary.com) ↗
             </a>
           </div>
-          <div><strong>🔒 実行環境:</strong> Asustor NAS (Python 3 バックグラウンド・デーモンスレッド常駐)</div>
+          <div><strong>🔒 実行環境:</strong> collector が観測した crontab 実体（見えないマシンで実行中は「未取得」表示）</div>
         </div>
 
       </div>
@@ -2749,6 +2771,6 @@ swap=0</code></pre>
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Application Script -->
-  <script src="app.js?v=20261013_4"></script>
+  <script src="app.js?v=20261107_1"></script>
 </body>
 </html>
