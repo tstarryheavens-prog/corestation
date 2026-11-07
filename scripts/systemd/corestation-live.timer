@@ -1,0 +1,10 @@
+[Unit]
+Description=CoreStation 実測コレクター（15分毎）
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=15min
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

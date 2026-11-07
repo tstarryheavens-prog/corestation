@@ -1,0 +1,11 @@
+[Unit]
+Description=CoreStation 実測コレクター（速い通常計測）
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=__CORESTATION_HOME__
+Environment=CORESTATION_HOME=__CORESTATION_HOME__
+ExecStart=/usr/bin/python3 __CORESTATION_HOME__/scripts/dashboard_live.py --no-probe
+StandardOutput=append:__CORESTATION_HOME__/logs/dashboard_live.log
+StandardError=append:__CORESTATION_HOME__/logs/dashboard_live.err.log

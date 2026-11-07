@@ -1,0 +1,11 @@
+[Unit]
+Description=CoreStation 巡回（chronicle/community）の遅延追撃
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=__CORESTATION_HOME__
+Environment=CORESTATION_HOME=__CORESTATION_HOME__
+ExecStart=/bin/bash __CORESTATION_HOME__/scripts/watcher_catchup.sh
+StandardOutput=append:__CORESTATION_HOME__/logs/watcher_catchup.log
+StandardError=append:__CORESTATION_HOME__/logs/watcher_catchup.err.log

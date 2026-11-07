@@ -240,7 +240,7 @@ def collect_pool(wallet: str) -> dict:
 
 # ───────────────────────── local NAS SQLite ─────────────────────────
 def collect_db() -> dict:
-    db = os.path.join(DATA_DIR, "wallet.db")
+    db = os.environ.get("CORESTATION_DB") or os.path.join(DATA_DIR, "wallet.db")
     if not os.path.exists(db):
         return {"ok": False, "source": db, "measured_at": iso_now(), "error": "wallet.db が見つからない"}
     try:

@@ -1,0 +1,10 @@
+[Unit]
+Description=CoreStation 巡回 追撃タイマー（7:00-21:00 の 3時間毎）
+
+[Timer]
+OnCalendar=*-*-* 07,10,13,16,19,21:00:00
+Persistent=true
+AccuracySec=2min
+
+[Install]
+WantedBy=timers.target
