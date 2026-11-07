@@ -176,7 +176,8 @@ def collect_chain(wallet: str) -> dict:
                 last_payout_at = stamp
         if len(times) >= 20:
             span = max(times) - min(times)
-            block_interval_s = round(span / (len(times) - 1), 2)
+            # 注意: これはこのウォレットの取引間隔の実測であって、ネットワークのブロック生成間隔ではない
+            block_interval_s = round(span / (len(times) - 1) / 60.0, 2)  # 分
 
     total_24h = sum(v for k, v in income_days.items()
                     if k >= (datetime.now(JST) - timedelta(days=1)).strftime("%Y-%m-%d"))
@@ -197,7 +198,7 @@ def collect_chain(wallet: str) -> dict:
         "inSync": blockbook.get("inSync"),
         "coin": blockbook.get("coin"),
         "backendVersion": backend.get("version"),
-        "blockIntervalMeasured_s": block_interval_s,
+        "ownTxIntervalMeasuredMin": block_interval_s,  # このウォレットの実取引間隔（分）。網絡値ではない
         "walletBalanceXcb": round(balance_xcb, 6) if balance_xcb is not None else None,
         "payoutTxCount": tx_count,
         "lastPayoutAtJst": (datetime.fromtimestamp(

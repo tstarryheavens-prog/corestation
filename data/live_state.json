@@ -1,24 +1,24 @@
 {
-  "generated_at": "2026-11-07T13:58:18.874835+00:00",
-  "generated_at_jst": "2026-11-07 22:58:18 JST",
+  "generated_at": "2026-11-07T14:15:51.044461+00:00",
+  "generated_at_jst": "2026-11-07 23:15:51 JST",
   "schema": "corestation-live/1",
   "chain": {
     "ok": true,
     "source": "https://blockindex.net/api/v2",
-    "measured_at": "2026-11-07T13:59:01.143305+00:00",
+    "measured_at": "2026-11-07T14:16:33.594780+00:00",
     "data": {
-      "blockHeight": 19640511,
-      "difficulty": "297212973",
-      "difficulty_display": "297.21 M",
-      "lastBlockTime": "2026-11-07T13:58:36.465373592Z",
+      "blockHeight": 19640677,
+      "difficulty": "299533458",
+      "difficulty_display": "299.53 M",
+      "lastBlockTime": "2026-11-07T14:16:05.37761668Z",
       "inSync": true,
       "coin": "Core Coin",
       "backendVersion": "Gocore/v2.2.2-a091fe2d-20260116/linux-amd64/go1.25.6",
-      "blockIntervalMeasured_s": 16593.69,
+      "ownTxIntervalMeasuredMin": 276.56,
       "walletBalanceXcb": 7624.281268,
       "payoutTxCount": 100,
       "lastPayoutAtJst": "2026-11-07 00:16 JST",
-      "lastPayoutAgeMin": 1362,
+      "lastPayoutAgeMin": 1380,
       "earnedXcb24h": 9.1659,
       "earnedXcb7d": 54.4764,
       "earnedXcb30d": 157.3893,
@@ -31,7 +31,7 @@
   "pool": {
     "ok": false,
     "source": "https://api.catchthatrabbit.com/api/v2",
-    "measured_at": "2026-11-07T13:58:25.075968+00:00",
+    "measured_at": "2026-11-07T14:15:57.215943+00:00",
     "reason": "プール API が応答しない（522/404・TLS 証明期限切れの実測）",
     "attempts": [
       {
@@ -55,7 +55,7 @@
   "db": {
     "ok": true,
     "source": "/Volumes/Docker/CoreGeeksEXp/data/wallet.db",
-    "measured_at": "2026-11-07T13:58:46.620030+00:00",
+    "measured_at": "2026-11-07T14:15:56.950032+00:00",
     "data": {
       "dbPath": "/volume1/Docker/CoreGeeksEXp/data/wallet.db",
       "fileSizeBytes": 10973184,
@@ -171,7 +171,7 @@
   "content": {
     "ok": true,
     "source": "articles/, hub/output/, hub/config/last_seen_*.json, data/local_articles.js",
-    "measured_at": "2026-11-07T13:58:33.599744+00:00",
+    "measured_at": "2026-11-07T14:15:57.197216+00:00",
     "data": {
       "articlesDirCount": 36,
       "articlesNewest": [
@@ -266,13 +266,13 @@
       "watcherSeenPosts": 24,
       "shortfallCount": 0,
       "shortfallNewest": [],
-      "gitLastCommit": "60a7a5a 2026-11-07 22:50 fix(pages-functions): 静的アセット live_state.json を env.ASSETS 経由で読む（context.fetch だけでは asset ルートに届かなかった）+ blockindex timeout 25s / live_state 読み取り失敗理由の可視化"
+      "gitLastCommit": "349e813 2026-11-07 23:11 fix(dashboard): 焼き込み worker(7950X 2,358H/s)を KPI に使わない / 実測と履歴の集合分離 / NAS HUD の運用数値を実表示"
     }
   },
   "watcher": {
     "ok": true,
     "source": "hub/config/last_seen_*.json + hub/output mtime + NAS crontab (if readable)",
-    "measured_at": "2026-11-07T13:58:25.154283+00:00",
+    "measured_at": "2026-11-07T14:15:55.095284+00:00",
     "data": {
       "lastHubOutputAtJst": "2026-11-07 04:04 JST",
       "crontabEntriesVisibleToCollector": [
@@ -291,7 +291,7 @@
   "machines": {
     "ok": true,
     "source": "local proc + inference HTTP probes + NAS HUD + machine_metrics/*.json",
-    "measured_at": "2026-11-07T13:58:20.114157+00:00",
+    "measured_at": "2026-11-07T14:15:52.442102+00:00",
     "data": {
       "nodes": [
         {
@@ -301,24 +301,24 @@
             "hostname": "MacBook.local",
             "os": "Darwin 27.2.0",
             "cpuLogical": 8,
-            "measured_at": "2026-11-07T13:58:18.941474+00:00",
+            "measured_at": "2026-11-07T14:15:51.107794+00:00",
             "loadAvg": [
-              2.14,
-              1.94,
-              2.3
+              2.52,
+              2.67,
+              2.88
             ],
             "ramBytes": 8589934592,
-            "ramUsedBytes": 965750784,
-            "ramFreeBytes": 18317312,
-            "uptimeSeconds": 6855,
-            "diskFreeBytes": 2895320715264,
+            "ramUsedBytes": 839491584,
+            "ramFreeBytes": 18305024,
+            "uptimeSeconds": 7908,
+            "diskFreeBytes": 2895216947200,
             "diskTotalBytes": 3991400349696,
             "topProcesses": [
-              "2.0 launchd",
-              "0.7 logd",
-              "0.8 smd",
+              "0.1 launchd",
+              "0.1 logd",
+              "0.0 smd",
               "0.0 UserEventAgent",
-              "0.1 fseventsd"
+              "0.0 fseventsd"
             ]
           },
           "kind": "local"
@@ -327,7 +327,7 @@
           "id": "NAS (Asustor) HUD",
           "role": "運用 HUD / wallet.db ホスト",
           "kind": "nas",
-          "measured_at": "2026-11-07T13:58:19.957349+00:00",
+          "measured_at": "2026-11-07T14:15:52.329601+00:00",
           "online": true,
           "status": {
             "pending_approval": 7,
@@ -346,7 +346,7 @@
             "archived": 141,
             "trash": 16,
             "duplicate_reappearing": 0,
-            "server_time": "2026-11-07 22:58:19",
+            "server_time": "2026-11-07 23:15:52",
             "rev": "2026-11-06a",
             "root_dir": "/app"
           },
@@ -361,25 +361,19 @@
   },
   "tls": {
     "note": "verified:/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/certifi/cacert.pem",
-    "measured_at": "2026-11-07T13:59:01.578830+00:00"
+    "measured_at": "2026-11-07T14:16:34.139582+00:00"
   },
   "staleness": {
     "articles_newest_age_days": null,
-    "archive_newest_date_age_days": 9.58,
-    "watcher_last_run_age_days": 7.47,
+    "archive_newest_date_age_days": 9.59,
+    "watcher_last_run_age_days": 7.48,
     "db_last_sync_age_days": null,
     "db_file_age_days": null,
-    "last_payout_age_minutes": 1362
+    "last_payout_age_minutes": 1380
   },
   "deployGate": {
     "minIntervalMin": 120,
-    "deployFlag": true
+    "deployFlag": false
   },
-  "signature": "f139a9769e117c0c",
-  "deploy": {
-    "pushed": true,
-    "commitMessage": "chore(live): dashboard 実測スナップショット f139a9769e11",
-    "signature": "f139a9769e117c0c",
-    "at": "2026-11-07T13:59:01.717854+00:00"
-  }
+  "signature": "1a14c1f132b2311b"
 }

@@ -364,7 +364,7 @@
         blockHeight: chainRes.data.blockHeight,
         difficulty: chainRes.data.difficulty,
         lastBlockTime: chainRes.data.lastBlockTime,
-        blockIntervalMeasured_s: chainRes.data.blockIntervalMeasured_s,
+        ownTxIntervalMeasuredMin: chainRes.data.ownTxIntervalMeasuredMin,
         inSync: chainRes.data.inSync,
         measuredAt: chainRes.measured_at,
         source: "collector (blockindex 実測)"
@@ -2156,10 +2156,16 @@
 
     const dBlockTime = document.getElementById("dashboardNetBlockTime");
     if (dBlockTime) {
-      const intervalS = typeof stats.blockIntervalMeasured_s === "number" ? stats.blockIntervalMeasured_s : null;
-      const base = intervalS
-        ? `直近実測 ${(intervalS / 60).toFixed(1)} 分 / 報酬 1.65 XCB`
-        : "ブロック生成間隔 未取得 / 報酬 1.65 XCB";
+      const ev = state.onchainEvidence || {};
+      const ownFound24h = typeof ev.blocksFound24hEstimate === "number" ? ev.blocksFound24hEstimate : null;
+      const ownIntervalMin = typeof stats.ownTxIntervalMeasuredMin === "number"
+        ? stats.ownTxIntervalMeasuredMin
+        : (ownFound24h > 0 ? 1440 / ownFound24h : null);
+      // ネットワークのブロック生成間隔は Core 側 API で実測できないので仕様値と明記し、
+      // 実測はこのウォレットの着金実績（ブロック承認）を出す
+      const base = ownIntervalMin
+        ? `仕様 約 7 秒（PoDE 自動調整） / 実測: このウォレット 直近24h ${ownFound24h !== null ? ownFound24h.toFixed(2) : "--"} ブロック承認（平均 ${Math.round(ownIntervalMin)} 分/1 ブロック）`
+        : "仕様 約 7 秒（PoDE 自動調整） / 自ウォレットの実測実績なし";
       if (stats.lastBlockTime) {
         try {
           const blockDt = new Date(stats.lastBlockTime);
