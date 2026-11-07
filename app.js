@@ -425,6 +425,7 @@
 
     const cards = [];
     for (const n of nodes) {
+      const bits2 = [];
       const mt = Object.assign(
         {},
         n.metrics || {},
@@ -433,6 +434,22 @@
         typeof n.pingLatencyMs === "number" ? { latencyMs: n.pingLatencyMs } : {}
       );
       const online = n.online !== false && !n.error;
+      const HUD_LABELS = {
+        outbox_published: "公開済", outbox_ready: "公開待ち", outbox_draft: "下書き",
+        pending_approval: "承認待ち", working: "作業中", working_non_idea_files: "作業中(他)",
+        rejected: "差し戻し", archived: "アーカイブ", trash: "ゴミ箱",
+        duplicate_reappearing: "重複再出現", rev: "rev", server_time: "NAS時刻"
+      };
+      if (n.status && typeof n.status === "object") {
+        for (const [k, label] of Object.entries(HUD_LABELS)) {
+          const v = n.status[k];
+          if (typeof v === "number") bits2.push(`${label} ${v.toLocaleString()}`);
+          else if (typeof v === "string" && v) bits2.push(`${label} ${v}`);
+        }
+        if (Array.isArray(n.status.working_stale) && n.status.working_stale.length) {
+          bits2.push(`停滞 ${n.status.working_stale.length} 件 (最古 ${n.status.working_stale[0].age_days} 日)`);
+        }
+      }
       const bits = [];
       if (Array.isArray(mt.loadAvg) && mt.loadAvg.length) {
         bits.push(`CPU負荷 ${mt.loadAvg.map(v => Number(v).toFixed(2)).join(" / ")}${mt.cpuLogical ? ` (${mt.cpuLogical} thread)` : ""}`);
@@ -467,7 +484,7 @@
         name: n.id || "node",
         role: n.role || "",
         online,
-        bits,
+        bits: bits.concat(bits2),
         at: n.measured_at || mt.measured_at || null
       });
     }
@@ -1226,7 +1243,8 @@
       if (Array.isArray(initData.miningPools)) state.miningPools = initData.miningPools;
       if (Array.isArray(initData.communityLinks)) state.communityLinks = initData.communityLinks;
       if (Array.isArray(initData.articlesArchive)) state.articlesArchive = initData.articlesArchive;
-      if (Array.isArray(initData.workers) && initData.workers.length > 0) state.workers = initData.workers;
+      // 焼き込み worker は「現行の実測」ではないので KPI には使わない（履歴参照用にとっておく）
+      if (Array.isArray(initData.workers) && initData.workers.length > 0) state.bootstrapWorkers = initData.workers;
 
       if (initData.dbStatus) {
         state.dbStatus = initData.dbStatus;
@@ -1436,9 +1454,26 @@
 
   // --- Workers Rendering (100% Real Live Data, Zero Dummy Data) ---
   function renderWorkers() {
-    const workers = state.workers || [];
-    const activeWorkers = workers.filter(w => !w.offline);
-    const totalHr = workers.reduce((acc, w) => acc + (w.hr || 0), 0);
+    let workers = state.workers || [];
+
+    // 実測（worker_reporter / プールAPI）が取れないときだけ、焼き込み履歴を「履歴」として併記する
+    if (workers.length === 0 && Array.isArray(state.bootstrapWorkers) && state.bootstrapWorkers.length > 0) {
+      const note = {
+        workerName: "最終スナップショット (initial_data)",
+        pool: "history",
+        hr: 0,
+        offline: true,
+        statusDesc: `焼き込み履歴 ${new Date().getFullYear()} 以前（現行実測ではなく参考値）`,
+        source: "bootstrap_history"
+      };
+      workers = [...workers, note];
+    }
+
+    // 実測だけの集合（履歴は統計に混ぜない）
+    const measuredWorkers = workers.filter(w => w.source !== "bootstrap_history");
+    const measuredActive = measuredWorkers.filter(w => !w.offline);
+    const activeWorkers = measuredActive;
+    const totalHr = measuredWorkers.reduce((acc, w) => acc + (w.hr || 0), 0);
 
     // Sort workers: active first, then offline
     const sortedWorkers = [...workers].sort((a, b) => {
@@ -1447,7 +1482,7 @@
     });
 
     // 1. KPI Card Update — 実測がないとき 0 や固定値を出さず「未取得」と明示する
-    const hasMeasurement = workers.length > 0;
+    const hasMeasurement = measuredWorkers.length > 0;
     const evidence = state.onchainEvidence || {};
     if (el.currentHashrate) {
       if (hasMeasurement) {
@@ -1465,16 +1500,16 @@
     const kpiBadge = el.kpiWorkerBadge || document.getElementById("kpiWorkerBadge");
     const kpiCount = el.kpiWorkerCount || document.getElementById("kpiWorkerCount");
     if (kpiBadge) {
-      if (activeWorkers.length > 0 && activeWorkers.length === workers.length) {
-        kpiBadge.textContent = `${activeWorkers.length}台 正常稼働中`;
+      if (measuredActive.length > 0 && measuredActive.length === measuredWorkers.length) {
+        kpiBadge.textContent = `${measuredActive.length}台 正常稼働中（実測）`;
         kpiBadge.className = "badge-online";
         kpiBadge.style.background = "var(--success)";
-      } else if (activeWorkers.length > 0) {
-        kpiBadge.textContent = `${activeWorkers.length}/${workers.length}台 稼働中 (${workers.length - activeWorkers.length}台 停止)`;
+      } else if (measuredActive.length > 0) {
+        kpiBadge.textContent = `${measuredActive.length}/${measuredWorkers.length}台 稼働中 (${measuredWorkers.length - measuredActive.length}台 停止)`;
         kpiBadge.className = "badge-online";
         kpiBadge.style.background = "#d97706";
-      } else if (workers.length === 0) {
-        kpiBadge.textContent = "リグ報告待ち";
+      } else if (measuredWorkers.length === 0) {
+        kpiBadge.textContent = "リグ報告待ち（実測なし）";
         kpiBadge.className = "badge-offline";
         kpiBadge.style.background = "#94a3b8";
       } else {
@@ -1484,7 +1519,7 @@
       }
     }
     if (kpiCount) {
-      if (activeWorkers.length > 0) {
+      if (measuredActive.length > 0) {
         kpiCount.textContent = "リグ/プール実測";
       } else if (evidence.lastPayoutAtJst) {
         kpiCount.textContent = `最終着金 ${evidence.lastPayoutAtJst}`;
@@ -1496,13 +1531,17 @@
     // 2. Active Workers Card Header Badge
     const headerBadge = el.workersCountBadge || document.getElementById("workersCountBadge");
     if (headerBadge) {
-      if (activeWorkers.length === workers.length && activeWorkers.length > 0) {
-        headerBadge.textContent = `${activeWorkers.length}台 稼働中`;
+      if (measuredActive.length === measuredWorkers.length && measuredActive.length > 0) {
+        headerBadge.textContent = `${measuredActive.length}台 稼働中（実測）`;
         headerBadge.className = "badge-online";
         headerBadge.style.background = "var(--success)";
-      } else if (activeWorkers.length > 0) {
-        headerBadge.innerHTML = `<span style="background:var(--success); color:#fff; padding:2px 7px; border-radius:4px; font-weight:700;">稼働 ${activeWorkers.length}台</span> <span style="background:#ef4444; color:#fff; padding:2px 7px; border-radius:4px; font-weight:700;">停止 ${workers.length - activeWorkers.length}台</span>`;
+      } else if (measuredActive.length > 0) {
+        headerBadge.innerHTML = `<span style="background:var(--success); color:#fff; padding:2px 7px; border-radius:4px; font-weight:700;">稼働 ${measuredActive.length}台</span> <span style="background:#ef4444; color:#fff; padding:2px 7px; border-radius:4px; font-weight:700;">停止 ${measuredWorkers.length - measuredActive.length}台</span>`;
         headerBadge.style.background = "transparent";
+      } else if (measuredWorkers.length === 0) {
+        headerBadge.textContent = "実測未取得（リグ報告待ち）";
+        headerBadge.className = "badge-offline";
+        headerBadge.style.background = "#94a3b8";
       } else {
         headerBadge.textContent = "全台 停止中";
         headerBadge.className = "badge-offline";
