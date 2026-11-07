@@ -1,14 +1,30 @@
 // Cloudflare Pages Function: Watcher Status — 実測値だけを出す（合成した「巡回中」を作らない）
 // データ源: デプロイ済みの /data/live_state.json（NAS/Hermes のコレクターが更新する）
 async function readLiveState(context) {
-  try {
-    const assetUrl = new URL("/data/live_state.json", context.request.url);
-    const res = await context.fetch(new Request(assetUrl.toString(), { headers: { "Accept": "application/json" } }));
-    if (!res.ok) return { ok: false, error: `live_state.json HTTP ${res.status}` };
-    return { ok: true, state: await res.json() };
-  } catch (e) {
-    return { ok: false, error: String(e) };
+  // Pages の静的アセットは env.ASSETS 経由で読む（context.fetch だけでは asset ルートに届かない）
+  const url = new URL("/data/live_state.json", context.request.url);
+  const attempts = [];
+  const readers = [];
+  if (context.env && context.env.ASSETS && typeof context.env.ASSETS.fetch === "function") {
+    readers.push((u) => context.env.ASSETS.fetch(new Request(u.toString(), { headers: { Accept: "application/json" } })));
   }
+  if (typeof context.fetch === "function") {
+    readers.push((u) => context.fetch(new Request(u.toString(), { headers: { Accept: "application/json" } })));
+  }
+  readers.push((u) => fetch(u.toString(), { headers: { Accept: "application/json", "User-Agent": "CoreStation/1.0" } }));
+  for (const read of readers) {
+    try {
+      const res = await read(url);
+      attempts.push({ via: read.name || "reader", http: res.status });
+      if (!res.ok) continue;
+      const ct = res.headers.get("content-type") || "";
+      if (ct.includes("text/html")) { attempts.push({ note: "html fallback" }); continue; }
+      return { ok: true, state: await res.json(), attempts };
+    } catch (e) {
+      attempts.push({ error: String(e).slice(0, 120) });
+    }
+  }
+  return { ok: false, error: `live_state.json 読み取り失敗: ${JSON.stringify(attempts)}` };
 }
 
 export async function onRequest(context) {

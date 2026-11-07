@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-07T12:45:31.030514+00:00",
-  "generated_at_jst": "2026-11-07 21:45:31 JST",
+  "generated_at": "2026-11-07T13:49:14.764291+00:00",
+  "generated_at_jst": "2026-11-07 22:49:14 JST",
   "schema": "corestation-live/1",
   "chain": {
     "ok": true,
     "source": "https://blockindex.net/api/v2",
-    "measured_at": "2026-11-07T12:46:15.523690+00:00",
+    "measured_at": "2026-11-07T13:49:56.582813+00:00",
     "data": {
-      "blockHeight": 19639930,
-      "difficulty": "306394252",
-      "difficulty_display": "306.39 M",
-      "lastBlockTime": "2026-11-07T12:45:47.859289219Z",
+      "blockHeight": 19640434,
+      "difficulty": "297652605",
+      "difficulty_display": "297.65 M",
+      "lastBlockTime": "2026-11-07T13:49:28.466593159Z",
       "inSync": true,
       "coin": "Core Coin",
       "backendVersion": "Gocore/v2.2.2-a091fe2d-20260116/linux-amd64/go1.25.6",
@@ -18,7 +18,7 @@
       "walletBalanceXcb": 7624.281268,
       "payoutTxCount": 100,
       "lastPayoutAtJst": "2026-11-07 00:16 JST",
-      "lastPayoutAgeMin": 1289,
+      "lastPayoutAgeMin": 1353,
       "earnedXcb24h": 9.1659,
       "earnedXcb7d": 54.4764,
       "earnedXcb30d": 157.3893,
@@ -31,7 +31,7 @@
   "pool": {
     "ok": false,
     "source": "https://api.catchthatrabbit.com/api/v2",
-    "measured_at": "2026-11-07T12:45:37.230774+00:00",
+    "measured_at": "2026-11-07T13:49:20.944534+00:00",
     "reason": "プール API が応答しない（522/404・TLS 証明期限切れの実測）",
     "attempts": [
       {
@@ -55,7 +55,7 @@
   "db": {
     "ok": true,
     "source": "/Volumes/Docker/CoreGeeksEXp/data/wallet.db",
-    "measured_at": "2026-11-07T12:45:58.396759+00:00",
+    "measured_at": "2026-11-07T13:50:02.103516+00:00",
     "data": {
       "dbPath": "/volume1/Docker/CoreGeeksEXp/data/wallet.db",
       "fileSizeBytes": 10973184,
@@ -171,7 +171,7 @@
   "content": {
     "ok": true,
     "source": "articles/, hub/output/, hub/config/last_seen_*.json, data/local_articles.js",
-    "measured_at": "2026-11-07T12:45:44.542818+00:00",
+    "measured_at": "2026-11-07T13:49:37.906223+00:00",
     "data": {
       "articlesDirCount": 36,
       "articlesNewest": [
@@ -266,13 +266,13 @@
       "watcherSeenPosts": 24,
       "shortfallCount": 0,
       "shortfallNewest": [],
-      "gitLastCommit": "6e7be81 2026-10-31 17:34 feat(global): launch CoreStation English edition (/en/) with killer hardware benchmarks and automated social dispatch"
+      "gitLastCommit": "7cfad86 2026-11-07 22:40 feat(dashboard): 実測パイプライン導入（合成値の撤去 / live_state 反映 / マシン計測パネル / churn抑制デプロイ）"
     }
   },
   "watcher": {
     "ok": true,
     "source": "hub/config/last_seen_*.json + hub/output mtime + NAS crontab (if readable)",
-    "measured_at": "2026-11-07T12:45:37.063079+00:00",
+    "measured_at": "2026-11-07T13:49:20.592943+00:00",
     "data": {
       "lastHubOutputAtJst": "2026-11-07 04:04 JST",
       "crontabEntriesVisibleToCollector": [
@@ -283,14 +283,6 @@
         {
           "schedule": "30 9 * * 1",
           "command": "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3 /Volumes/Docker/CoreGeeksEXp/hub/community_watcher.py >> "
-        },
-        {
-          "schedule": "*/15 * * * *",
-          "command": "cd /Volumes/Docker/CoreGeeksEXp && /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 scripts/dashboard_live"
-        },
-        {
-          "schedule": "0 */3 * * *",
-          "command": "cd /Volumes/Docker/CoreGeeksEXp && /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 scripts/dashboard_live"
         }
       ],
       "note": "巡回の間隔は crontab 実体から。crontab が見えないマシンで実行中は null。"
@@ -299,7 +291,7 @@
   "machines": {
     "ok": true,
     "source": "local proc + inference HTTP probes + NAS HUD + machine_metrics/*.json",
-    "measured_at": "2026-11-07T12:45:34.527284+00:00",
+    "measured_at": "2026-11-07T13:49:16.665890+00:00",
     "data": {
       "nodes": [
         {
@@ -309,24 +301,24 @@
             "hostname": "MacBook.local",
             "os": "Darwin 27.2.0",
             "cpuLogical": 8,
-            "measured_at": "2026-11-07T12:45:31.130247+00:00",
+            "measured_at": "2026-11-07T13:49:14.846473+00:00",
             "loadAvg": [
-              2.46,
-              3.76,
-              26.68
+              2.49,
+              2.5,
+              2.78
             ],
             "ramBytes": 8589934592,
-            "ramUsedBytes": 803323904,
-            "ramFreeBytes": 19582976,
-            "uptimeSeconds": 2488,
-            "diskFreeBytes": 2895017951232,
+            "ramUsedBytes": 939511808,
+            "ramFreeBytes": 21131264,
+            "uptimeSeconds": 6311,
+            "diskFreeBytes": 2895318695936,
             "diskTotalBytes": 3991400349696,
             "topProcesses": [
-              "0.1 launchd",
-              "0.0 logd",
+              "0.0 launchd",
+              "0.1 logd",
               "0.0 smd",
               "0.0 UserEventAgent",
-              "0.0 fseventsd"
+              "0.1 fseventsd"
             ]
           },
           "kind": "local"
@@ -335,7 +327,7 @@
           "id": "NAS (Asustor) HUD",
           "role": "運用 HUD / wallet.db ホスト",
           "kind": "nas",
-          "measured_at": "2026-11-07T12:45:34.363554+00:00",
+          "measured_at": "2026-11-07T13:49:15.910194+00:00",
           "online": true,
           "status": {
             "pending_approval": 7,
@@ -344,7 +336,7 @@
             "working_stale": [
               {
                 "id": "idea_20261104_motor-paper_da6485",
-                "age_days": 3.8
+                "age_days": 3.9
               }
             ],
             "outbox_ready": 213,
@@ -354,7 +346,7 @@
             "archived": 141,
             "trash": 16,
             "duplicate_reappearing": 0,
-            "server_time": "2026-11-07 21:45:34",
+            "server_time": "2026-11-07 22:49:15",
             "rev": "2026-11-06a",
             "root_dir": "/app"
           },
@@ -369,19 +361,19 @@
   },
   "tls": {
     "note": "verified:/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/certifi/cacert.pem",
-    "measured_at": "2026-11-07T12:46:16.028275+00:00"
+    "measured_at": "2026-11-07T13:50:02.896923+00:00"
   },
   "staleness": {
     "articles_newest_age_days": null,
-    "archive_newest_date_age_days": 9.53,
-    "watcher_last_run_age_days": 7.42,
+    "archive_newest_date_age_days": 9.58,
+    "watcher_last_run_age_days": 7.46,
     "db_last_sync_age_days": null,
     "db_file_age_days": null,
-    "last_payout_age_minutes": 1289
+    "last_payout_age_minutes": 1353
   },
   "deployGate": {
     "minIntervalMin": 120,
     "deployFlag": false
   },
-  "signature": "3aede5b5ae341024"
+  "signature": "946d0fbfec417cb4"
 }
