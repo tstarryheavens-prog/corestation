@@ -28,7 +28,8 @@ export async function onRequest(context) {
 
   const dbSection = state.db || {};
   const rates = (dbSection.data && dbSection.data.latestRates) || [];
-  if (!dbSection.state || !rates.length) {
+  const dbOk = dbSection.ok === true || dbSection.state === true;
+  if (!dbOk || !rates.length) {
     return new Response(JSON.stringify({
       state: false, data: null, source: "data/live_state.json",
       error: "latest_rates 実測値が未取得（collector の DB 取得失敗 or 空）",

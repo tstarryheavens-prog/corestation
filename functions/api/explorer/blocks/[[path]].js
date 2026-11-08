@@ -7,7 +7,7 @@
 const WALLET_ADDRESS = "0xcb57b88d24678c2091332971e3a38cca472dd8aac0cd";
 const DEFAULT_BLOCK_LIMIT = 10;
 
-async function fetchBlockindex(url, timeoutMs = 8000) {
+async function fetchBlockindex(url, timeoutMs = 20000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -39,7 +39,7 @@ export async function onRequest(context) {
 
   const [headRes, txsRes] = await Promise.all([
     fetchBlockindex("https://blockindex.net/api/v2"),
-    fetchBlockindex(`https://blockindex.net/api/v2?address=${WALLET_ADDRESS}&page=1&pageSize=50&details=txs`)
+    fetchBlockindex(`https://blockindex.net/api/v2/address/${WALLET_ADDRESS}?details=txs&pageSize=100`)
   ]);
 
   const headBook = headRes.data?.blockbook || {};
@@ -48,7 +48,8 @@ export async function onRequest(context) {
   const headHash = headBack.bestBlockHash || null;
   const headTime = headBook.lastBlockTime || null;
 
-  const txs = txsRes.data?.txs || [];
+  const txPayload = txsRes.data || {};
+  const txs = txPayload.transactions || (txPayload.address || {}).transactions || txPayload.txs || [];
   const measuredBlocks = new Map();
   for (const tx of txs) {
     const height = Number(tx.blockHeight);

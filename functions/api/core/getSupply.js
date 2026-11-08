@@ -1,7 +1,7 @@
 // Cloudflare Pages Function: Core Blockchain Supply — 時刻からの線形 extrapolation で
 // block height / supply を作る実装を撤去 (2026-11-08)。
 // blockindex.net (Core BlockBook) は supply を返さない → 未取得は null のまま返す。
-async function fetchBlockindex(timeoutMs = 8000) {
+async function fetchBlockindex(timeoutMs = 20000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {

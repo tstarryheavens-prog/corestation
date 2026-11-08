@@ -33,7 +33,8 @@ export async function onRequest(context) {
 
   const dbSection = state.db || {};
   const d = dbSection.data || {};
-  if (!dbSection.state || !d || !Object.keys(d).length) {
+  const dbOk = dbSection.ok === true || dbSection.state === true;
+  if (!dbOk || !d || !Object.keys(d).length) {
     return new Response(JSON.stringify({
       state: false,
       data: null,
