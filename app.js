@@ -2020,6 +2020,31 @@
       el.dbStatusBadge.style.background = dbStale ? "#d97706" : (dbOk ? "var(--success)" : "#94a3b8");
       if (status.dbStaleNote) el.dbStatusBadge.title = status.dbStaleNote;
     }
+    // 着金履歴テーブルの実測鮮度: DB アーカイブまで / オンチェーン最新着金
+    const srcBadge = document.getElementById("txSourceBadge");
+    const note = document.getElementById("txOnchainNote");
+    const evNow = state.onchainEvidence || {};
+    const ageNow = Number(status.dbDataAgeDays);
+    if (srcBadge) {
+      if (Number.isFinite(ageNow) && ageNow > 2) {
+        srcBadge.textContent = `DB アーカイブ ${status.maxDate ? status.maxDate.substring(0, 10) : "--"} まで（${ageNow} 日前で更新停止）`;
+        srcBadge.className = "badge-offline";
+        srcBadge.style.background = "#d97706";
+      } else {
+        srcBadge.textContent = `Live自動同期${status.measuredAgo ? ` / 計測 ${status.measuredAgo}` : ""}`;
+        srcBadge.className = "badge-online";
+        srcBadge.style.background = "var(--success)";
+      }
+      srcBadge.title = `オンチェーン実測の最新着金: ${evNow.lastPayoutAtJst || "未取得"}` +
+        (typeof evNow.payoutGapNowH === "number" ? ` / 直近 ${evNow.payoutGapNowH} 時間 着金なし（周期 ${evNow.payoutIntervalMeasuredH ?? "--"} 時間）` : "");
+    }
+    if (note) {
+      const dbNewest = status.maxDate ? status.maxDate.substring(0, 10) : null;
+      const onchainNewest = evNow.lastPayoutAtJst || null;
+      note.textContent = dbNewest && onchainNewest && !onchainNewest.startsWith(dbNewest)
+        ? `テーブルは DB アーカイブ（${dbNewest} まで）表示 / オンチェーンの最新着金は ${onchainNewest}（DB 未取得）`
+        : (onchainNewest ? `オンチェーンの最新着金: ${onchainNewest}` : "");
+    }
   }
 
   // --- View 2: Network View Renderer ---
