@@ -2027,7 +2027,9 @@
     const ageNow = Number(status.dbDataAgeDays);
     if (srcBadge) {
       if (Number.isFinite(ageNow) && ageNow > 2) {
-        srcBadge.textContent = `DB アーカイブ ${status.maxDate ? status.maxDate.substring(0, 10) : "--"} まで（${ageNow} 日前で更新停止）`;
+        const dbNewestLabel = status.lastTxAtJst ? String(status.lastTxAtJst).slice(0, 16)
+          : (status.maxDate ? status.maxDate.substring(0, 10) : "--");
+        srcBadge.textContent = `DB アーカイブ ${dbNewestLabel} まで（${ageNow} 日前で更新停止）`;
         srcBadge.className = "badge-offline";
         srcBadge.style.background = "#d97706";
       } else {
@@ -2039,7 +2041,8 @@
         (typeof evNow.payoutGapNowH === "number" ? ` / 直近 ${evNow.payoutGapNowH} 時間 着金なし（周期 ${evNow.payoutIntervalMeasuredH ?? "--"} 時間）` : "");
     }
     if (note) {
-      const dbNewest = status.maxDate ? status.maxDate.substring(0, 10) : null;
+      const dbNewest = (status.lastTxAtJst ? String(status.lastTxAtJst).slice(0, 10)
+                    : (status.maxDate ? status.maxDate.substring(0, 10) : null));
       const onchainNewest = evNow.lastPayoutAtJst || null;
       note.textContent = dbNewest && onchainNewest && !onchainNewest.startsWith(dbNewest)
         ? `テーブルは DB アーカイブ（${dbNewest} まで）表示 / オンチェーンの最新着金は ${onchainNewest}（DB 未取得）`
