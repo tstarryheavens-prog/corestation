@@ -407,6 +407,8 @@
         minDate: dbRes.data.minDate,
         maxDate: dbRes.data.maxDate,
         lastSync: dbRes.data.lastTxAtJst ? `最終着金レコード ${dbRes.data.lastTxAtJst}` : null,
+        dbDataAgeDays: dbRes.data.dbDataAgeDays,
+        dbStaleNote: dbRes.data.dbStaleNote,
         measuredAgo: fmtAgo(dbRes.measured_at)
       });
     }
@@ -1371,9 +1373,16 @@
         kpiBadge.className = "badge-online";
         kpiBadge.style.background = "#d97706";
       } else if (measuredWorkers.length === 0) {
-        kpiBadge.textContent = "リグ報告待ち（実測なし）";
-        kpiBadge.className = "badge-offline";
-        kpiBadge.style.background = "#94a3b8";
+        if (typeof evidence.payoutGapNowH === "number") {
+          kpiBadge.textContent = `着金 ${evidence.payoutGapNowH}h なし（周期 ${evidence.payoutIntervalMeasuredH ?? "--"}h 実測）`;
+          kpiBadge.className = "badge-offline";
+          kpiBadge.style.background = evidence.payoutGapExceedsCadence ? "#dc2626" : "#94a3b8";
+          kpiBadge.title = "オンチェーン実測: ウォレットへの着金がプール支払周期の2倍以上止まっている（採掘が止まっている可能性が高い）";
+        } else {
+          kpiBadge.textContent = "リグ報告待ち（実測なし）";
+          kpiBadge.className = "badge-offline";
+          kpiBadge.style.background = "#94a3b8";
+        }
       } else {
         kpiBadge.textContent = "全台 停止中";
         kpiBadge.className = "badge-offline";
@@ -1384,7 +1393,9 @@
       if (measuredActive.length > 0) {
         kpiCount.textContent = "リグ/プール実測";
       } else if (evidence.lastPayoutAtJst) {
-        kpiCount.textContent = `最終着金 ${evidence.lastPayoutAtJst}`;
+        kpiCount.textContent = typeof evidence.payoutGapNowH === "number"
+          ? `最終着金 ${evidence.lastPayoutAtJst} (${evidence.payoutGapNowH}h 前)`
+          : `最終着金 ${evidence.lastPayoutAtJst}`;
       } else {
         kpiCount.textContent = "実測未取得";
       }
@@ -1972,16 +1983,27 @@
     if (el.dbRateCount) el.dbRateCount.textContent = status.rateCount ? status.rateCount.toLocaleString() : "--";
     if (el.dbFilePath) el.dbFilePath.textContent = status.dbPath || "/volume1/Docker/CoreGeeksEXp/data/wallet.db";
     if (el.dbDateRange && status.minDate && status.maxDate) {
-      el.dbDateRange.textContent = `${status.minDate.substring(0, 10)} 〜 ${status.maxDate.substring(0, 10)} (約3年分)`;
+      const spanDays = Math.round((new Date(status.maxDate).getTime() - new Date(status.minDate).getTime()) / 86400000);
+      const spanLabel = Number.isFinite(spanDays) && spanDays > 0 ? `${(spanDays / 365).toFixed(1)}年分（実測期間）` : "期間 未取得";
+      el.dbDateRange.textContent = `${status.minDate.substring(0, 10)} 〜 ${status.maxDate.substring(0, 10)} (${spanLabel})`;
     }
-    if (el.dbLastSync) el.dbLastSync.textContent = status.lastSync || "正常同期済み";
+    const dbAge = Number(status.dbDataAgeDays);
+    const dbStale = Number.isFinite(dbAge) && dbAge > 2;
+    if (el.dbLastSync) {
+      el.dbLastSync.textContent = status.dbStaleNote
+        || (status.lastSync ? `${status.lastSync}${dbStale ? ` / ${dbAge} 日前のデータ` : ""}` : "同期時刻 未取得");
+    }
     if (el.dbStatusBadge) {
-      const dbOk = !!status.txCount || !!status.rateCount;
-      el.dbStatusBadge.textContent = dbOk
-        ? `● 実測同期済み (SQLite)${status.measuredAgo ? ` / 計測 ${status.measuredAgo}` : ""}`
-        : "● 状態未取得";
+      const hasRows = !!status.txCount || !!status.rateCount;
+      const dbOk = hasRows && !dbStale;
+      el.dbStatusBadge.textContent = dbStale
+        ? `● DB 更新停止 (${dbAge} 日前まで)`
+        : (dbOk
+            ? `● 実測同期済み (SQLite)${status.measuredAgo ? ` / 計測 ${status.measuredAgo}` : ""}`
+            : "● 状態未取得");
       el.dbStatusBadge.className = dbOk ? "badge-online" : "badge-offline";
-      el.dbStatusBadge.style.background = dbOk ? "var(--success)" : "#94a3b8";
+      el.dbStatusBadge.style.background = dbStale ? "#d97706" : (dbOk ? "var(--success)" : "#94a3b8");
+      if (status.dbStaleNote) el.dbStatusBadge.title = status.dbStaleNote;
     }
   }
 
