@@ -559,7 +559,28 @@ def collect_machines() -> dict:
                   "note": "稼働していれば NAS 側で巡回と DB 同期が自動で走る。停止中は Hermes ジョブがその役を担っている。",
                   "source": NAS_COREGEEMS + "/api/db/status"})
 
-    # 5) リグ側の報告（worker_reporter.py が data/machine_metrics/<host>.json に書く）
+    # 5) X600（Windows 採掘専用 PC）: 認証・ログインは一切せず TCP 到達性だけ実測
+    xhost = os.environ.get("X600_HOST", "192.168.2.13")
+    xports = [int(x) for x in os.environ.get("X600_PORTS", "445,3389").split(",")]
+    open_ports, latency = [], None
+    for pt in xports:
+        t0 = time.perf_counter()
+        try:
+            with socket.create_connection((xhost, pt), timeout=3):
+                open_ports.append(pt)
+                if latency is None:
+                    latency = round((time.perf_counter() - t0) * 1000, 1)
+        except OSError:
+            pass
+    nodes.append({"id": "X600 (Windows 採掘専用 PC)",
+                  "role": f"LAN {xhost} — TCP 到達性のみ実測（認証情報なし）",
+                  "kind": "rig", "measured_at": iso_now(),
+                  "online": bool(open_ports), "openPorts": open_ports, "latencyMs": latency,
+                  "hashrate": None, "temperature": None, "power": None,
+                  "error": None if open_ports else f"{xhost} の {xports} すべて応答なし（電源 OFF / 電源 ON だがサービス停止の可能性）",
+                  "note": "H/s・温度・消費電力の実測には X600 側で coreminer の出力を worker_reporter.py に流して data/machine_metrics/X600.json を書かせるか、tailnet+SSH を開放する必要がある（未取得は null のまま）。"})
+
+    # 6) リグ側の報告（worker_reporter.py が data/machine_metrics/<host>.json に書く）
     reporters = []
     if os.path.isdir(MACHINE_METRICS_DIR):
         for f in sorted(os.listdir(MACHINE_METRICS_DIR)):
