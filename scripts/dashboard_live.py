@@ -26,6 +26,7 @@ import os
 import platform
 import re
 import socket
+import shutil
 import ssl
 import sqlite3
 import subprocess
@@ -612,8 +613,92 @@ def stream_probe(base: str, model: str, max_tokens: int = 160, timeout: float = 
     return out
 
 
+def _subprocess_run(cmd, timeout):
+    import subprocess
+    try:
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        return p.returncode, p.stdout or "", p.stderr or ""
+    except FileNotFoundError:
+        return 127, "", f"{cmd[0]} が見つからない"
+    except Exception as exc:  # noqa: BLE001
+        return 1, "", str(exc)[:200]
+
+
+def tailnet_peers() -> dict:
+    """tailscale status --json から tailnet ノード実測を取る（CLI が無い環境は {'ok': False}）。"""
+    ts = shutil.which("tailscale") or ("/usr/local/bin/tailscale" if os.path.exists("/usr/local/bin/tailscale") else None)
+    if not ts:
+        return {"ok": False, "error": "tailscale CLI が無い（このマシンは tailnet を直接見れない）"}
+    rc, out, err = _subprocess_run([ts, "status", "--json"], 15)
+    if rc != 0:
+        return {"ok": False, "error": (err or out)[:200]}
+    try:
+        d = json.loads(out)
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "error": f"tailscale status JSON parse: {exc}"}
+    peers = {}
+    for name, p in (d.get("Peer") or {}).items():
+        peers[str(p.get("HostName") or name).lower()] = {
+            "hostname": p.get("HostName") or name,
+            "ips": p.get("TailscaleIPs") or [],
+            "online": bool(p.get("Online")),
+            "os": p.get("OS"),
+            "lastSeen": p.get("LastSeen"),
+            "dnsName": p.get("DNSName"),
+        }
+    return {"ok": True, "self": (d.get("Self") or {}).get("HostName"), "peers": peers}
+
+
+def tailnet_ping_latency(ip: str):
+    """tailscale ping の実測往復時間（ms）。失敗は None。"""
+    ts = shutil.which("tailscale") or ("/usr/local/bin/tailscale" if os.path.exists("/usr/local/bin/tailscale") else None)
+    if not ts or not ip:
+        return None
+    rc, out, err = _subprocess_run([ts, "ping", "-c", "3", ip], 20)
+    text = out or err or ""
+    vals = [float(m) for m in re.findall(r"in\s+([\d.]+)\s*ms", text)]
+    return round(max(vals), 1) if vals else None
+
+
+def rig_report_metrics(rep: dict) -> dict:
+    """worker_reporter (.py / .ps1) の JSON から H/s・温度・電力を実測抽出（無いものは None）。"""
+    if not isinstance(rep, dict):
+        return {}
+    hr = rep.get("hashrateHs")
+    if hr is None:
+        hr = rep.get("hashrate")
+    gpus = [g for g in (rep.get("gpus") or []) if isinstance(g, dict)]
+    temps = [g.get("temperatureC") for g in gpus if isinstance(g.get("temperatureC"), (int, float))]
+    temp = rep.get("temperatureC")
+    if temp is None and temps:
+        temp = max(temps)
+    if temp is None:
+        cpu_temp = (rep.get("cpu") or {}).get("temperatureC") if isinstance(rep.get("cpu"), dict) else None
+        temp = cpu_temp
+    power = rep.get("powerW")
+    if power is None:
+        pw = [g.get("powerW") for g in gpus if isinstance(g.get("powerW"), (int, float))]
+        if pw:
+            power = round(sum(pw), 1)
+    miners = [m for m in (rep.get("miners") or []) if isinstance(m, dict)]
+    worker_names = sorted({m.get("workerName") for m in miners if m.get("workerName")})
+    return {
+        "hashrate": hr if isinstance(hr, (int, float)) else None,
+        "temperature": temp if isinstance(temp, (int, float)) else None,
+        "power": power if isinstance(power, (int, float)) else None,
+        "acceptedPct": rep.get("acceptedPct"),
+        "minerProcessCount": rep.get("minerCount") if isinstance(rep.get("minerCount"), int) else len(miners),
+        "minerWorkerNames": worker_names,
+        "stratumSessions": rep.get("stratumSessionCount") if isinstance(rep.get("stratumSessionCount"), int) else None,
+        "rigMeasuredAt": rep.get("measured_at"),
+        "rigSource": rep.get("source"),
+        "rigUnavailable": rep.get("unavailable_reason"),
+    }
+
+
 def collect_machines() -> dict:
     nodes = []
+    tail = tailnet_peers()
     # 1) このコレクターを実行しているマシン
     nodes.append({"id": local_host_metrics()["hostname"], "role": "collector host",
                   "metrics": local_host_metrics(), "kind": "local"})
@@ -665,7 +750,7 @@ def collect_machines() -> dict:
 
     # 5) X600（Windows 採掘専用 PC）: 認証・ログインは一切せず TCP 到達性だけ実測
     xhost = os.environ.get("X600_HOST", "192.168.2.13")
-    xports = [int(x) for x in os.environ.get("X600_PORTS", "445,3389").split(",")]
+    xports = [int(x) for x in os.environ.get("X600_PORTS", "445,3389,22").split(",")]
     open_ports, latency = [], None
     for pt in xports:
         t0 = time.perf_counter()
@@ -676,6 +761,33 @@ def collect_machines() -> dict:
                     latency = round((time.perf_counter() - t0) * 1000, 1)
         except OSError:
             pass
+
+    # tailnet 側の実測（X600 に Tailscale が入ればここに実データが来る。無ければ「無い」と書く）
+    x_aliases = [a.strip().lower() for a in os.environ.get("X600_TAILNET_NAMES", "x600,7950x,7950").split(",") if a.strip()]
+    tailnet_node = None
+    tailnet_error = None
+    if tail.get("ok"):
+        for key, peer in (tail.get("peers") or {}).items():
+            if any(al in key for al in x_aliases):
+                tailnet_node = dict(peer)
+                if peer.get("online") and peer.get("ips"):
+                    tailnet_node["pingMs"] = tailnet_ping_latency(peer["ips"][0])
+                    # tailnet 越しに SSH が見えるか（認証はしない・ポートが開いているかだけ）
+                    ip0 = peer["ips"][0]
+                    ssh_open = False
+                    try:
+                        with socket.create_connection((ip0, 22), timeout=4):
+                            ssh_open = True
+                    except OSError:
+                        ssh_open = False
+                    tailnet_node["sshPortOpen"] = ssh_open
+                break
+        if tailnet_node is None:
+            tailnet_error = (f"tailnet に X600 ノードが見えない（既知ノード: "
+                             f"{', '.join(sorted((tail.get('peers') or {}).keys()))}）— X600 に Tailscale 未導入の可能性")
+    else:
+        tailnet_error = tail.get("error")
+
     nodes.append({
         "id": "X600 (Windows 採掘専用 PC)",
         "role": f"LAN {xhost} — TCP 到達性のみ実測（認証情報なし）",
@@ -686,10 +798,12 @@ def collect_machines() -> dict:
         "poolWorkers": ["7950X"],
         "workerNameSource": "ユーザー申告 2026-11-08「192.168.2.13 は X600、プール上は 7950X」"
                            " / wallet.db workers テーブルに worker 7950X (as.catchthatrabbit.com) を実測",
+        "tailnet": tailnet_node,
+        "tailnetError": tailnet_error,
         "error": None if open_ports else f"{xhost} の {xports} すべて応答なし（電源 OFF / 電源 ON だがサービス停止の可能性）",
-        "note": "H/s・温度・消費電力の実測には X600 側で coreminer の出力を worker_reporter.py に流して data/machine_metrics/X600.json を書かせるか、tailnet+SSH を開放する必要がある（未取得は null のまま）。"})
+        "note": "H/s・温度・消費電力は X600 側の worker_reporter.ps1（tools/setup_x600.ps1 で導入）が data/machine_metrics/X600.json に書いた分だけ実測になる。未取得は null のまま。"})
 
-    # 6) リグ側の報告（worker_reporter.py が data/machine_metrics/<host>.json に書く）
+    # 6) リグ側の報告（worker_reporter が data/machine_metrics/<host>.json に書く）→ ノードに実測をマージ
     reporters = []
     if os.path.isdir(MACHINE_METRICS_DIR):
         for f in sorted(os.listdir(MACHINE_METRICS_DIR)):
@@ -699,10 +813,33 @@ def collect_machines() -> dict:
                 reporters.append(json.load(open(os.path.join(MACHINE_METRICS_DIR, f), encoding="utf-8")))
             except Exception as exc:  # noqa: BLE001
                 reporters.append({"file": f, "error": str(exc)[:120]})
-    return {"ok": True, "source": "local proc + inference HTTP probes + NAS HUD + machine_metrics/*.json",
+    for rep in reporters:
+        host = str((rep or {}).get("host") or (rep or {}).get("machine_id") or "").strip().lower()
+        if not host:
+            continue
+        metrics = rig_report_metrics(rep)
+        if not metrics:
+            continue
+        for node in nodes:
+            node_id = str(node.get("id") or "").lower()
+            node_workers = [str(w).lower() for w in (node.get("poolWorkers") or [])]
+            if host in node_id or node_id.startswith(host) or host in node_workers:
+                for key in ("hashrate", "temperature", "power"):
+                    if metrics.get(key) is not None:
+                        node[key] = metrics[key]
+                for key in ("acceptedPct", "minerProcessCount", "minerWorkerNames",
+                            "stratumSessions", "rigMeasuredAt", "rigSource", "rigUnavailable"):
+                    if metrics.get(key) is not None:
+                        node[key] = metrics[key]
+                node["hasRigReport"] = True
+                break
+    return {"ok": True, "source": "local proc + inference HTTP probes + NAS HUD + tailnet + machine_metrics/*.json",
             "measured_at": iso_now(),
             "data": {"nodes": nodes, "rigReporters": reporters,
                      "rigReporterCount": len(reporters),
+                     "tailnet": {"ok": tail.get("ok"), "self": tail.get("self"),
+                                 "error": tail.get("error"),
+                                 "peers": sorted((tail.get("peers") or {}).keys())},
                      "workerMachineAlias": {"7950X": {"machine": "X600",
                                                       "lan": os.environ.get("X600_HOST", "192.168.2.13"),
                                                       "source": "user-declared 2026-11-08 + wallet.db workers 実測"}},

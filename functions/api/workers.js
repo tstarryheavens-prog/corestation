@@ -143,6 +143,12 @@ export async function onRequest(context) {
           openPorts: n.openPorts ?? null, latencyMs: n.latencyMs ?? null,
           hashrate: n.hashrate ?? null, temperature: n.temperature ?? null, power: n.power ?? null,
           poolWorkers: n.poolWorkers ?? null, workerNameSource: n.workerNameSource ?? null,
+          tailnet: n.tailnet ?? null, tailnetError: n.tailnetError ?? null,
+          hasRigReport: n.hasRigReport ?? false,
+          minerWorkerNames: n.minerWorkerNames ?? null,
+          minerProcessCount: n.minerProcessCount ?? null,
+          stratumSessions: n.stratumSessions ?? null,
+          rigMeasuredAt: n.rigMeasuredAt ?? null, rigUnavailable: n.rigUnavailable ?? null,
           error: n.error ?? null, measuredAt: n.measured_at || null
         })),
       measuredAt: (liveData.machines && liveData.machines.measured_at) || new Date().toISOString(),
