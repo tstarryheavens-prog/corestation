@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-08T22:00:42.701519+00:00",
-  "generated_at_jst": "2026-11-09 07:00:42 JST",
+  "generated_at": "2026-11-08T23:08:05.377749+00:00",
+  "generated_at_jst": "2026-11-09 08:08:05 JST",
   "schema": "corestation-live/1",
   "chain": {
     "ok": true,
     "source": "https://blockindex.net/api/v2",
-    "measured_at": "2026-11-08T22:00:47.530301+00:00",
+    "measured_at": "2026-11-08T23:08:09.407605+00:00",
     "data": {
-      "blockHeight": 19657109,
-      "difficulty": "334502772",
-      "difficulty_display": "334.50 M",
-      "lastBlockTime": "2026-11-08T22:00:36.508440089Z",
+      "blockHeight": 19657690,
+      "difficulty": "335113221",
+      "difficulty_display": "335.11 M",
+      "lastBlockTime": "2026-11-08T23:08:01.24062868Z",
       "inSync": true,
       "coin": "Core Coin",
       "backendVersion": "Gocore/v2.2.2-a091fe2d-20260116/linux-amd64/go1.25.6",
@@ -21,24 +21,24 @@
       "txWindowOldestAtJst": "2026-10-07 07:08 JST",
       "earnedWindowLabel": "ローリング実測 (24h/7d/30d, epoch 基準)",
       "payoutIntervalMeasuredH": 4.0,
-      "payoutGapNowH": 54.74,
+      "payoutGapNowH": 55.86,
       "payoutGapExceedsCadence": true,
       "lastPayoutAtJst": "2026-11-07 00:16 JST",
-      "lastPayoutAgeMin": 3284,
+      "lastPayoutAgeMin": 3351,
       "earnedXcb24h": 0,
       "earnedXcb7d": 31.4329,
-      "earnedXcb30d": 289.9205,
+      "earnedXcb30d": 287.5699,
       "blocksFound24hEstimate": 0.0,
       "blocksFoundPerDay7dEstimate": 2.721,
       "addressFetchError": null,
       "circulatingSupplyRaw": null,
-      "bestBlockHash": "0x20a0b897c5a3f3a26961de03110e32645a1f3c06d12b01502edbcc15aef9a355",
+      "bestBlockHash": "0x22b900302d72e4327dd5d3319c56ceb99fb5541ed40a3b709acd8501989ecdbd",
       "freshness": {
-        "lastBlockAgeSeconds": 11,
-        "lastBlockAgeLabel": "11秒前",
-        "ownTxMeasuredAgoMinutes": 3284.3,
+        "lastBlockAgeSeconds": 8,
+        "lastBlockAgeLabel": "8秒前",
+        "ownTxMeasuredAgoMinutes": 3351.7,
         "ownTxMeasuredAgoLabel": "2.3日前",
-        "blockIntervalMeasuredAgoMinutes": 3284.3,
+        "blockIntervalMeasuredAgoMinutes": 3351.7,
         "blockIntervalMeasuredAgoLabel": "2.3日前"
       }
     }
@@ -46,7 +46,7 @@
   "pool": {
     "ok": false,
     "source": "https://api.catchthatrabbit.com/api/v2",
-    "measured_at": "2026-11-08T22:00:51.314278+00:00",
+    "measured_at": "2026-11-08T23:08:12.800297+00:00",
     "reason": "プール API が応答しない（522/404・TLS 証明期限切れの実測）",
     "attempts": [
       {
@@ -70,13 +70,13 @@
   "db": {
     "ok": true,
     "source": "/Volumes/Docker/CoreGeeksEXp/data/wallet.db",
-    "measured_at": "2026-11-08T22:00:55.323220+00:00",
+    "measured_at": "2026-11-08T23:08:11.664499+00:00",
     "data": {
       "dbPath": "/volume1/Docker/CoreGeeksEXp/data/wallet.db",
       "fileSizeBytes": 10989568,
       "fileMtimeJst": "2026-11-09 07:00 JST",
-      "dailyCount": 549,
-      "txCount": 4469,
+      "dailyCount": 556,
+      "txCount": 4507,
       "rateCount": 112272,
       "workersTableRows": 3,
       "minDate": "2023-08-20T00:00:00.000Z",
@@ -164,7 +164,7 @@
           "pool": "CatchThatRabbit (as1)",
           "hr": 0,
           "offline": 1,
-          "updated_at": "2026-11-07 22:00:49"
+          "updated_at": "2026-11-08 22:00:58"
         },
         {
           "wallet_address": "cb57b88d24678c2091332971e3a38cca472dd8aac0cd",
@@ -172,7 +172,7 @@
           "pool": "CatchThatRabbit (as1)",
           "hr": 0,
           "offline": 1,
-          "updated_at": "2026-11-07 22:00:49"
+          "updated_at": "2026-11-08 22:00:58"
         },
         {
           "wallet_address": "cb57b88d24678c2091332971e3a38cca472dd8aac0cd",
@@ -180,7 +180,7 @@
           "pool": "CatchThatRabbit (as.catchthatrabbit.com)",
           "hr": 0,
           "offline": 1,
-          "updated_at": "2026-11-07 22:00:49"
+          "updated_at": "2026-11-08 22:00:58"
         }
       ]
     }
@@ -188,10 +188,14 @@
   "content": {
     "ok": true,
     "source": "articles/, hub/output/, hub/config/last_seen_*.json, data/local_articles.js",
-    "measured_at": "2026-11-08T22:00:53.931770+00:00",
+    "measured_at": "2026-11-08T23:08:12.150312+00:00",
     "data": {
-      "articlesDirCount": 39,
+      "articlesDirCount": 40,
       "articlesNewest": [
+        {
+          "file": "articles/community-voice-roundup-vol5.html",
+          "mtimeJst": "2026-11-09 07:02 JST"
+        },
         {
           "file": "articles/community-voice-roundup-vol4.html",
           "mtimeJst": "2026-11-08 13:01 JST"
@@ -211,13 +215,13 @@
         {
           "file": "articles/ping-exchange-business-trading-live.html",
           "mtimeJst": "2026-10-18 16:41 JST"
-        },
-        {
-          "file": "articles/ping-exchange-kyb-maintenance-launch.html",
-          "mtimeJst": "2026-10-18 16:41 JST"
         }
       ],
       "hubOutputNewest": [
+        {
+          "file": "hub/output/community-voice-roundup-vol5.html",
+          "mtimeJst": "2026-11-09 07:02 JST"
+        },
         {
           "file": "hub/output/community-voice-roundup-vol4.html",
           "mtimeJst": "2026-11-08 13:01 JST"
@@ -237,15 +241,16 @@
         {
           "file": "hub/output/chronicle_update_codetechcc_1606.html",
           "mtimeJst": "2026-10-18 16:37 JST"
-        },
-        {
-          "file": "hub/output/chronicle_update_codetechcc_1605.html",
-          "mtimeJst": "2026-10-18 16:37 JST"
         }
       ],
-      "archiveCount": 38,
-      "archiveNewestDate": "2026-11-08",
+      "archiveCount": 39,
+      "archiveNewestDate": "2026-11-09",
       "archiveLatestItems": [
+        {
+          "id": "community-voice-roundup-vol5",
+          "title": "【リコロのコミュニティ定点観測 Vol.5】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リア",
+          "date": "2026-11-09"
+        },
         {
           "id": "community-voice-roundup-vol4",
           "title": "【リコロのコミュニティ定点観測 Vol.4】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リア",
@@ -270,28 +275,23 @@
           "id": "ping-exchange-business-trading-live",
           "title": "【速報・解説】Core Blockchainがビジネス取引の新章を開く！Ping Exchangeビジネス取引インフラ稼働の全貌🎮⚡️",
           "date": "2026-10-18"
-        },
-        {
-          "id": "ping-exchange-kyb-maintenance-launch",
-          "title": "【速報・解説】Core BlockchainのPing Exchangeが大型アプデ！新KYB取引サービス正式ローンチの全貌🚀✨",
-          "date": "2026-10-18"
         }
       ],
-      "archiveFileMtimeJst": "2026-11-08 13:01 JST",
-      "watcherLastCheckedChronicle": "2026-11-08T07:01:02.779908",
-      "watcherLastPublishedCommunity": "2026-11-08",
+      "archiveFileMtimeJst": "2026-11-09 07:02 JST",
+      "watcherLastCheckedChronicle": "2026-11-09T07:01:09.919459",
+      "watcherLastPublishedCommunity": "2026-11-09",
       "watcherSeenPosts": 24,
       "shortfallCount": 0,
       "shortfallNewest": [],
-      "gitLastCommit": "c3e3a00 2026-11-09 01:44 fix(honesty): X600 の IP 対応付けを撤去し実測身元で測る — 192.168.2.13 は RDP 証明書 CN 実測で Z690、192.168.2.11 は tailscale direct endpoint 実測で z790-al と判明。scripts/lan_scan.py（ping/TCP/RDP CN/HTTP title/tailscale direct endpoint で LAN 身份一覧を data/lan_identities.json に書く、認証なし）を追加し collector が 6h ごとに更新して live_state.json に lanIdentities として収録。rig ノードは identityStatus/lanIP/windowsCandidates を持ち、身元未確定の間は測定せず null+理由。api/workers は machineAlias を未確定として出し lanIdentities を通過、app.js は LAN 実測身份テーブルと X600 身元行を表示。x600_ssh_check.sh / x600_wake.sh は 192.168.2.13 デフォルトを撤去し X600_HOST 必須化。docs 訂正、index cache 20261109_01"
+      "gitLastCommit": "711d0ce 2026-11-09 07:02 feat(community): publish community sentiment roundup [2026-11-09 07:02]"
     }
   },
   "watcher": {
     "ok": true,
     "source": "hub/config/last_seen_*.json + hub/output mtime + NAS crontab (if readable)",
-    "measured_at": "2026-11-08T22:00:47.564686+00:00",
+    "measured_at": "2026-11-08T23:08:10.855847+00:00",
     "data": {
-      "lastHubOutputAtJst": "2026-11-08 13:01 JST",
+      "lastHubOutputAtJst": "2026-11-09 07:02 JST",
       "crontabEntriesVisibleToCollector": [],
       "note": "巡回の間隔は crontab 実体から。crontab が見えないマシンで実行中は null。"
     }
@@ -299,7 +299,7 @@
   "machines": {
     "ok": true,
     "source": "local proc + inference HTTP probes + NAS HUD + tailnet + machine_metrics/*.json",
-    "measured_at": "2026-11-08T22:00:48.567912+00:00",
+    "measured_at": "2026-11-08T23:09:18.078128+00:00",
     "data": {
       "nodes": [
         {
@@ -309,21 +309,21 @@
             "hostname": "MacBook.local",
             "os": "Darwin 27.2.0",
             "cpuLogical": 8,
-            "measured_at": "2026-11-08T22:00:43.337657+00:00",
+            "measured_at": "2026-11-08T23:08:05.522384+00:00",
             "loadAvg": [
-              24.25,
-              7.48,
-              3.63
+              18.6,
+              7.35,
+              5.32
             ],
             "ramBytes": 8589934592,
-            "ramUsedBytes": 719982592,
-            "ramFreeBytes": 42676224,
-            "uptimeSeconds": 122200,
-            "diskFreeBytes": 2894334353408,
+            "ramUsedBytes": 985874432,
+            "ramFreeBytes": 73605120,
+            "uptimeSeconds": 126242,
+            "diskFreeBytes": 2894307033088,
             "diskTotalBytes": 3991400349696,
             "topProcesses": [
-              "0.9 launchd",
-              "0.3 logd",
+              "6.0 launchd",
+              "2.3 logd",
               "0.0 UserEventAgent",
               "0.6 fseventsd",
               "0.0 mediaremoted"
@@ -332,10 +332,71 @@
           "kind": "local"
         },
         {
+          "id": "z790-al (Strata)",
+          "role": "Hermes 推論 / llama-swap",
+          "kind": "inference",
+          "measured_at": "2026-11-08T23:08:05.563510+00:00",
+          "pingLatencyMs": 22.1,
+          "online": true,
+          "endpoint": "http://100.86.91.70:47832",
+          "models": [
+            {
+              "id": "iq3_xxs",
+              "label": "Qwen3.8-Flash-Next IQ3_XXS",
+              "gpus": [
+                1,
+                0
+              ]
+            }
+          ],
+          "throughputProbe": {
+            "ok": true,
+            "wallSeconds": 2.89,
+            "tokens": 55,
+            "measured_at": "2026-11-08T23:08:08.512942+00:00",
+            "timeToFirstTokenSeconds": 1.65,
+            "decodeTokensPerSecond": 43.58,
+            "overallTokensPerSecond": 19.06
+          },
+          "metricsEndpoint": {
+            "available": false,
+            "note": "HTTPError: HTTP Error 404: Not Found"
+          }
+        },
+        {
+          "id": "bc250-1",
+          "role": "Phi-4 14B (llama.cpp)",
+          "kind": "inference",
+          "measured_at": "2026-11-08T23:08:10.136331+00:00",
+          "pingLatencyMs": 1044.6,
+          "online": true,
+          "endpoint": "http://100.79.26.62:8080",
+          "models": [
+            {
+              "id": "/home/bc250/models/Mistral-Nemo-Instruct-2407-Q4_K_M.gguf",
+              "label": null,
+              "gpus": null
+            }
+          ],
+          "throughputProbe": {
+            "ok": true,
+            "wallSeconds": 31.42,
+            "tokens": 140,
+            "measured_at": "2026-11-08T23:08:42.682169+00:00",
+            "timeToFirstTokenSeconds": 0.3,
+            "decodeTokensPerSecond": 4.47,
+            "overallTokensPerSecond": 4.46
+          },
+          "metricsEndpoint": {
+            "available": false,
+            "note": "HTTPError: HTTP Error 501: Not Implemented"
+          }
+        },
+        {
           "id": "NAS (Asustor) HUD",
           "role": "運用 HUD / wallet.db ホスト",
           "kind": "nas",
-          "measured_at": "2026-11-08T22:00:45.137631+00:00",
+          "measured_at": "2026-11-08T23:08:46.500967+00:00",
           "online": true,
           "status": {
             "pending_approval": 12,
@@ -349,7 +410,7 @@
             "archived": 144,
             "trash": 16,
             "duplicate_reappearing": 0,
-            "server_time": "2026-11-09 07:00:44",
+            "server_time": "2026-11-09 08:08:45",
             "rev": "2026-11-08a",
             "root_dir": "/app"
           },
@@ -360,7 +421,7 @@
           "id": "CoreStation NAS サーバー (8088)",
           "role": "server.py 常駐（巡回・data_sync・live_blocks ワーカー）",
           "kind": "nas_service",
-          "measured_at": "2026-11-08T22:00:47.885024+00:00",
+          "measured_at": "2026-11-08T23:08:49.199203+00:00",
           "online": false,
           "status": null,
           "error": "URLError: <urlopen error [Errno 61] Connection refused>",
@@ -371,14 +432,14 @@
           "id": "X600 (採掘リグ)",
           "role": "LAN IP 未確定 — 身元を特定できるまで測定しない",
           "kind": "rig",
-          "measured_at": "2026-11-08T22:00:48.254822+00:00",
+          "measured_at": "2026-11-08T23:09:18.037965+00:00",
           "identityStatus": "未確定",
           "identityEvidence": null,
           "identitySource": null,
           "lanIP": null,
           "lanScan": {
-            "measuredAt": "2026-11-08T16:32:29.936602+00:00",
-            "aliveCount": 40,
+            "measuredAt": "2026-11-08T23:09:17.880834+00:00",
+            "aliveCount": 38,
             "error": null
           },
           "windowsCandidates": [
@@ -439,9 +500,9 @@
         }
       },
       "lanIdentities": {
-        "measuredAt": "2026-11-08T16:32:29.936602+00:00",
+        "measuredAt": "2026-11-08T23:09:17.880834+00:00",
         "subnet": "192.168.2.0/24",
-        "aliveCount": 40,
+        "aliveCount": 38,
         "hosts": [
           {
             "ip": "192.168.2.1",
@@ -538,17 +599,6 @@
             "tailnetName": null
           },
           {
-            "ip": "192.168.2.109",
-            "pingMs": null,
-            "openPorts": [
-              80
-            ],
-            "identity": "404 Not Found",
-            "identitySource": "http:80 title",
-            "sshBanner": null,
-            "tailnetName": null
-          },
-          {
             "ip": "192.168.2.11",
             "pingMs": null,
             "openPorts": [
@@ -558,6 +608,15 @@
             "identitySource": null,
             "sshBanner": null,
             "tailnetName": "z790-al"
+          },
+          {
+            "ip": "192.168.2.112",
+            "pingMs": null,
+            "openPorts": [],
+            "identity": null,
+            "identitySource": null,
+            "sshBanner": null,
+            "tailnetName": null
           },
           {
             "ip": "192.168.2.114",
@@ -573,9 +632,7 @@
           {
             "ip": "192.168.2.121",
             "pingMs": null,
-            "openPorts": [
-              80
-            ],
+            "openPorts": [],
             "identity": null,
             "identitySource": null,
             "sshBanner": null,
@@ -584,7 +641,9 @@
           {
             "ip": "192.168.2.122",
             "pingMs": null,
-            "openPorts": [],
+            "openPorts": [
+              80
+            ],
             "identity": null,
             "identitySource": null,
             "sshBanner": null,
@@ -627,9 +686,7 @@
             "pingMs": null,
             "openPorts": [
               80,
-              139,
               443,
-              445,
               631
             ],
             "identity": null,
@@ -687,17 +744,6 @@
           {
             "ip": "192.168.2.146",
             "pingMs": null,
-            "openPorts": [
-              80
-            ],
-            "identity": null,
-            "identitySource": null,
-            "sshBanner": null,
-            "tailnetName": null
-          },
-          {
-            "ip": "192.168.2.147",
-            "pingMs": null,
             "openPorts": [],
             "identity": null,
             "identitySource": null,
@@ -705,7 +751,7 @@
             "tailnetName": null
           },
           {
-            "ip": "192.168.2.150",
+            "ip": "192.168.2.147",
             "pingMs": null,
             "openPorts": [],
             "identity": null,
@@ -734,9 +780,7 @@
           {
             "ip": "192.168.2.154",
             "pingMs": null,
-            "openPorts": [
-              80
-            ],
+            "openPorts": [],
             "identity": null,
             "identitySource": null,
             "sshBanner": null,
@@ -746,12 +790,13 @@
             "ip": "192.168.2.155",
             "pingMs": null,
             "openPorts": [
-              22
+              8080,
+              9090
             ],
-            "identity": "SSH-2.0-OpenSSH_10.6",
-            "identitySource": "ssh banner",
-            "sshBanner": "SSH-2.0-OpenSSH_10.6",
-            "tailnetName": null
+            "identity": null,
+            "identitySource": null,
+            "sshBanner": null,
+            "tailnetName": "bc250-1"
           },
           {
             "ip": "192.168.2.156",
@@ -764,15 +809,6 @@
             "identity": "ATOMCam Hack Setup",
             "identitySource": "http:80 title",
             "sshBanner": "SSH-2.0-OpenSSH_7.1",
-            "tailnetName": null
-          },
-          {
-            "ip": "192.168.2.157",
-            "pingMs": null,
-            "openPorts": [],
-            "identity": null,
-            "identitySource": null,
-            "sshBanner": null,
             "tailnetName": null
           },
           {
@@ -872,20 +908,20 @@
     }
   },
   "tls": {
-    "note": "unverified(requested)",
-    "measured_at": "2026-11-08T22:00:55.663630+00:00"
+    "note": "verified:/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/certifi/cacert.pem",
+    "measured_at": "2026-11-08T23:09:18.776893+00:00"
   },
   "staleness": {
     "articles_newest_age_days": null,
-    "archive_newest_date_age_days": 0.92,
-    "watcher_last_run_age_days": 1.0,
+    "archive_newest_date_age_days": -0.04,
+    "watcher_last_run_age_days": 0.05,
     "db_last_sync_age_days": null,
     "db_file_age_days": null,
-    "last_payout_age_minutes": 3284
+    "last_payout_age_minutes": 3351
   },
   "deployGate": {
-    "minIntervalMin": 120,
-    "deployFlag": false
+    "minIntervalMin": 90,
+    "deployFlag": true
   },
-  "signature": "aa93156ec72a3bd8"
+  "signature": "4a9d8b79f50120e6"
 }
