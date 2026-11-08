@@ -1230,6 +1230,9 @@
 
       if (explorerRes && explorerRes.state && Array.isArray(explorerRes.data) && explorerRes.data.length > 0) {
         state.recentBlocks = explorerRes.data;
+        state.recentBlocksError = null;
+      } else if (explorerRes && explorerRes.error) {
+        state.recentBlocksError = explorerRes.error;
       }
 
       // Re-render components
@@ -2129,7 +2132,7 @@
     if (netHr) netHr.textContent = stats.totalHashrate || "未取得";
     const netHrNote = document.getElementById("netHashrateNote");
     if (netHrNote && !stats.totalHashrate) {
-      netHrNote.textContent = "上流API (catchthatrabbit / network-health) が 522・証明書失効で応答せず";
+      netHrNote.textContent = "Core 公式 BlockBook (blockindex.net) は全網 H/s とマイナー数を返さないため未取得";
     }
 
     const netMiners = document.getElementById("netActiveMiners");
@@ -2142,12 +2145,14 @@
 
     const netTotalSupply = document.getElementById("netTotalSupply");
     if (netTotalSupply) {
-      netTotalSupply.textContent = `${comma3(estimatedTotalSupply)} XCB`;
+      netTotalSupply.textContent = estimatedTotalSupply ? `${comma3(estimatedTotalSupply)} XCB（推算）` : "未取得";
     }
 
     const netCircSupply = document.getElementById("netCirculatingSupply");
     if (netCircSupply) {
-      netCircSupply.textContent = `${comma3(estimatedCircSupply)} XCB`;
+      netCircSupply.textContent = estimatedCircSupply
+        ? `${comma3(estimatedCircSupply)} XCB（推算）`
+        : "未取得";
     }
 
     const netDayMined = document.getElementById("netDayMined");
@@ -2167,12 +2172,13 @@
 
     const blocks = state.recentBlocks || [];
     if (blocks.length === 0) {
+      const reason = state.recentBlocksError || "blockindex から実測ブロック未取得";
       el.explorerBlocksBody.innerHTML = `
         <tr>
           <td colspan="5" style="text-align: center; padding: 28px; color: #888;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-              <span class="spin">🔄</span>
-              <span>最新ブロックデータを照会中...</span>
+              <span>⚠️</span>
+              <span>実測ブロック未取得 — ${reason}</span>
             </div>
           </td>
         </tr>
@@ -2182,42 +2188,47 @@
         if (res && res.state && Array.isArray(res.data) && res.data.length > 0) {
           state.recentBlocks = res.data;
           renderExplorerView();
+        } else if (res && res.error) {
+          state.recentBlocksError = res.error;
         }
       }).catch(() => {});
       return;
     }
 
     el.explorerBlocksBody.innerHTML = blocks.map(b => {
-      const isPool = (b.miner || "").toLowerCase().includes("catchthatrabbit");
-      const minerDisplay = isPool 
-        ? "CatchThatRabbit Pool" 
-        : (b.miner.length > 24 ? b.miner.substring(0, 14) + "..." + b.miner.substring(b.miner.length - 8) : b.miner);
-      const minerLink = isPool 
-        ? "https://catchthatrabbit.com" 
-        : `https://blockindex.net/address/${b.miner}`;
+      const miner = b.miner || null;
+      const isPool = String(miner || "").toLowerCase().includes("catchthatrabbit");
+      const minerDisplay = miner
+        ? (isPool ? "CatchThatRabbit Pool" : (miner.length > 24 ? miner.substring(0, 14) + "..." + miner.substring(miner.length - 8) : miner))
+        : "未取得";
+      const minerCell = miner
+        ? `<a href="${isPool ? "https://catchthatrabbit.com" : `https://blockindex.net/address/${miner}`}" target="_blank" rel="noopener noreferrer" class="font-mono" style="font-size: 0.88rem; color: #334155; text-decoration: none;" title="${miner}">${minerDisplay}</a>${isPool ? '<span style="font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 600;">CTR Pool</span>' : ''}`
+        : `<span style="font-size: 0.85rem; color: #94a3b8;" title="Core BlockBook は採掘者情報を返しません">未取得（Core API が miner を返さない）</span>`;
+      const ourTxCount = Number.isFinite(b.ourTxCount) ? b.ourTxCount : null;
+      const txCell = ourTxCount !== null
+        ? `<span title="このウォレットの取引数（Core API は取引量総数を返さない）">${ourTxCount} 件 (自ウォレット)</span>`
+        : '<span style="color: #94a3b8;" title="Core BlockBook は取引数を返しません">未取得</span>';
 
       return `
         <tr>
           <td style="text-align: center;">
-            <a href="https://blockindex.net/block/${b.block_number}" target="_blank" rel="noopener noreferrer" class="font-mono" style="font-weight: 700; color: #0284c7; text-decoration: none;" title="Block #${b.block_number} (${b.block_hash || ''})">
+            <a href="https://blockindex.net/block/${b.block_number}" target="_blank" rel="noopener noreferrer" class="font-mono" style="font-weight: 700; color: #0284c7; text-decoration: none;" title="Block #${b.block_number} (${b.block_hash || 'hash 未取得'})">
               #${isNaN(Number(b.block_number)) ? b.block_number : Number(b.block_number).toLocaleString()}
             </a>
+            ${b.block_hash ? '' : '<div style="font-size:11px;color:#94a3b8;">hash 未取得</div>'}
           </td>
           <td style="text-align: center;">
             <span style="display: inline-block; padding: 2px 8px; background: #f1f5f9; color: #475569; border-radius: 4px; font-size: 0.85rem; font-weight: 500;">
-              ${b.age || "数秒前"}
+              ${b.age || "未取得"}
             </span>
           </td>
           <td>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <a href="${minerLink}" target="_blank" rel="noopener noreferrer" class="font-mono" style="font-size: 0.88rem; color: #334155; text-decoration: none;" title="${b.miner}">
-                ${minerDisplay}
-              </a>
-              ${isPool ? '<span style="font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 600;">CTR Pool</span>' : ''}
+              ${minerCell}
             </div>
           </td>
-          <td style="text-align: center; font-weight: 600; color: #334155;">${b.tx_count || 0}</td>
-          <td style="text-align: right; font-weight: 600; color: #16a34a;">${b.reward || "1.65 XCB"}</td>
+          <td style="text-align: center; font-weight: 600; color: #334155;">${txCell}</td>
+          <td style="text-align: right; font-weight: 600; color: #16a34a;">${b.reward || "未取得"}</td>
         </tr>
       `;
     }).join("");
