@@ -43,6 +43,9 @@ async function readLiveState(context) {
       const json = await res.json();
       const backend = json.backend || {};
       const blockbook = json.blockbook || {};
+      // collector の実測（このウォレットの承認実績・鮮度）は live 取得が成功しても併記する（架空値ではなく実測の併記）
+      const stCol = await livePromise;
+      const colData = (stCol && stCol.chain && stCol.chain.data) || {};
       return new Response(JSON.stringify({
         state: true,
         data: {
@@ -53,7 +56,14 @@ async function readLiveState(context) {
           inSync: blockbook.inSync,
           coin: blockbook.coin,
           measuredAt: new Date().toISOString(),
-          source: "blockindex.net/api/v2 (live)"
+          source: "blockindex.net/api/v2 (live)",
+          freshness: colData.freshness || null,
+          ownTxIntervalMeasuredMin: colData.ownTxIntervalMeasuredMin ?? null,
+          lastPayoutAtJst: colData.lastPayoutAtJst ?? null,
+          payoutIntervalMeasuredH: colData.payoutIntervalMeasuredH ?? null,
+          payoutGapNowH: colData.payoutGapNowH ?? null,
+          blocksFound24hEstimate: colData.blocksFound24hEstimate ?? null,
+          walletBalanceXcb: colData.walletBalanceXcb ?? null
         }
       }), {
         status: 200,
@@ -81,7 +91,15 @@ async function readLiveState(context) {
       lastBlockTime: ch.lastBlockTime,
       measuredAt: st.chain.measured_at,
       staleMinutes: Math.round((Date.now() - new Date(st.chain.measured_at).getTime()) / 60000),
-      source: "data/live_state.json (last measured)"
+      source: "data/live_state.json (last measured)",
+      networkStatus: "snapshot_only",
+      freshness: ch.freshness || null,
+      ownTxIntervalMeasuredMin: ch.ownTxIntervalMeasuredMin ?? null,
+      lastPayoutAtJst: ch.lastPayoutAtJst ?? null,
+      payoutIntervalMeasuredH: ch.payoutIntervalMeasuredH ?? null,
+      payoutGapNowH: ch.payoutGapNowH ?? null,
+      blocksFound24hEstimate: ch.blocksFound24hEstimate ?? null,
+      walletBalanceXcb: ch.walletBalanceXcb ?? null
     } : null
   }), {
     status: 200,

@@ -272,6 +272,50 @@ def collect_chain(wallet: str) -> dict:
     # 総供給量/流通量は blockindex が空文字を返すため、実測不能なら null（補完しない）
     supply_raw = blockbook.get("circulatingSupply") or ""
     data["circulatingSupplyRaw"] = supply_raw or None
+    data["bestBlockHash"] = backend.get("bestBlockHash") or blockbook.get("bestBlockHash") or None
+
+    # 鮮度: 「いつの実測か」を UI が出せるように経過時間で持つ（値の補完はしない）
+    last_block_age_s = None
+    if last_block_time:
+        try:
+            last_block_age_s = max(0, int((datetime.now(timezone.utc) - datetime.fromisoformat(
+                str(last_block_time).replace("Z", "+00:00"))).total_seconds()))
+        except ValueError:
+            last_block_age_s = None
+
+    def _age_label(sec):
+        if sec is None:
+            return None
+        if sec < 60:
+            return f"{sec}秒前"
+        if sec < 3600:
+            return f"{sec // 60}分前"
+        return f"{sec // 3600}時間前"
+
+    own_tx_age_min = None
+    if last_payout_at:
+        try:
+            own_tx_age_min = round((datetime.now(timezone.utc) - datetime.fromisoformat(last_payout_at)).total_seconds() / 60.0, 1)
+        except ValueError:
+            own_tx_age_min = None
+
+    def _min_label(minutes):
+        if minutes is None:
+            return None
+        if minutes < 120:
+            return f"{int(minutes)}分前"
+        if minutes < 2880:
+            return f"{minutes / 60:.1f}時間前"
+        return f"{minutes / 1440:.1f}日前"
+
+    data["freshness"] = {
+        "lastBlockAgeSeconds": last_block_age_s,
+        "lastBlockAgeLabel": _age_label(last_block_age_s),
+        "ownTxMeasuredAgoMinutes": own_tx_age_min,
+        "ownTxMeasuredAgoLabel": _min_label(own_tx_age_min),
+        "blockIntervalMeasuredAgoMinutes": own_tx_age_min,
+        "blockIntervalMeasuredAgoLabel": _min_label(own_tx_age_min),
+    }
     return {"ok": True, "source": src, "measured_at": iso_now(), "data": data}
 
 
@@ -632,13 +676,18 @@ def collect_machines() -> dict:
                     latency = round((time.perf_counter() - t0) * 1000, 1)
         except OSError:
             pass
-    nodes.append({"id": "X600 (Windows 採掘専用 PC)",
-                  "role": f"LAN {xhost} — TCP 到達性のみ実測（認証情報なし）",
-                  "kind": "rig", "measured_at": iso_now(),
-                  "online": bool(open_ports), "openPorts": open_ports, "latencyMs": latency,
-                  "hashrate": None, "temperature": None, "power": None,
-                  "error": None if open_ports else f"{xhost} の {xports} すべて応答なし（電源 OFF / 電源 ON だがサービス停止の可能性）",
-                  "note": "H/s・温度・消費電力の実測には X600 側で coreminer の出力を worker_reporter.py に流して data/machine_metrics/X600.json を書かせるか、tailnet+SSH を開放する必要がある（未取得は null のまま）。"})
+    nodes.append({
+        "id": "X600 (Windows 採掘専用 PC)",
+        "role": f"LAN {xhost} — TCP 到達性のみ実測（認証情報なし）",
+        "kind": "rig", "measured_at": iso_now(),
+        "online": bool(open_ports), "openPorts": open_ports, "latencyMs": latency,
+        "hashrate": None, "temperature": None, "power": None,
+        # プール上の worker 名はユーザー申告 (2026-11-08) + wallet.db workers 実測で照合
+        "poolWorkers": ["7950X"],
+        "workerNameSource": "ユーザー申告 2026-11-08「192.168.2.13 は X600、プール上は 7950X」"
+                           " / wallet.db workers テーブルに worker 7950X (as.catchthatrabbit.com) を実測",
+        "error": None if open_ports else f"{xhost} の {xports} すべて応答なし（電源 OFF / 電源 ON だがサービス停止の可能性）",
+        "note": "H/s・温度・消費電力の実測には X600 側で coreminer の出力を worker_reporter.py に流して data/machine_metrics/X600.json を書かせるか、tailnet+SSH を開放する必要がある（未取得は null のまま）。"})
 
     # 6) リグ側の報告（worker_reporter.py が data/machine_metrics/<host>.json に書く）
     reporters = []
@@ -654,6 +703,9 @@ def collect_machines() -> dict:
             "measured_at": iso_now(),
             "data": {"nodes": nodes, "rigReporters": reporters,
                      "rigReporterCount": len(reporters),
+                     "workerMachineAlias": {"7950X": {"machine": "X600",
+                                                      "lan": os.environ.get("X600_HOST", "192.168.2.13"),
+                                                      "source": "user-declared 2026-11-08 + wallet.db workers 実測"}},
                      "note": "採掘リグの H/s・温度・消費電力はリグ上で worker_reporter.py を実行した分だけ実測値になる（未取得の項目は null のまま）。"}}
 
 

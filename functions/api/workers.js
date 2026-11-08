@@ -37,6 +37,9 @@ export async function onRequest(context) {
   const liveData = live.ok ? (live.state || {}) : {};
   const machines = (liveData.machines && liveData.machines.data) || {};
   const chain = (liveData.chain && liveData.chain.data) || {};
+  const dbSection = (liveData.db && liveData.db.data) || {};
+  const dbWorkers = Array.isArray(dbSection.dbWorkersSnapshot) ? dbSection.dbWorkersSnapshot : [];
+  const workerMachineAlias = machines.workerMachineAlias || {};
 
   // 1) リグ報告（実測 H/s / temperature / power）
   const reporters = Array.isArray(machines.rigReporters) ? machines.rigReporters : [];
@@ -110,6 +113,9 @@ export async function onRequest(context) {
       onChainEvidence: {
         lastPayoutAtJst: chain.lastPayoutAtJst ?? null,
         lastPayoutAgeMinutes: chain.lastPayoutAgeMin ?? null,
+        payoutIntervalMeasuredH: chain.payoutIntervalMeasuredH ?? null,
+        payoutGapNowH: chain.payoutGapNowH ?? null,
+        payoutGapExceedsCadence: chain.payoutGapExceedsCadence ?? null,
         earnedXcb24h: chain.earnedXcb24h ?? null,
         earnedXcb7d: chain.earnedXcb7d ?? null,
         earnedXcb30d: chain.earnedXcb30d ?? null,
@@ -117,6 +123,28 @@ export async function onRequest(context) {
         walletBalanceXcb: chain.walletBalanceXcb ?? null
       },
       rigReporterCount: workers.filter(w => w.source === "worker_reporter").length,
+      // プール登録ワーカーのアーカイブ実測（wallet.db workers 卓）— ライブ H/s ではなく「いつのの実測か」を明示
+      poolWorkerArchive: Array.isArray(dbWorkers) ? dbWorkers.map(w => ({
+        workerName: w.worker_name ?? null,
+        pool: w.pool ?? null,
+        hr: w.hr ?? null,
+        offline: w.offline ?? null,
+        archiveUpdatedAt: w.updated_at ?? null,
+        machineAlias: workerMachineAlias[String(w.worker_name || "").trim()] || null
+      })) : [],
+      poolWorkerArchiveNote: dbWorkers.length
+        ? "wallet.db の workers 卓は最後にデータ同期できた時点の実測（ライブ値ではない）。machineAlias はユーザー申告マッピング。"
+        : "wallet.db に workers 記録が無い",
+      machineAlias: workerMachineAlias,
+      rigNodes: (Array.isArray(machines.nodes) ? machines.nodes : [])
+        .filter(n => n && (n.kind === "rig" || String(n.id || "").includes("X600")))
+        .map(n => ({
+          id: n.id || null, role: n.role || null, online: n.online ?? null,
+          openPorts: n.openPorts ?? null, latencyMs: n.latencyMs ?? null,
+          hashrate: n.hashrate ?? null, temperature: n.temperature ?? null, power: n.power ?? null,
+          poolWorkers: n.poolWorkers ?? null, workerNameSource: n.workerNameSource ?? null,
+          error: n.error ?? null, measuredAt: n.measured_at || null
+        })),
       measuredAt: (liveData.machines && liveData.machines.measured_at) || new Date().toISOString(),
       liveStateFresh: live.ok,
       note: "H/s はリグ実測（worker_reporter）またはプール API の値のみ。両方が取得できないときは hashrateMeasured=false を返す（数値は作らない）。"

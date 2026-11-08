@@ -1174,6 +1174,11 @@
 
       if (workerRes && workerRes.state && workerRes.data) {
         state.workers = Array.isArray(workerRes.data) ? workerRes.data : (workerRes.data.workers || []);
+        state.poolWorkerArchive = (workerRes.data && workerRes.data.poolWorkerArchive) || [];
+        state.machineAlias = (workerRes.data && workerRes.data.machineAlias) || {};
+        state.poolApiStatus = (workerRes.data && workerRes.data.poolApi) || null;
+        state.rigNodes = (workerRes.data && workerRes.data.rigNodes) || [];
+        state.onchainEvidence = (workerRes.data && workerRes.data.onChainEvidence) || state.onchainEvidence;
       }
 
       if (txRes && txRes.state && Array.isArray(txRes.data) && txRes.data.length > 0) {
@@ -1444,22 +1449,62 @@
     el.workersContainer.innerHTML = "";
 
     if (workers.length === 0) {
-      el.workersContainer.innerHTML = `
-        <div class="worker-empty-notice" style="padding: 24px 16px; text-align: center; color: #64748b; font-size: 0.9rem;">
-          <div style="font-size: 1.5rem; margin-bottom: 8px; color: #94a3b8;">⛏️</div>
-          <div style="font-weight: 700; font-size: 1rem; color: #475569;">リグの実測報告がありません（H/s 未取得）</div>
-          <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 6px; line-height: 1.5;">
-            プールAPI (Catch That Rabbit) とリグ報告のどちらも応答しませんでした。稼働の証拠はオンチェーン実績（着金）で表示しています。<br>
-            リグで <code>python3 scripts/worker_reporter.py --watch</code> を実行すると H/s・温度・消費電力がここに出ます。
+      const rigHtml = (state.rigNodes || []).map(n => `
+        <div style="padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-surface); margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; align-items: center;">
+            <strong style="font-size: 15px; color: var(--text-main);">${n.id || "rig"}</strong>
+            <span class="badge-${n.online ? "online" : "offline"}" style="font-size: 12px; padding: 2px 8px; border-radius: 4px; color: #fff; background: ${n.online ? "var(--success)" : "#dc2626"};">TCP ${n.online ? "到達" : "応答なし"}</span>
           </div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.6;">
+            ${(n.openPorts && n.openPorts.length) ? `open ports: ${n.openPorts.join(", ")} · ` : ""}${typeof n.latencyMs === "number" ? `latency ${n.latencyMs} ms · ` : ""}実測 ${n.measuredAt || "未取得"}<br>
+            プール上の worker 名: ${(n.poolWorkers || []).join(", ") || "未取得"}${n.workerNameSource ? ` <span style="font-size: 12px;">（${n.workerNameSource}）</span>` : ""}<br>
+            H/s・温度・消費電力: <strong style="color:#b45309;">未取得</strong>（X600 側で <code>scripts/worker_reporter.py</code> を実行、または tailnet+SSH を開放すれば実測になります）
+            ${n.error ? `<br><span style="font-size: 12px; color:#dc2626;">${n.error}</span>` : ""}
+          </div>
+        </div>`).join("");
+
+      const archiveRows = (state.poolWorkerArchive || []).map(a => `
+        <tr>
+          <td style="font-weight: 700;">${a.workerName || "未取得"}${a.machineAlias ? ` <span style="font-size:12px;color:var(--primary);">= ${a.machineAlias.machine} (${a.machineAlias.lan})</span>` : ""}</td>
+          <td style="font-size: 13px; color: var(--text-muted);">${a.pool || "未取得"}</td>
+          <td style="font-family: var(--font-mono); font-size: 13px;">${a.hr === null || a.hr === undefined ? "未取得" : `${a.hr} H/s`}</td>
+          <td style="font-size: 13px;">${Number(a.offline) === 1 ? '<span style="color:#dc2626;font-weight:700;">offline</span>' : "online"}</td>
+          <td style="font-size: 12.5px; color: var(--text-muted); font-family: var(--font-mono);">${a.archiveUpdatedAt || "未取得"}</td>
+        </tr>`).join("");
+
+      const ev = state.onchainEvidence || {};
+      const poolReason = (state.poolApiStatus && state.poolApiStatus.reason) || "プールAPI 未応答";
+
+      el.workersContainer.innerHTML = `
+        ${rigHtml}
+        ${archiveRows ? `
+        <div style="margin-top: 12px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">プール登録ワーカー（wallet.db アーカイブ実測 / ライブ値ではない）</div>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <thead><tr style="text-align: left; color: var(--text-muted); font-size: 12.5px;">
+              <th>Worker</th><th>Pool</th><th>最終 hr</th><th>状態</th><th>最終更新</th>
+            </tr></thead>
+            <tbody>${archiveRows}</tbody>
+          </table>
+          <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 6px;">プールAPI: ${poolReason}</div>
+        </div>` : ""}
+        <div style="margin-top: 12px; padding: 10px 12px; border-left: 3px solid var(--primary); background: var(--bg-surface); border-radius: 6px; font-size: 13.5px; color: var(--text-muted); line-height: 1.7;">
+          <strong style="color: var(--text-main);">オンチェーン実測（マシン実測ではなく確定実績）</strong><br>
+          最終着金: ${ev.lastPayoutAtJst || "未取得"} / 24h ${ev.earnedXcb24h ?? 0} XCB / 7d ${ev.earnedXcb7d ?? 0} XCB / 30d ${ev.earnedXcb30d ?? 0} XCB<br>
+          着金周期 実測 ${ev.payoutIntervalMeasuredH ?? "--"} 時間に対して ${ev.payoutGapNowH ?? "--"} 時間 着金なし${ev.payoutGapExceedsCadence ? " → 採掘が止まっている可能性が高い" : ""}
+        </div>
+        <div style="margin-top: 10px; font-size: 13px; color: #64748b; line-height: 1.6;">
+          リグ上で <code>python3 scripts/worker_reporter.py --watch</code> を実行すると H/s・温度・消費電力がここに実測表示されます（未取得の項目は null のまま）。
         </div>
       `;
       if (el.modalWorkersBody) {
         el.modalWorkersBody.innerHTML = `
           <div style="padding: 28px 16px; text-align: center; color: #64748b;">
-            <p style="font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; color: #334155;">稼働中のWorkerはありません (0 H/s)</p>
+            <p style="font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; color: #334155;">実測 H/s 未取得（リグ報告なし / プールAPI 522）</p>
             <p style="font-size: 0.9rem; color: #64748b; line-height: 1.6;">
-              ご自身のPCやリグから <code>coreminer</code> または <code>SRBMiner</code> を起動してプールへ接続すると、リアルタイムのハッシュレートとワーカー名が表示されます。
+              worker_reporter.py はリグの標準出力・ログファイル・systemd / process コマンドを<strong>読取り専用</strong>で読み、
+              H/s・温度・消費電力を <code>data/machine_metrics/&lt;host&gt;.json</code> に書くだけ（再起動・設定変更・権限操作はしません）。<br>
+              例: <code>python3 scripts/worker_reporter.py --watch</code>
             </p>
           </div>
         `;
@@ -2144,6 +2189,22 @@
     const netHeight = document.getElementById("netBlockHeight");
     if (netHeight && stats.blockHeight) {
       netHeight.textContent = Number(stats.blockHeight).toLocaleString();
+    }
+
+    // 生成間隔: Core はネットワークの体感ブロック間隔を API で公開していない。
+    // 出せる実測は「このウォレットがブロック承認された周期」だけなので、そう表示する。
+    const netInterval = document.getElementById("netIntervalSub");
+    if (netInterval) {
+      const fr = stats.freshness || {};
+      const ev = state.onchainEvidence || {};
+      const cadenceH = typeof ev.payoutIntervalMeasuredH === "number" ? ev.payoutIntervalMeasuredH : null;
+      if (cadenceH !== null) {
+        netInterval.textContent = `自ウォレットの承認間隔 実測 ${cadenceH} h 周期（最終 ${ev.lastPayoutAtJst || "未取得"}）`;
+      } else if (fr.lastBlockAgeLabel) {
+        netInterval.textContent = `最新ブロック ${fr.lastBlockAgeLabel}（Core は生成間隔を非公開）`;
+      } else {
+        netInterval.textContent = "未取得（Core は生成間隔を API で公開していない）";
+      }
     }
 
     const netTotalSupply = document.getElementById("netTotalSupply");
