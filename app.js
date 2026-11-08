@@ -1276,8 +1276,23 @@
     const totalRank = todayTx ? todayTx.all_rank : "-";
 
     if (el.todayMiningLabel && todayTx) {
-      el.todayMiningLabel.textContent = `本日採掘 (${todayTx.viewDateString})`;
+      const todayKey = new Date().toLocaleDateString("sv-SE"); // JST の YYYY-MM-DD
+      const isToday = (todayTx.day || "").slice(0, 10) === todayKey;
+      el.todayMiningLabel.textContent = isToday
+        ? `本日採掘 (${todayTx.viewDateString})`
+        : `最新日採掘 (${todayTx.viewDateString})`;
     }
+
+    // 表示している「直近 N 日」が実際にどの実測期間なのかを開示する（stale な行を「直近」と呼ばないため）
+    const rowDay = (r) => ((r && (r.day || "")).slice(0, 10)) || (r && r.viewDateString) || "";
+    const coveredRange = (rows) => {
+      if (!rows || rows.length === 0) return "";
+      const oldest = rowDay(rows[rows.length - 1]);
+      const newest = rowDay(rows[0]);
+      if (!oldest || !newest) return "";
+      const stale = newest !== new Date().toLocaleDateString("sv-SE");
+      return ` / 対象 ${oldest} 〜 ${newest}${stale ? " (最新データまで)" : ""}`;
+    };
     if (el.todayAmountXcb) {
       // Clean 4-decimal format to prevent card overflow, with 9-decimal full precision in tooltip
       el.todayAmountXcb.textContent = formatNumber(todayXcb, 4);
@@ -1303,14 +1318,14 @@
     const sum7 = last7.reduce((acc, cur) => acc + (cur.day_amount || 0), 0);
     const avg7 = last7.length > 0 ? sum7 / last7.length : 0;
     if (el.sevenDaysTotal) el.sevenDaysTotal.textContent = `${formatNumber(sum7, 2)} XCB`;
-    if (el.sevenDaysAvg) el.sevenDaysAvg.textContent = `(日均 ${formatNumber(avg7, 2)})`;
+    if (el.sevenDaysAvg) el.sevenDaysAvg.textContent = `(日均 ${formatNumber(avg7, 2)})${coveredRange(last7)}`;
 
     // 30 Days (Clean 2-decimal format)
     const last30 = txs.slice(0, 30);
     const sum30 = last30.reduce((acc, cur) => acc + (cur.day_amount || 0), 0);
     const avg30 = last30.length > 0 ? sum30 / last30.length : 0;
     if (el.thirtyDaysTotal) el.thirtyDaysTotal.textContent = `${formatNumber(sum30, 2)} XCB`;
-    if (el.thirtyDaysAvg) el.thirtyDaysAvg.textContent = `(日均 ${formatNumber(avg30, 2)})`;
+    if (el.thirtyDaysAvg) el.thirtyDaysAvg.textContent = `(日均 ${formatNumber(avg30, 2)})${coveredRange(last30)}`;
   }
 
   // --- Workers Rendering (100% Real Live Data, Zero Dummy Data) ---
