@@ -55,6 +55,13 @@ python3 scripts/dashboard_live.py --deploy   # ダッシュボードに反映
 ```
 `dashboard_live.py` は `data/machine_metrics/*.json` を読み、X600 ノードの `hashrate` / `temperature` / `power` を**実測分だけ**埋めます（無い項目は null のまま。0 や推算は入れません）。
 
+### 代替経路（Tailscale 不要・ACL 変更不要）
+X600 が NAS 共有に書き込めるなら、tailnet を使わず共有へ直接メトリクスを出せます:
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\corestation\setup_x600.ps1 -ShareOutFile "\\192.168.2.100\Docker\CoreGeeksEXp\data\machine_metrics\X600.json"
+```
+注意: 既定の定期実行は **SYSTEM アカウント**で動くため、認証の要る SMB 共有には書けません。共有に書く場合は `-ShareOutFile` を使う前にその共有がゲスト書き込み可か確認するか、ログオンユーザーで実行してください（その場合は `schtasks /ru ""` ではなくログオンユーザー登録）。
+
 ## worker_reporter.ps1 が測れるもの / 測れないもの
 | 測れる（実測） | 方法 |
 |---|---|
