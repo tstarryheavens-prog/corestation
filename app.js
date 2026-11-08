@@ -1018,8 +1018,14 @@
           const json = await res.json();
           if (json && json.state && json.data) {
             const list = Array.isArray(json.data) ? json.data : (json.data.workers || []);
-            if (list.length > 0) {
-              return { state: true, data: { workers: list } };
+            // worker 一覧が空でも、リグノード実測（TCP 到達性）やプール登録ワーカーのアーカイブ実測が
+            // 返っているならそれを捨てない（捨てると UI が「履歴」しか出さなくなる）
+            const hasMeasuredMeta = !Array.isArray(json.data) && (
+              (Array.isArray(json.data.rigNodes) && json.data.rigNodes.length > 0) ||
+              (Array.isArray(json.data.poolWorkerArchive) && json.data.poolWorkerArchive.length > 0)
+            );
+            if (list.length > 0 || hasMeasuredMeta) {
+              return { state: true, data: json.data };
             }
           }
         }
@@ -2885,8 +2891,13 @@
         try {
           // 1. Fetch live worker status via Functions / API
           const wRes = await fetchWorkers(state.walletAddress);
-          if (wRes && wRes.data && Array.isArray(wRes.data.workers)) {
-            state.workers = wRes.data.workers;
+          if (wRes && wRes.data) {
+            if (Array.isArray(wRes.data.workers)) state.workers = wRes.data.workers;
+            state.poolWorkerArchive = wRes.data.poolWorkerArchive || state.poolWorkerArchive;
+            state.machineAlias = wRes.data.machineAlias || state.machineAlias;
+            state.rigNodes = wRes.data.rigNodes || state.rigNodes;
+            state.poolApiStatus = wRes.data.poolApi || state.poolApiStatus;
+            state.onchainEvidence = wRes.data.onChainEvidence || state.onchainEvidence;
           }
 
           // 2. Also refresh live on-chain transactions and integrate
