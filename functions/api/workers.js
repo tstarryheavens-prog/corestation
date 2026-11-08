@@ -144,6 +144,7 @@ export async function onRequest(context) {
           hashrate: n.hashrate ?? null, temperature: n.temperature ?? null, power: n.power ?? null,
           poolWorkers: n.poolWorkers ?? null, workerNameSource: n.workerNameSource ?? null,
           tailnet: n.tailnet ?? null, tailnetError: n.tailnetError ?? null,
+          mac: n.mac ?? null, wolReady: n.wolReady ?? false,
           hasRigReport: n.hasRigReport ?? false,
           minerWorkerNames: n.minerWorkerNames ?? null,
           minerProcessCount: n.minerProcessCount ?? null,

@@ -72,4 +72,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\corestation\setup_x600.ps
 | stratum セッション数（プールに張っている TCP） | `Get-NetTCPConnection` |
 | プールの名前解決と `:8008` の TCP OPEN | `Resolve-DnsName` + TcpClient |
 | 稼働時間 | `Win32_OperatingSystem.LastBootUpTime` |
+| CPU / マザーボードの温度（WMI thermal zone） | `MSAcpi_ThermalZoneTemperature` を `/10 - 273.15` で変換（この thermal zone を持たないマシンでは null） |
 | 測れない | AMD GPU の温度・電力（この方法では取れない）、CPU パッケージ電力（WMI thermal zone が無いマシンでは null）。正確に測るなら LibreHardwareMonitor / HWiNFO 側が必要 |
+
+## 電源が入っていない時の起動（WoL）
+- collector は毎巡回で `arp -n 192.168.2.13` を読み、MAC が取れた瞬間 `data/x600_mac.txt` に控えて `live_state.json` の X600 ノードに `mac` / `wolReady` として出す（取れていない間は `mac: null`、カードには `WoL: MAC 未取得`）。
+- 控えた後は `bash scripts/x600_wake.sh --wake`（magic packet を 192.168.2.255:7 / :9 と 255.255.255.255 へ送信、最大 60 秒応答を待つ）。BIOS / OS 側で Wake on LAN が有効なことが条件。現在は ARP に出ないため MAC 未取得 → **まず一度手で電源を入れる**必要がある。
+

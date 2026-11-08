@@ -660,6 +660,32 @@ def tailnet_ping_latency(ip: str):
     return round(max(vals), 1) if vals else None
 
 
+def arp_mac(host: str, cache_file: str = ""):
+    """ARP キャッシュから MAC を実測する（生存時にだけ取れる）。取れたら cache に控え、
+    取れない時は過去の cache を返す（WoL の手がかりとして使う・無ければ None）。"""
+    rc, out, err = _subprocess_run(["arp", "-n", host], 8)
+    mac = None
+    for line in (out or "").splitlines():
+        for col in line.split():
+            if re.fullmatch(r"([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}", col):
+                mac = col
+                break
+        if mac:
+            break
+    if mac and cache_file:
+        try:
+            with open(cache_file, "w", encoding="utf-8") as fh:
+                fh.write(mac + "\n")
+        except OSError:
+            pass
+    if not mac and cache_file and os.path.exists(cache_file):
+        try:
+            mac = (open(cache_file, encoding="utf-8").read().strip() or None)
+        except OSError:
+            mac = None
+    return mac
+
+
 def rig_report_metrics(rep: dict) -> dict:
     """worker_reporter (.py / .ps1) の JSON から H/s・温度・電力を実測抽出（無いものは None）。"""
     if not isinstance(rep, dict):
@@ -788,11 +814,14 @@ def collect_machines() -> dict:
     else:
         tailnet_error = tail.get("error")
 
+    xmac = arp_mac(xhost, os.path.join(os.path.dirname(OUT_FILE), "x600_mac.txt"))
     nodes.append({
         "id": "X600 (Windows 採掘専用 PC)",
         "role": f"LAN {xhost} — TCP 到達性のみ実測（認証情報なし）",
         "kind": "rig", "measured_at": iso_now(),
         "online": bool(open_ports), "openPorts": open_ports, "latencyMs": latency,
+        "mac": xmac,
+        "wolReady": bool(xmac),
         "hashrate": None, "temperature": None, "power": None,
         # プール上の worker 名はユーザー申告 (2026-11-08) + wallet.db workers 実測で照合
         "poolWorkers": ["7950X"],
