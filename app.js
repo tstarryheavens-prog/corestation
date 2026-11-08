@@ -2134,6 +2134,9 @@
     if (netHrNote && !stats.totalHashrate) {
       netHrNote.textContent = "Core 公式 BlockBook (blockindex.net) は全網 H/s とマイナー数を返さないため未取得";
     }
+    if (netHrNote && stats.networkStatus === "snapshot_only") {
+      netHrNote.textContent = `blockindex ライブ未取得 — collector 実測スナップショット (${stats.measuredAt || "時刻不明"}) を表示`;
+    }
 
     const netMiners = document.getElementById("netActiveMiners");
     if (netMiners) netMiners.textContent = stats.activeMiners ? stats.activeMiners.toLocaleString() : "未取得";
