@@ -385,7 +385,11 @@
         lastPayoutAtJst: chainRes.data.lastPayoutAtJst,
         lastPayoutAgeMin: chainRes.data.lastPayoutAgeMin,
         balanceXcb: chainRes.data.walletBalanceXcb,
-        blocksFound24hEstimate: chainRes.data.blocksFound24hEstimate
+        blocksFound24hEstimate: chainRes.data.blocksFound24hEstimate,
+        payoutIntervalMeasuredH: chainRes.data.payoutIntervalMeasuredH,
+        payoutGapNowH: chainRes.data.payoutGapNowH,
+        payoutGapExceedsCadence: chainRes.data.payoutGapExceedsCadence,
+        earnedWindowLabel: chainRes.data.earnedWindowLabel
       };
       if (typeof chainRes.data.walletBalanceXcb === "number" && chainRes.data.walletBalanceXcb > 0) {
         state.liveBalanceXcb = chainRes.data.walletBalanceXcb;
@@ -1348,7 +1352,10 @@
         el.currentHashrate.textContent = "実測未取得";
         el.currentHashrate.style.fontSize = "20px";
         el.currentHashrate.title = evidence.lastPayoutAtJst
-          ? `リグからの H/s 報告がない。オンチェーン実績: 最終着金 ${evidence.lastPayoutAtJst} / 24h ${evidence.earnedXcb24h || 0} XCB`
+          ? `リグからの H/s 報告がない。オンチェーン実績: 最終着金 ${evidence.lastPayoutAtJst} / 直近24h ${evidence.earnedXcb24h || 0} XCB` +
+            (typeof evidence.payoutGapNowH === "number"
+              ? ` / 着金周期 実測 ${evidence.payoutIntervalMeasuredH ?? "--"} 時間に対し ${evidence.payoutGapNowH} 時間 着金なし`
+              : "")
           : "リグで scripts/worker_reporter.py を実行すると実測 H/s が出ます";
       }
     }
@@ -2755,7 +2762,7 @@
           const ev = state.onchainEvidence || {};
           showToast(hrTotal > 0
             ? `⚡ 同期完了: ${ws.filter(w => !w.offline).length}/${ws.length} 台 実測 ${hrTotal.toLocaleString()} H/s`
-            : `⚡ 同期完了: リグの H/s 実測なし（最終着金 ${ev.lastPayoutAtJst || "未取得"} / 24h ${ev.earnedXcb24h !== undefined ? ev.earnedXcb24h : "--"} XCB）`);
+            : `⚡ 同期完了: リグの H/s 実測なし（最終着金 ${ev.lastPayoutAtJst || "未取得"} / 直近24h ${ev.earnedXcb24h !== undefined ? ev.earnedXcb24h : "--"} XCB${typeof ev.payoutGapNowH === "number" ? ` / 着金周期 ${ev.payoutIntervalMeasuredH ?? "--"} 時間に対し ${ev.payoutGapNowH} 時間 着金なし` : ""}）`);
         } catch (e) {
           console.warn("Worker refresh fallback:", e);
           renderWorkers();

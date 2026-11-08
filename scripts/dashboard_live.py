@@ -26,6 +26,7 @@ import os
 import platform
 import re
 import socket
+import ssl
 import sqlite3
 import subprocess
 import sys
@@ -137,14 +138,43 @@ def collect_chain(wallet: str) -> dict:
     difficulty = backend.get("difficulty")
     last_block_time = blockbook.get("lastBlockTime")
 
-    addr_src = f"{BLOCKINDEX}/api/v2/address/{wallet}?details=txs&pageSize=100"
-    a, aerr = http_json(addr_src, timeout=30)
+    addr_base = f"{BLOCKINDEX}/api/v2/address/{wallet}?details=txs&pageSize=100"
+    a, aerr = None, None
+    merged_txs, seen_txids, pages_fetched = [], set(), 0
+    cutoff_ts = datetime.now(timezone.utc).timestamp() - 31 * 86400
+    for page_idx in range(1, 7):
+        page_src = addr_base + (f"&page={page_idx}" if page_idx > 1 else "")
+        one, one_err = http_json(page_src, timeout=30)
+        if not one:
+            aerr = aerr or one_err
+            break
+        if a is None:
+            a = one
+        page_txs = one.get("transactions") or (one.get("address") or {}).get("transactions") or []
+        fresh = 0
+        for t in page_txs:
+            key = t.get("txid") or f"anon{len(merged_txs)}"
+            if key in seen_txids:
+                continue
+            seen_txids.add(key)
+            merged_txs.append(t)
+            fresh += 1
+        if fresh == 0:
+            break
+        pages_fetched += 1
+        page_times = [t.get("blockTime") for t in page_txs if t.get("blockTime")]
+        if not page_times or min(page_times) < cutoff_ts:
+            break
+    if a is not None:
+        a["transactions"] = merged_txs
     income_days = {}
     balance_xcb = None
     last_payout_at = None
     tx_count = 0
     block_interval_s = None
 
+    income_events = []
+    oldest_tx_ts = None
     if a:
         raw_balance = a.get("balance")
         balance_xcb = None
@@ -172,6 +202,7 @@ def collect_chain(wallet: str) -> dict:
             tx_count += 1
             day = datetime.fromtimestamp(bt, timezone.utc).astimezone(JST).strftime("%Y-%m-%d")
             income_days[day] = income_days.get(day, 0.0) + inbound
+            income_events.append((bt, inbound))
             stamp = datetime.fromtimestamp(bt, timezone.utc).isoformat()
             if last_payout_at is None or stamp > last_payout_at:
                 last_payout_at = stamp
@@ -180,12 +211,29 @@ def collect_chain(wallet: str) -> dict:
             # 注意: これはこのウォレットの取引間隔の実測であって、ネットワークのブロック生成間隔ではない
             block_interval_s = round(span / (len(times) - 1) / 60.0, 2)  # 分
 
-    total_24h = sum(v for k, v in income_days.items()
-                    if k >= (datetime.now(JST) - timedelta(days=1)).strftime("%Y-%m-%d"))
-    total_7d = sum(v for k, v in income_days.items()
-                   if k >= (datetime.now(JST) - timedelta(days=7)).strftime("%Y-%m-%d"))
-    total_30d = sum(v for k, v in income_days.items()
-                    if k >= (datetime.now(JST) - timedelta(days=30)).strftime("%Y-%m-%d"))
+        # ローリング実測窓（epoch 秒基準）。カレンダー日跨ぎ集計ではない
+    now_ts = datetime.now(timezone.utc).timestamp()
+    total_24h = sum(v for ts, v in income_events if now_ts - ts <= 86400)
+    total_7d = sum(v for ts, v in income_events if now_ts - ts <= 7 * 86400)
+    total_30d = sum(v for ts, v in income_events if now_ts - ts <= 30 * 86400)
+    if income_events:
+        oldest_tx_ts = min(ts for ts, _ in income_events)
+
+    # 着金インターバルの実測（プール支払周期）と、いま着金が止まっている時間の比較
+    payout_ts_sorted = sorted((ts for ts, _ in income_events), reverse=True)
+    payout_gaps = [(payout_ts_sorted[k - 1] - payout_ts_sorted[k]) / 3600.0
+                   for k in range(1, min(len(payout_ts_sorted), 25))]
+    payout_gap_median_h = None
+    if payout_gaps:
+        gs = sorted(payout_gaps)
+        n = len(gs)
+        payout_gap_median_h = round(gs[n // 2] if n % 2 else (gs[n // 2 - 1] + gs[n // 2]) / 2.0, 2)
+    payout_gap_now_h = (datetime.now(timezone.utc) - datetime.fromisoformat(last_payout_at)).total_seconds() / 3600.0 \
+        if last_payout_at else None
+    payout_gap_exceeds_cadence = (
+        payout_gap_now_h is not None and payout_gap_median_h is not None
+        and payout_gap_now_h > payout_gap_median_h * 2
+    )
 
     # 自マシンの採掘貢献の「実測」代理指標: ブロック承認数 / 日（着金実績から算出）
     blocks_24h = round(total_24h / BLOCK_REWARD_XCB, 3) if total_24h else 0.0
@@ -202,6 +250,13 @@ def collect_chain(wallet: str) -> dict:
         "ownTxIntervalMeasuredMin": block_interval_s,  # このウォレットの実取引間隔（分）。網絡値ではない
         "walletBalanceXcb": round(balance_xcb, 6) if balance_xcb is not None else None,
         "payoutTxCount": tx_count,
+        "txPagesFetched": pages_fetched,
+        "txWindowOldestAtJst": (datetime.fromtimestamp(oldest_tx_ts, JST).strftime("%Y-%m-%d %H:%M JST")
+                                if oldest_tx_ts else None),
+        "earnedWindowLabel": "ローリング実測 (24h/7d/30d, epoch 基準)",
+        "payoutIntervalMeasuredH": payout_gap_median_h,
+        "payoutGapNowH": round(payout_gap_now_h, 2) if payout_gap_now_h is not None else None,
+        "payoutGapExceedsCadence": payout_gap_exceeds_cadence,
         "lastPayoutAtJst": (datetime.fromtimestamp(
             datetime.fromisoformat(last_payout_at).timestamp(), JST).strftime("%Y-%m-%d %H:%M JST")
             if last_payout_at else None),
@@ -277,6 +332,11 @@ def collect_db() -> dict:
             "minDate": rng.get("a"),
             "maxDate": rng.get("b"),
             "lastTxAtJst": datetime.fromtimestamp(txr["b"], JST).strftime("%Y-%m-%d %H:%M JST") if txr.get("b") else None,
+            "dbDataAgeDays": round((time.time() - (txr.get("b") or 0)) / 86400, 1) if txr.get("b") else None,
+            "dbStaleNote": (
+                None if not txr.get("b") or (time.time() - txr["b"]) <= 2 * 86400
+                else f"DB アーカイブが {round((time.time() - txr['b']) / 86400, 1)} 日前の時点で停止中（api2.core-geeks.com が unreachable）。表示される DB 値はその時点までの実測"
+            ),
             "lastSyncAtJst": datetime.fromtimestamp(last_sync_ts, JST).strftime("%Y-%m-%d %H:%M JST") if last_sync_ts else None,
             "latestRates": latest_rates[:12],
             "dbWorkersSnapshot": db_workers,
