@@ -1341,7 +1341,9 @@
     let workers = state.workers || [];
 
     // 実測（worker_reporter / プールAPI）が取れないときだけ、焼き込み履歴を「履歴」として併記する
-    if (workers.length === 0 && Array.isArray(state.bootstrapWorkers) && state.bootstrapWorkers.length > 0) {
+    // （wallet.db の workers アーカイブ実測が出ている場合はそちらを出すので、焼き込み履歴は出さない）
+    if (workers.length === 0 && Array.isArray(state.bootstrapWorkers) && state.bootstrapWorkers.length > 0
+        && (state.poolWorkerArchive || []).length === 0) {
       const note = {
         workerName: "最終スナップショット (initial_data)",
         pool: "history",
