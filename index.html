@@ -221,25 +221,6 @@
     <div id="view-dashboard" class="app-view active">
       
       <!-- AI Auto-Watcher Status Banner (NAS Background System) -->
-            <!-- 実計測パネル: collector (MacBook / NAS / Tailscale 越し) の実測のみ表示 -->
-      <section class="card" id="machineMetricsCard" style="margin-bottom: 20px; border-left: 4px solid var(--primary);">
-        <div class="card-header" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
-          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <h2 class="card-title">🖥️ マイマシン計測 & データ鮮度（実測）</h2>
-            <span id="machineMetricsBadge" style="background: #94a3b8; color: #fff; font-size: 12.5px; padding: 3px 9px; border-radius: 999px; font-weight: 700;">--</span>
-          </div>
-          <span style="font-size: 12px; color: var(--text-muted);" id="machineMetricsAt">実測スナップショット未取得</span>
-        </div>
-        <div class="card-content" style="padding: 14px 16px;">
-          <div id="machineMetricsBody" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;"></div>
-          <div id="dataFreshnessBar" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;"></div>
-          <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.65;">
-            数値はすべて collector（<code>scripts/dashboard_live.py</code>）が実行マシン上で計測した実測値です。取得できない項目は補完せず <strong>未取得</strong> のまま表示します。
-            採掘 H/s・温度・消費電力は採掘リグで <code>python3 scripts/worker_reporter.py --watch</code> を実行すると追加されます。
-          </div>
-        </div>
-      </section>
-
 <div class="card ai-watcher-card" style="margin-bottom: 20px; border-left: 4px solid #8b5cf6; background: linear-gradient(135deg, rgba(139, 92, 246, 0.04) 0%, rgba(56, 189, 248, 0.04) 100%);">
         <div class="card-content" style="padding: 14px 18px;">
           <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
