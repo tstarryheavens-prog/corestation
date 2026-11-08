@@ -13,7 +13,10 @@ param(
   [string]$Hostname = "X600",
   [string]$MetricDir = "C:\corestation",
   [string]$InstallerUrl = "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe",
-  [int]$ReportEveryMinutes = 5
+  [int]$ReportEveryMinutes = 5,
+  # Tailscale を使わず NAS 共有に直接書き出す場合（tailnet policy の変更が不要な代替経路）
+  # 例: -ShareOutFile "\\192.168.2.100\Docker\CoreGeeksEXp\data\machine_metrics\X600.json"
+  [string]$ShareOutFile = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -86,12 +89,13 @@ if (Test-Path $src) {
 # ---- 4) 定期実行（SYSTEM で動かし、ログオン状態に依存しない） ----
 Step "定期実行の登録"
 $taskName = "CoreStation_X600_reporter"
-$metricsPath = Join-Path $MetricDir "corestation_metrics.json"
+$outTarget = if ($ShareOutFile) { $ShareOutFile } else { Join-Path $MetricDir "corestation_metrics.json" }
 # schtasks の /tr は引用符が壊れやすいので .cmd ラッパを経由する
 $runner = Join-Path $MetricDir "run_reporter.cmd"
-"@echo off`r`npowershell -NoProfile -ExecutionPolicy Bypass -File `"$repLocal`" -MachineId $Hostname -OutFile `"$metricsPath`"" | Set-Content -Path $runner -Encoding ASCII
+"@echo off`r`npowershell -NoProfile -ExecutionPolicy Bypass -File `"$repLocal`" -MachineId $Hostname -OutFile `"$outTarget`"" | Set-Content -Path $runner -Encoding ASCII
 schtasks /create /tn $taskName /tr "$runner" /sc minute /mo $ReportEveryMinutes /ru SYSTEM /f | Out-Host
 schtasks /run /tn $taskName | Out-Host
+Write-Host "出力先: $outTarget"
 
 Step "完了 — ここから先は Hub 側で自動"
 Write-Host @"
