@@ -53,6 +53,7 @@ INFERENCE_NODES = [
     {"id": "bc250-1", "role": "Phi-4 14B (llama.cpp)", "base": "http://100.79.26.62:8080", "model": "phi4"},
 ]
 NAS_HUD = "http://192.168.2.100:8899"
+NAS_COREGEEMS = os.environ.get("NAS_COREGEEMS_URL", "http://192.168.2.100:8088")
 CTR_POOLS = ["https://api.catchthatrabbit.com/api/v2", "https://as.catchthatrabbit.com/api/v2"]
 
 UA = "CoreStationCollector/1.0 (NAS+Hermes live telemetry)"
@@ -548,7 +549,17 @@ def collect_machines() -> dict:
                   "measured_at": iso_now(), "online": bool(hud),
                   "status": hud, "error": None if hud else herr, "source": NAS_HUD + "/api/status"})
 
-    # 4) リグ側の報告（worker_reporter.py が data/machine_metrics/<host>.json に書く）
+    # 4) NAS 側 CoreStation サーバー (server.py: data_sync / chronicle_watcher / live_blocks ワーカー)
+    srv, serr = http_json(NAS_COREGEEMS + "/api/db/status", timeout=8, retries=1)
+    nodes.append({"id": "CoreStation NAS サーバー (8088)",
+                  "role": "server.py 常駐（巡回・data_sync・live_blocks ワーカー）",
+                  "kind": "nas_service", "measured_at": iso_now(),
+                  "online": bool(srv), "status": srv,
+                  "error": None if srv else (serr or "応答なし"),
+                  "note": "稼働していれば NAS 側で巡回と DB 同期が自動で走る。停止中は Hermes ジョブがその役を担っている。",
+                  "source": NAS_COREGEEMS + "/api/db/status"})
+
+    # 5) リグ側の報告（worker_reporter.py が data/machine_metrics/<host>.json に書く）
     reporters = []
     if os.path.isdir(MACHINE_METRICS_DIR):
         for f in sorted(os.listdir(MACHINE_METRICS_DIR)):

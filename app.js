@@ -360,15 +360,24 @@
 
     const chainRes = snap.chain || {};
     if (chainRes.ok && chainRes.data) {
-      state.networkStats = Object.assign({}, state.networkStats || {}, {
-        blockHeight: chainRes.data.blockHeight,
-        difficulty: chainRes.data.difficulty,
-        lastBlockTime: chainRes.data.lastBlockTime,
-        ownTxIntervalMeasuredMin: chainRes.data.ownTxIntervalMeasuredMin,
-        inSync: chainRes.data.inSync,
-        measuredAt: chainRes.measured_at,
-        source: "collector (blockindex 実測)"
-      });
+      const prevStats = state.networkStats || {};
+      const prevT = prevStats.measuredAt ? Date.parse(prevStats.measuredAt) : 0;
+      const snapT = chainRes.measured_at ? Date.parse(chainRes.measured_at) : 0;
+      if (prevT > snapT) {
+        // Pages Functions（エッジでその場で blockindex を実測）の方が新しいときは
+        // 古いスナップショットで上書きしない
+        state.networkStats = prevStats;
+      } else {
+        state.networkStats = Object.assign({}, prevStats, {
+          blockHeight: chainRes.data.blockHeight,
+          difficulty: chainRes.data.difficulty,
+          lastBlockTime: chainRes.data.lastBlockTime,
+          ownTxIntervalMeasuredMin: chainRes.data.ownTxIntervalMeasuredMin,
+          inSync: chainRes.data.inSync,
+          measuredAt: chainRes.measured_at,
+          source: "collector (blockindex 実測)"
+        });
+      }
       state.onchainEvidence = {
         earnedXcb24h: chainRes.data.earnedXcb24h,
         earnedXcb7d: chainRes.data.earnedXcb7d,
@@ -1207,7 +1216,10 @@
       // Merge real-time live network stats from blockindex
       if (liveNet) {
         if (!state.networkStats) state.networkStats = {};
-        Object.assign(state.networkStats, liveNet);
+        const prevT = state.networkStats.measuredAt ? Date.parse(state.networkStats.measuredAt) : 0;
+        const liveT = liveNet.measuredAt ? Date.parse(liveNet.measuredAt) : Date.now();
+        // 実測時刻が新しい方だけを採用（古い経路で新しい値を潰さない）
+        if (liveT >= prevT) Object.assign(state.networkStats, liveNet);
       }
 
       if (explorerRes && explorerRes.state && Array.isArray(explorerRes.data) && explorerRes.data.length > 0) {
@@ -2014,7 +2026,7 @@
           const blockDt = new Date(stats.lastBlockTime);
           const diffSec = Math.max(1, Math.round((Date.now() - blockDt.getTime()) / 1000));
           const timeAgo = diffSec < 60 ? `${diffSec}秒前` : `${Math.floor(diffSec / 60)}分前`;
-          dBlockTime.textContent = `${base} (最新承認: ${timeAgo})`;
+          dBlockTime.textContent = `${base} (ネットワークの最新ブロック: ${timeAgo})`;
         } catch {
           dBlockTime.textContent = base;
         }
