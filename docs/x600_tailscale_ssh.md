@@ -77,5 +77,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\corestation\setup_x600.ps
 
 ## 電源が入っていない時の起動（WoL）
 - collector は毎巡回で `arp -n 192.168.2.13` を読み、MAC が取れた瞬間 `data/x600_mac.txt` に控えて `live_state.json` の X600 ノードに `mac` / `wolReady` として出す（取れていない間は `mac: null`、カードには `WoL: MAC 未取得`）。
-- 控えた後は `bash scripts/x600_wake.sh --wake`（magic packet を 192.168.2.255:7 / :9 と 255.255.255.255 へ送信、最大 60 秒応答を待つ）。BIOS / OS 側で Wake on LAN が有効なことが条件。現在は ARP に出ないため MAC 未取得 → **まず一度手で電源を入れる**必要がある。
+- 実測注意（2026-11-08 23:1x JST）: `route -n get 192.168.2.13` は `interface: en0`（この Mac は 192.168.2.10/24）なのに `arp -n 192.168.2.13` は `no entry`（TCP 445/3389/135/139 は OPEN・6-7 ms、137/udp は応答なし）。**この Mac の ARP 表からは MAC を確定できない**（macOS の ARP 表に出てこない）。確実な源はリグ側の報告で、`worker_reporter.ps1` は `Get-NetAdapter` / `Get-NetIPAddress` から MAC と IPv4 を実測して `macAddresses` / `lanIpv4` として出す。これで (1) MAC が取れて WoL が使えるようになり (2) 「192.168.2.13 = このマシン」もリグ実測で確定する（collector は `lanIdentityVerified` として記録し、ダッシュボードに `IP 照合` として出す）。
+- 控えた後は `bash scripts/x600_wake.sh --wake`（magic packet を 192.168.2.255:7 / :9 と 255.255.255.255 へ送信、最大 60 秒応答を待つ）。BIOS / OS 側で Wake on LAN が有効なことが条件。
 

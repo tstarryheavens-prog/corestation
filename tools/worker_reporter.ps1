@@ -137,12 +137,29 @@ foreach ($host_ in @("as.catchthatrabbit.com","as1.catchthatrabbit.com","sg.catc
   } catch { $poolResolve += [ordered]@{ host = $host_; resolved = $null; stratum8008TcpOpen = $false } }
 }
 
+# ---- 8) NIC 実測（MAC と IPv4。これで「192.168.2.13 = このマシン」を実測で確定でき、WoL の手がかりにもなる） ----
+$adapters = @()
+try {
+  $ips = @(Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue)
+  foreach ($a in (Get-NetAdapter -ErrorAction SilentlyContinue)) {
+    $myIps = @($ips | Where-Object { $_.ifIndex -eq $a.ifIndex } | ForEach-Object { $_.IPAddress })
+    $adapters += [ordered]@{ name = $a.Name; ifIndex = $a.ifIndex; macAddress = $a.MacAddress;
+                             status = [string]$a.Status; linkSpeedBps = $a.LinkSpeed; ipv4 = $myIps }
+  }
+} catch { $reasons.Add("Get-NetAdapter / Get-NetIPAddress が読めない") }
+if (-not $adapters -or $adapters.Count -eq 0) { $reasons.Add("NIC 情報が取れない（MAC/IPv4 null）") }
+$lanIpv4 = @(); $macAddresses = @()
+foreach ($ad in $adapters) {
+  foreach ($ip in @($ad.ipv4)) { if ($ip) { $lanIpv4 += $ip } }
+  if ($ad.macAddress) { $macAddresses += ([string]$ad.macAddress).ToUpper() }
+}
+
 $out = [ordered]@{
   schema            = "corestation-rig/1"
   machine_id        = $MachineId
   computer_name     = $env:COMPUTERNAME
   measured_at       = $now
-  source            = "worker_reporter.ps1 (read-only: CIM + nvidia-smi + WMI + logs + TCP)"
+  source            = "worker_reporter.ps1 (read-only: CIM + nvidia-smi + WMI + logs + TCP + NetAdapter)"
   miners            = $miners
   minerCount        = $miners.Count
   hashrate          = $hashrate          # null = 未取得（0 にしない）
@@ -154,6 +171,9 @@ $out = [ordered]@{
   stratumSessions   = $stratum
   stratumSessionCount = $stratum.Count
   poolResolve       = $poolResolve
+  network           = $adapters
+  lanIpv4           = $lanIpv4
+  macAddresses      = $macAddresses
   uptimeHours       = $uptimeH
   unavailable_reason = $reasons
 }

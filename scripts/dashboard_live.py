@@ -708,6 +708,10 @@ def rig_report_metrics(rep: dict) -> dict:
             power = round(sum(pw), 1)
     miners = [m for m in (rep.get("miners") or []) if isinstance(m, dict)]
     worker_names = sorted({m.get("workerName") for m in miners if m.get("workerName")})
+    macs = [str(m).upper() for m in (rep.get("macAddresses") or []) if m]
+    if not macs:
+        macs = [str(a.get("macAddress")).upper() for a in (rep.get("network") or [])
+                if isinstance(a, dict) and a.get("macAddress")]
     return {
         "hashrate": hr if isinstance(hr, (int, float)) else None,
         "temperature": temp if isinstance(temp, (int, float)) else None,
@@ -719,6 +723,10 @@ def rig_report_metrics(rep: dict) -> dict:
         "rigMeasuredAt": rep.get("measured_at"),
         "rigSource": rep.get("source"),
         "rigUnavailable": rep.get("unavailable_reason"),
+        "computerName": rep.get("computer_name"),
+        "rigLanIps": [str(i) for i in (rep.get("lanIpv4") or []) if i],
+        "rigMacs": macs,
+        "uptimeHours": rep.get("uptimeHours"),
     }
 
 
@@ -857,11 +865,25 @@ def collect_machines() -> dict:
                     if metrics.get(key) is not None:
                         node[key] = metrics[key]
                 for key in ("acceptedPct", "minerProcessCount", "minerWorkerNames",
-                            "stratumSessions", "rigMeasuredAt", "rigSource", "rigUnavailable"):
+                            "stratumSessions", "rigMeasuredAt", "rigSource", "rigUnavailable",
+                            "computerName", "rigLanIps", "rigMacs", "uptimeHours"):
                     if metrics.get(key) is not None:
                         node[key] = metrics[key]
+                # リグ自身が報告した IPv4 に LAN IP が含まれていれば「この IP = このマシン」を実測で確定できる
+                if xhost in (metrics.get("rigLanIps") or []):
+                    node["lanIdentityVerified"] = True
+                    node["lanIdentitySource"] = (f"worker_reporter が報告した IPv4 "
+                                                 f"{metrics.get('rigLanIps')} に {xhost} が含まれる（リグ側実測）")
+                if metrics.get("rigMacs") and not node.get("mac"):
+                    node["mac"] = metrics["rigMacs"][0]
+                    node["wolReady"] = True
+                    node["macSource"] = "worker_reporter (Get-NetAdapter) 実測"
                 node["hasRigReport"] = True
                 break
+    rig_identity_verified = any(n.get("lanIdentityVerified") for n in nodes)
+    alias_source = "user-declared 2026-11-08 + wallet.db workers 実測"
+    if rig_identity_verified:
+        alias_source += f" + worker_reporter が {xhost} を自マシンの IPv4 として報告（実測で確定）"
     return {"ok": True, "source": "local proc + inference HTTP probes + NAS HUD + tailnet + machine_metrics/*.json",
             "measured_at": iso_now(),
             "data": {"nodes": nodes, "rigReporters": reporters,
@@ -871,7 +893,8 @@ def collect_machines() -> dict:
                                  "peers": sorted((tail.get("peers") or {}).keys())},
                      "workerMachineAlias": {"7950X": {"machine": "X600",
                                                       "lan": os.environ.get("X600_HOST", "192.168.2.13"),
-                                                      "source": "user-declared 2026-11-08 + wallet.db workers 実測"}},
+                                                      "verifiedByRigReport": rig_identity_verified,
+                                                      "source": alias_source}},
                      "note": "採掘リグの H/s・温度・消費電力はリグ上で worker_reporter.py を実行した分だけ実測値になる（未取得の項目は null のまま）。"}}
 
 
