@@ -1182,6 +1182,7 @@
         state.workers = Array.isArray(workerRes.data) ? workerRes.data : (workerRes.data.workers || []);
         state.poolWorkerArchive = (workerRes.data && workerRes.data.poolWorkerArchive) || [];
         state.machineAlias = (workerRes.data && workerRes.data.machineAlias) || {};
+        state.lanIdentities = (workerRes.data && workerRes.data.lanIdentities) || state.lanIdentities || null;
         state.poolApiStatus = (workerRes.data && workerRes.data.poolApi) || null;
         state.rigNodes = (workerRes.data && workerRes.data.rigNodes) || [];
         state.onchainEvidence = (workerRes.data && workerRes.data.onChainEvidence) || state.onchainEvidence;
@@ -1464,6 +1465,10 @@
             <span class="badge-${n.online ? "online" : "offline"}" style="font-size: 12px; padding: 2px 8px; border-radius: 4px; color: #fff; background: ${n.online ? "var(--success)" : "#dc2626"};">TCP ${n.online ? "到達" : "応答なし"}</span>
           </div>
           <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.6;">
+            身元: ${n.identityStatus === "確定"
+              ? `<strong style="color: var(--text-main);">確定</strong> — ${n.identityEvidence || "?"}（取得元: ${n.identitySource || "?"}）${n.lanIP ? ` · LAN ${n.lanIP}` : ""}`
+              : `<strong style="color:#b45309;">未確定</strong> — 「X600」と名乗るホストは LAN・Tailscale 双方から観測できていない（LAN scan ${(n.lanScan && n.lanScan.measuredAt) || "未取得"}・生存 ${(n.lanScan && n.lanScan.aliveCount !== undefined && n.lanScan.aliveCount !== null) ? n.lanScan.aliveCount : "?"} 台）`}
+            ${(n.windowsCandidates && n.windowsCandidates.length) ? ` / Windows 系と実測できたホスト: ${n.windowsCandidates.map(c => `${c.ip}${c.identity ? ` = ${c.identity}` : ""}`).join(", ")}` : ""}<br>
             ${(n.openPorts && n.openPorts.length) ? `LAN open ports: ${n.openPorts.join(", ")} · ` : ""}${typeof n.latencyMs === "number" ? `LAN latency ${n.latencyMs} ms · ` : ""}実測 ${n.measuredAt || "未取得"}<br>
             プール上の worker 名: ${(n.poolWorkers || []).join(", ") || "未取得"}${n.workerNameSource ? ` <span style="font-size: 12px;">（${n.workerNameSource}）</span>` : ""}<br>
             tailnet: ${n.tailnet ? `${n.tailnet.hostname}${(n.tailnet.ips||[]).length ? ` (${n.tailnet.ips[0]})` : ""} — ${n.tailnet.online ? "online" : "offline"}${typeof n.tailnet.pingMs === "number" ? ` · tailscale ping ${n.tailnet.pingMs} ms` : ""}${n.tailnet.sshPortOpen === true ? " · SSH 22 到達可" : (n.tailnet.sshPortOpen === false ? " · SSH 22 応答なし" : "")}` : (n.tailnetError || "未取得")}<br>
@@ -1480,7 +1485,7 @@
 
       const archiveRows = (state.poolWorkerArchive || []).map(a => `
         <tr>
-          <td style="font-weight: 700;">${a.workerName || "未取得"}${a.machineAlias ? ` <span style="font-size:12px;color:var(--primary);">= ${a.machineAlias.machine} (${a.machineAlias.lan})</span>` : ""}</td>
+          <td style="font-weight: 700;">${a.workerName || "未取得"}${a.machineAlias && a.machineAlias.machine ? ` <span style="font-size:12px;color:var(--primary);">= ${a.machineAlias.machine} (${a.machineAlias.lan || "LAN 未確定"})</span>` : (a.machineAlias ? ` <span style="font-size:12px;color:#64748b;">= どのPCか未確定</span>` : "")}</td>
           <td style="font-size: 13px; color: var(--text-muted);">${a.pool || "未取得"}</td>
           <td style="font-family: var(--font-mono); font-size: 13px;">${a.hr === null || a.hr === undefined ? "未取得" : `${a.hr} H/s`}</td>
           <td style="font-size: 13px;">${Number(a.offline) === 1 ? '<span style="color:#dc2626;font-weight:700;">offline</span>' : "online"}</td>
@@ -1490,8 +1495,30 @@
       const ev = state.onchainEvidence || {};
       const poolReason = (state.poolApiStatus && state.poolApiStatus.reason) || "プールAPI 未応答";
 
+      const lanMeta = state.lanIdentities || {};
+      const lanRows = (lanMeta.hosts || [])
+        .filter(h => h && (h.identity || h.tailnetName || (h.openPorts || []).length))
+        .slice(0, 16);
+      const lanHtml = lanRows.length ? `
+        <div style="margin-top: 12px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">LAN 実測身份（scripts/lan_scan.py · ${lanMeta.measuredAt || "未取得"}${lanMeta.aliveCount !== undefined && lanMeta.aliveCount !== null ? ` · 生存 ${lanMeta.aliveCount} 台` : ""}）</div>
+          <table style="width: 100%; border-collapse: collapse; font-size: 13.5px;">
+            <thead><tr style="text-align: left; color: var(--text-muted); font-size: 12.5px;">
+              <th>IP</th><th>身元（実測根拠）</th><th>open ports</th><th>tailnet</th></tr></thead>
+            <tbody>${lanRows.map(h => `
+              <tr>
+                <td style="font-family: var(--font-mono); font-size: 13px;">${h.ip}</td>
+                <td>${h.identity ? `${h.identity} <span style="font-size:12px;color:var(--text-muted);">（${h.identitySource}）</span>` : '<span style="color:#64748b;">名乗り無し</span>'}</td>
+                <td style="font-family: var(--font-mono); font-size: 12.5px; color: var(--text-muted);">${(h.openPorts || []).join(", ") || "—"}</td>
+                <td style="font-size: 13px;">${h.tailnetName || "—"}</td>
+              </tr>`).join("")}</tbody>
+          </table>
+          ${lanMeta.error ? `<div style="font-size: 12px; color:#b45309; margin-top: 4px;">LAN scan: ${lanMeta.error}</div>` : ""}
+        </div>` : "";
+
       el.workersContainer.innerHTML = `
         ${rigHtml}
+        ${lanHtml}
         ${archiveRows ? `
         <div style="margin-top: 12px;">
           <div style="font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">プール登録ワーカー（wallet.db アーカイブ実測 / ライブ値ではない）</div>
@@ -2902,6 +2929,7 @@
             if (Array.isArray(wRes.data.workers)) state.workers = wRes.data.workers;
             state.poolWorkerArchive = wRes.data.poolWorkerArchive || state.poolWorkerArchive;
             state.machineAlias = wRes.data.machineAlias || state.machineAlias;
+            state.lanIdentities = wRes.data.lanIdentities || state.lanIdentities || null;
             state.rigNodes = wRes.data.rigNodes || state.rigNodes;
             state.poolApiStatus = wRes.data.poolApi || state.poolApiStatus;
             state.onchainEvidence = wRes.data.onChainEvidence || state.onchainEvidence;

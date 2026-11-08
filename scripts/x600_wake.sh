@@ -3,8 +3,14 @@
 #   bash scripts/x600_wake.sh            # 生存確認 + ARP から MAC を控える
 #   bash scripts/x600_wake.sh --wake     # magic packet を送る（BIOS/OS 側で WoL 有効が必要）
 set -uo pipefail
-HOST="${X600_HOST:-192.168.2.13}"
 REPO="${REPO:-/Volumes/Docker/CoreGeeksEXp}"
+# WoL の対象 IP も思い込まない（192.168.2.13 は RDP 証明書 CN 実測で Z690）
+HOST="${X600_HOST:-}"
+if [ -z "$HOST" ]; then
+  echo "[wake] X600_HOST が未設定です。X600 の LAN IP は未確定（192.168.2.13 は Z690 と実測済み）。"
+  echo "[wake] python3 scripts/lan_scan.py → data/lan_identities.json で身元を確認し、export X600_HOST=<IP> で再実行してください。"
+  exit 1
+fi
 MACFILE="$REPO/data/x600_mac.txt"
 BCAST="${WOL_BROADCAST:-192.168.2.255}"
 

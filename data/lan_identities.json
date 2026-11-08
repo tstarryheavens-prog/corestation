@@ -1,0 +1,400 @@
+{
+ "schema": "corestation-lan/1",
+ "measuredAt": "2026-11-08T16:32:29.936602+00:00",
+ "subnet": "192.168.2.0/24",
+ "aliveCount": 40,
+ "hosts": [
+  {
+   "ip": "192.168.2.1",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.10",
+   "pingMs": null,
+   "openPorts": [
+    22,
+    445,
+    5900
+   ],
+   "tailnet": null,
+   "identity": "SSH-2.0-OpenSSH_10.5",
+   "identitySource": "ssh banner",
+   "sshBanner": "SSH-2.0-OpenSSH_10.5"
+  },
+  {
+   "ip": "192.168.2.100",
+   "pingMs": null,
+   "openPorts": [
+    22,
+    139,
+    445,
+    631,
+    8520,
+    8899
+   ],
+   "tailnet": null,
+   "identity": "Smart AI Life Lab ｜ 運営HUD",
+   "identitySource": "http:8899 title",
+   "sshBanner": "SSH-2.0-OpenSSH_9.8"
+  },
+  {
+   "ip": "192.168.2.101",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.103",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.104",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.105",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.106",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.108",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.109",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": "404 Not Found",
+   "identitySource": "http:80 title"
+  },
+  {
+   "ip": "192.168.2.11",
+   "pingMs": null,
+   "openPorts": [
+    47832
+   ],
+   "tailnet": {
+    "tailnetName": "z790-al",
+    "source": "tailscale status direct endpoint"
+   },
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.114",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": "NEC クイック設定Web | Aterm",
+   "identitySource": "http:80 title"
+  },
+  {
+   "ip": "192.168.2.121",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.122",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.126",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.13",
+   "pingMs": null,
+   "openPorts": [
+    135,
+    139,
+    445,
+    3389
+   ],
+   "tailnet": null,
+   "identity": "Z690",
+   "identitySource": "rdp certificate CN"
+  },
+  {
+   "ip": "192.168.2.133",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.136",
+   "pingMs": null,
+   "openPorts": [
+    80,
+    139,
+    443,
+    445,
+    631
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.137",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.139",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.140",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.141",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.144",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.146",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.147",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.150",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.151",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.152",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.154",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.155",
+   "pingMs": null,
+   "openPorts": [
+    22
+   ],
+   "tailnet": null,
+   "identity": "SSH-2.0-OpenSSH_10.6",
+   "identitySource": "ssh banner",
+   "sshBanner": "SSH-2.0-OpenSSH_10.6"
+  },
+  {
+   "ip": "192.168.2.156",
+   "pingMs": null,
+   "openPorts": [
+    22,
+    80,
+    8080
+   ],
+   "tailnet": null,
+   "identity": "ATOMCam Hack Setup",
+   "identitySource": "http:80 title",
+   "sshBanner": "SSH-2.0-OpenSSH_7.1"
+  },
+  {
+   "ip": "192.168.2.157",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.158",
+   "pingMs": null,
+   "openPorts": [
+    22,
+    80,
+    8080
+   ],
+   "tailnet": null,
+   "identity": "ATOMCam Hack Setup",
+   "identitySource": "http:80 title",
+   "sshBanner": "SSH-2.0-OpenSSH_7.1"
+  },
+  {
+   "ip": "192.168.2.167",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.168",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.250",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": "ZX310S-4T2XT",
+   "identitySource": "http:80 title"
+  },
+  {
+   "ip": "192.168.2.3",
+   "pingMs": null,
+   "openPorts": [
+    80,
+    443
+   ],
+   "tailnet": null,
+   "identity": "NEC クイック設定Web | Aterm",
+   "identitySource": "http:80 title"
+  },
+  {
+   "ip": "192.168.2.4",
+   "pingMs": null,
+   "openPorts": [
+    80,
+    443
+   ],
+   "tailnet": null,
+   "identity": "NEC クイック設定Web | Aterm",
+   "identitySource": "http:80 title"
+  },
+  {
+   "ip": "192.168.2.7",
+   "pingMs": null,
+   "openPorts": [
+    443
+   ],
+   "tailnet": null,
+   "identity": "first cgi page",
+   "identitySource": "https:443 title"
+  },
+  {
+   "ip": "192.168.2.8",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  }
+ ],
+ "tailnetError": null,
+ "note": "身元は RDP 証明書 CN / HTTP title / SSH banner / tailscale direct endpoint の実測のみ。取れないものは null。"
+}

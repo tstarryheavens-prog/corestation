@@ -4,7 +4,27 @@
 set -uo pipefail
 
 TS="$(command -v tailscale || echo /usr/local/bin/tailscale)"
-LAN_HOST="${X600_HOST:-192.168.2.13}"
+REPO="${REPO:-/Volumes/Docker/CoreGeeksEXp}"
+# X600 の LAN IP は思い込まない。collector が身元を実測で確定した場合だけ live_state.json から拾う。
+LAN_HOST="${X600_HOST:-}"
+if [ -z "$LAN_HOST" ] && [ -f "$REPO/data/live_state.json" ]; then
+  LAN_HOST="$(python3 - "$REPO/data/live_state.json" <<'PY'
+import json,sys
+try:
+    d=json.load(open(sys.argv[1],encoding="utf-8"))
+except Exception:
+    sys.exit(0)
+for n in ((d.get("machines") or {}).get("data") or {}).get("nodes",[]):
+    if str(n.get("kind"))=="rig" and n.get("identityStatus")=="確定" and n.get("lanIP"):
+        print(n["lanIP"]); break
+PY
+)"
+fi
+if [ -z "$LAN_HOST" ]; then
+  echo "[x600] X600 の LAN IP は未確定です。実測済みの 192.168.2.13 は RDP 証明書 CN から Z690 と判明しました（X600 ではない）。"
+  echo "[x600] 身元一覧: python3 scripts/lan_scan.py → data/lan_identities.json"
+  echo "[x600] 特定できたら: export X600_HOST=<IP> で再実行してください。"
+fi
 NAMES="${X600_TAILNET_NAMES:-x600,7950x}"
 
 echo "== tailnet status =="

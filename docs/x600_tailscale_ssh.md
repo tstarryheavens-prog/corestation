@@ -1,9 +1,28 @@
 # X600 を tailnet に入れて Hub から実測するための手順（2026-11-08 実測ベース）
 
 ## 今の実測（このファイルを書いた時点で確認した事実）
-- `192.168.2.13`（X600）: 2026-11-08 18:37 JST 時点では TCP 445 / 3389 到達・latency 5.8 ms。**20:1x JST には ping 100%  loss、445 / 3389 / 22 すべて応答なし**（電源 OFF またはスリープ）。
+- `192.168.2.13`（当時 X600 だと思っていた PC）: 2026-11-08 18:37 JST 時点では TCP 445 / 3389 到達・latency 5.8 ms。**20:1x JST には ping 100%  loss、445 / 3389 / 22 すべて応答なし**（電源 OFF またはスリープ）。※ 2026-11-09 にこの IP の身元は **Z690** と判明（下の訂正参照）。
 - tailnet (`tail8fffd8.ts.net`) の既知ノード: `kazukimacbook-air` `bc250` `bc250-1` `z790-al` `z790`(windows, offline 1日) `z690`(windows, offline 15日) `z690-wsl` `tokage` `muse` `iphone182`。**X600 というノードは存在しない**＝X600 は Tailscale 未導入。
 - `ssh kazuki@100.86.91.70`（z790-al）は現状 `tailnet policy does not permit you to SSH as user "kazuki"` で拒否される → **tailnet policy に SSH 許可が必要です**。
+
+## 2026-11-09 訂正（LAN / tailnet 実測で身元を確定した）
+
+`192.168.2.13 = X600` という対応付けは**誤り**でした（本人が取り下げ）。`scripts/lan_scan.py` のスキャンで身元を実測しました:
+
+| LAN IP | 実測で分かった身元 | 実測根拠 |
+|---|---|---|
+| 192.168.2.13 | **Z690**（Windows PC） | 3389 OPEN + RDP 自己署名証明書の CN=`Z690`（`openssl s_client` 実測）。135 / 139 / 445 OPEN |
+| 192.168.2.11 | **z790-al**（Ubuntu 推論 hub） | `tailscale status`: `active; direct 192.168.2.11:41641`。47832 が `iq3_xxs` の completion を 1.2 s で返す（2026-11-09 00:5x 実測）。22 / 445 / 3389 は connection refused（＝Windows ではない） |
+| 192.168.2.100 | NAS（運営 HUD） | 8899 の `<title>Smart AI Life Lab ｜ 運営HUD`。22 / 139 / 445 / 631 / 8520 OPEN |
+| 192.168.2.155 | Linux ホスト（SSH） | 22 OPEN（banner `SSH-2.0-OpenSSH_10.6`）。23 時台の scan では 8080 / 9090 も OPEN だった → 推論サービスはその時点だけ開いていた |
+| 192.168.2.158 | ATOMCam（ESP32 カメラ） | 80 の `<title>ATOMCam Hack Setup` |
+| 192.168.2.136 | 名乗り無し | 80 / 139 / 443 / 445 / 631 OPEN（631 = IPP） |
+| 192.168.2.10 | この Mac（kazukimacbook-air） | `ipconfig getifaddr en0` + 22 / 445 / 5900 OPEN |
+
+- LAN 生存 40 台のうち **「X600」と名乗るホストは 1 台も無い**。tailnet にも `x600` ノードは無い（`z790` windows offline 1日 / `z690` windows offline 15日 / `z690-wsl` linux offline 16日 / `bc250` linux offline 6日）。
+- 身元一覧のソース: `python3 scripts/lan_scan.py` → `data/lan_identities.json`（collector が 6 時間ごとに更新し、ダッシュボードの Workers カードに出す）。
+- collector は身元が確定するまで X600 を**測定しない**（`identityStatus: "未確定"` / `lanIP: null`）。思い込みの IP を測って「X600 の状態」と表示する運用は撤去した。
+- Tailscale が既に入っていて **電源 OFF** の Windows ノード（`z790` = 1日前まで online / `z690` = 15日前）に 7950X マシンが含まれる可能性が高い。そのどれかを起動すれば tailnet 越しに到達できるので、その時点で `setup_x600.ps1` と SSH ACL が効いてくる。
 
 ## 1) X600 側（X600 を電源 ON にして、PowerShell を「管理者として実行」）
 ```powershell

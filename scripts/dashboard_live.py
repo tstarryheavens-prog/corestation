@@ -41,6 +41,7 @@ DATA_DIR = os.path.join(REPO, "data")
 OUT_FILE = os.path.join(DATA_DIR, "live_state.json")
 HISTORY_FILE = os.path.join(DATA_DIR, "metrics_history.json")
 MACHINE_METRICS_DIR = os.path.join(DATA_DIR, "machine_metrics")
+LAN_IDENTITIES_FILE = os.path.join(DATA_DIR, "lan_identities.json")
 LOCK_FILE = os.path.join(DATA_DIR, ".dashboard_live.lock")
 
 JST = timezone(timedelta(hours=9))
@@ -660,6 +661,34 @@ def tailnet_ping_latency(ip: str):
     return round(max(vals), 1) if vals else None
 
 
+def lan_identities(max_age_s: int = 6 * 3600):
+    """scripts/lan_scan.py が書く data/lan_identities.json を取り込む。
+
+    ファイルが max_age_s より古ければその場で再スキャンする（ping / TCP OPEN / RDP 証明書の CN /
+    HTTP title / tailscale direct endpoint の実測だけ。認証も書き込みもしない）。
+    """
+    scan_error = None
+    doc = None
+    if os.path.exists(LAN_IDENTITIES_FILE):
+        try:
+            doc = json.load(open(LAN_IDENTITIES_FILE, encoding="utf-8"))
+        except Exception as exc:  # noqa: BLE001
+            scan_error = f"lan_identities.json 読込失敗: {type(exc).__name__}: {exc}"[:160]
+    if doc is None or (time.time() - os.path.getmtime(LAN_IDENTITIES_FILE)) > max_age_s:
+        script = os.path.join(REPO, "scripts", "lan_scan.py")
+        if os.path.exists(script):
+            rc, out, err = _subprocess_run([sys.executable, script], 260)
+            if rc != 0:
+                scan_error = f"lan_scan 実行失敗(rc={rc}): {((out or '') + (err or ''))[:200]}"
+        else:
+            scan_error = "scripts/lan_scan.py が無い"
+        try:
+            doc = json.load(open(LAN_IDENTITIES_FILE, encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            doc = None
+    return doc, scan_error
+
+
 def arp_mac(host: str, cache_file: str = ""):
     """ARP キャッシュから MAC を実測する（生存時にだけ取れる）。取れたら cache に控え、
     取れない時は過去の cache を返す（WoL の手がかりとして使う・無ければ None）。"""
@@ -782,11 +811,28 @@ def collect_machines() -> dict:
                   "note": "稼働していれば NAS 側で巡回と DB 同期が自動で走る。停止中は Hermes ジョブがその役を担っている。",
                   "source": NAS_COREGEEMS + "/api/db/status"})
 
-    # 5) X600（Windows 採掘専用 PC）: 認証・ログインは一切せず TCP 到達性だけ実測
-    xhost = os.environ.get("X600_HOST", "192.168.2.13")
+    # 5) 採掘リグ X600: 「どの LAN IP が X600 なのか」を実測証拠で確定してから測る。
+    #    思い込みの IP 対応付けはしない。特定できなければ「未取得」と書く。
+    lan_scan, lan_scan_error = lan_identities()
+    lan_hosts = (lan_scan or {}).get("hosts") or []
+    x_aliases = [a.strip().lower() for a in os.environ.get("X600_TAILNET_NAMES", "x600,7950x,7950").split(",") if a.strip()]
+    xhost = os.environ.get("X600_HOST", "").strip()
+
+    def lan_identity_match(rec):
+        blob = " ".join([str(rec.get("identity") or ""), str(rec.get("sshBanner") or ""),
+                         str((rec.get("tailnet") or {}).get("tailnetName") or "")]).lower()
+        return any(al in blob for al in x_aliases)
+
+    x600_lan = next((r for r in lan_hosts if r.get("ip") == xhost), None) if xhost else None
+    if x600_lan is None:
+        x600_lan = next((r for r in lan_hosts if lan_identity_match(r)), None)
+    if x600_lan is not None:
+        xhost = x600_lan["ip"]
+    windows_hosts = [r for r in lan_hosts if 3389 in (r.get("openPorts") or []) or 135 in (r.get("openPorts") or [])]
+
     xports = [int(x) for x in os.environ.get("X600_PORTS", "445,3389,22").split(",")]
     open_ports, latency = [], None
-    for pt in xports:
+    for pt in (xports if xhost else []):
         t0 = time.perf_counter()
         try:
             with socket.create_connection((xhost, pt), timeout=3):
@@ -797,7 +843,6 @@ def collect_machines() -> dict:
             pass
 
     # tailnet 側の実測（X600 に Tailscale が入ればここに実データが来る。無ければ「無い」と書く）
-    x_aliases = [a.strip().lower() for a in os.environ.get("X600_TAILNET_NAMES", "x600,7950x,7950").split(",") if a.strip()]
     tailnet_node = None
     tailnet_error = None
     if tail.get("ok"):
@@ -817,28 +862,60 @@ def collect_machines() -> dict:
                     tailnet_node["sshPortOpen"] = ssh_open
                 break
         if tailnet_node is None:
-            tailnet_error = (f"tailnet に X600 ノードが見えない（既知ノード: "
-                             f"{', '.join(sorted((tail.get('peers') or {}).keys()))}）— X600 に Tailscale 未導入の可能性")
+            offline_peers = []
+            for pe in (tail.get("peers") or {}).values():
+                if pe.get("online"):
+                    continue
+                ls = str(pe.get("lastSeen") or "")[:10]
+                offline_peers.append(f"{pe.get('hostname')}({pe.get('os')}"
+                                     f"{', last seen ' + ls if ls else ''})")
+            tailnet_error = (f"tailnet に X600 ノードが見えない。既知ノード: "
+                             f"{', '.join(sorted((tail.get('peers') or {}).keys()))}。"
+                             f"この巡回時点で offline: {', '.join(offline_peers) or '無し'}"
+                             "（X600 は Tailscale 未導入か、電源 OFF の可能性）")
     else:
         tailnet_error = tail.get("error")
 
-    xmac = arp_mac(xhost, os.path.join(os.path.dirname(OUT_FILE), "x600_mac.txt"))
+    xmac = arp_mac(xhost, os.path.join(os.path.dirname(OUT_FILE), "x600_mac.txt")) if xhost else None
+    if x600_lan is not None:
+        identity_note = ("身元実測: " + str(x600_lan.get("identity")) +
+                         " (取得元: " + str(x600_lan.get("identitySource")) + ")" +
+                         " / tailnet=" + str((x600_lan.get("tailnet") or {}).get("tailnetName")))
+    else:
+        identity_note = ("X600 という名前で応答するホストは LAN スキャン・Tailscale のどちらも"
+                         "から観測できなかった（2026-11-09 実測）。X600 を起動して Tailscale を"
+                         "入れれば tailnet 側に出てくる。")
     nodes.append({
-        "id": "X600 (Windows 採掘専用 PC)",
-        "role": f"LAN {xhost} — TCP 到達性のみ実測（認証情報なし）",
+        "id": "X600 (採掘リグ)",
+        "role": (f"LAN {xhost} — TCP 到達性のみ実測（認証情報なし）" if xhost
+                 else "LAN IP 未確定 — 身元を特定できるまで測定しない"),
         "kind": "rig", "measured_at": iso_now(),
+        "identityStatus": "確定" if x600_lan is not None else "未確定",
+        "identityEvidence": (x600_lan or {}).get("identity"),
+        "identitySource": (x600_lan or {}).get("identitySource"),
+        "lanIP": xhost or None,
+        "lanScan": {"measuredAt": (lan_scan or {}).get("measuredAt"),
+                    "aliveCount": (lan_scan or {}).get("aliveCount"),
+                    "error": lan_scan_error or (lan_scan or {}).get("tailnetError")},
+        "windowsCandidates": [{"ip": r.get("ip"), "identity": r.get("identity"),
+                               "identitySource": r.get("identitySource"),
+                               "openPorts": r.get("openPorts") or []} for r in windows_hosts],
         "online": bool(open_ports), "openPorts": open_ports, "latencyMs": latency,
         "mac": xmac,
         "wolReady": bool(xmac),
         "hashrate": None, "temperature": None, "power": None,
-        # プール上の worker 名はユーザー申告 (2026-11-08) + wallet.db workers 実測で照合
+        # worker 名は wallet.db 実測。PC と worker の対応は実測できるまで確定しない
         "poolWorkers": ["7950X"],
-        "workerNameSource": "ユーザー申告 2026-11-08「192.168.2.13 は X600、プール上は 7950X」"
-                           " / wallet.db workers テーブルに worker 7950X (as.catchthatrabbit.com) を実測",
+        "workerNameSource": "wallet.db workers 実測: 7950X @ as.catchthatrabbit.com（status 0 / 0 H/s / "
+                            "2026-11-07 22:00:49）。どの物理 PC かの対応は未確定。"
+                            "2026-11-08 の「192.168.2.13 = X600」申告は 2026-11-09 に本人が取り下げ"
+                            "（192.168.2.13 は RDP 証明書 CN 実測で Z690）",
         "tailnet": tailnet_node,
         "tailnetError": tailnet_error,
-        "error": None if open_ports else f"{xhost} の {xports} すべて応答なし（電源 OFF / 電源 ON だがサービス停止の可能性）",
-        "note": "H/s・温度・消費電力は X600 側の worker_reporter.ps1（tools/setup_x600.ps1 で導入）が data/machine_metrics/X600.json に書いた分だけ実測になる。未取得は null のまま。"})
+        "error": (None if open_ports else
+                  (f"{xhost} の {xports} すべて応答なし（電源 OFF / サービス停止の可能性）" if xhost else
+                   "X600 だと特定できるホストが見つからないため未測定")),
+        "note": identity_note})
 
     # 6) リグ側の報告（worker_reporter が data/machine_metrics/<host>.json に書く）→ ノードに実測をマージ
     reporters = []
@@ -881,9 +958,17 @@ def collect_machines() -> dict:
                 node["hasRigReport"] = True
                 break
     rig_identity_verified = any(n.get("lanIdentityVerified") for n in nodes)
-    alias_source = "user-declared 2026-11-08 + wallet.db workers 実測"
+    alias_source = ("wallet.db workers 実測（worker 7950X @ as.catchthatrabbit.com / status 0 / 0 H/s / "
+                    "2026-11-07 22:00:49）。どの物理 PC かの対応は実測で確定できていない。"
+                    "2026-11-08 の「192.168.2.13 = X600」申告は 2026-11-09 に本人が取り下げ"
+                    "（192.168.2.13 = RDP 証明書 CN 実測で Z690、192.168.2.11 = tailscale direct endpoint "
+                    "実測で z790-al）")
     if rig_identity_verified:
         alias_source += f" + worker_reporter が {xhost} を自マシンの IPv4 として報告（実測で確定）"
+    lan_records = [{"ip": r.get("ip"), "pingMs": r.get("pingMs"), "openPorts": r.get("openPorts") or [],
+                    "identity": r.get("identity"), "identitySource": r.get("identitySource"),
+                    "sshBanner": r.get("sshBanner"),
+                    "tailnetName": (r.get("tailnet") or {}).get("tailnetName")} for r in lan_hosts]
     return {"ok": True, "source": "local proc + inference HTTP probes + NAS HUD + tailnet + machine_metrics/*.json",
             "measured_at": iso_now(),
             "data": {"nodes": nodes, "rigReporters": reporters,
@@ -891,10 +976,15 @@ def collect_machines() -> dict:
                      "tailnet": {"ok": tail.get("ok"), "self": tail.get("self"),
                                  "error": tail.get("error"),
                                  "peers": sorted((tail.get("peers") or {}).keys())},
-                     "workerMachineAlias": {"7950X": {"machine": "X600",
-                                                      "lan": os.environ.get("X600_HOST", "192.168.2.13"),
+                     "workerMachineAlias": {"7950X": {"machine": None, "lan": None,
+                                                      "status": "未確定",
                                                       "verifiedByRigReport": rig_identity_verified,
                                                       "source": alias_source}},
+                     "lanIdentities": {"measuredAt": (lan_scan or {}).get("measuredAt"),
+                                       "subnet": (lan_scan or {}).get("subnet"),
+                                       "aliveCount": (lan_scan or {}).get("aliveCount"),
+                                       "hosts": lan_records,
+                                       "error": lan_scan_error or (lan_scan or {}).get("tailnetError")},
                      "note": "採掘リグの H/s・温度・消費電力はリグ上で worker_reporter.py を実行した分だけ実測値になる（未取得の項目は null のまま）。"}}
 
 

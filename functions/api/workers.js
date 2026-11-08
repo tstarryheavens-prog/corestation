@@ -133,13 +133,17 @@ export async function onRequest(context) {
         machineAlias: workerMachineAlias[String(w.worker_name || "").trim()] || null
       })) : [],
       poolWorkerArchiveNote: dbWorkers.length
-        ? "wallet.db の workers 卓は最後にデータ同期できた時点の実測（ライブ値ではない）。machineAlias はユーザー申告マッピング。"
+        ? "wallet.db の workers 卓は最後にデータ同期できた時点の実測（ライブ値ではない）。worker と物理 PC の対応は、実測で確定できた分だけ machineAlias に出す（今は未確定）。"
         : "wallet.db に workers 記録が無い",
       machineAlias: workerMachineAlias,
+      lanIdentities: (machines.lanIdentities && typeof machines.lanIdentities === "object") ? machines.lanIdentities : null,
       rigNodes: (Array.isArray(machines.nodes) ? machines.nodes : [])
         .filter(n => n && (n.kind === "rig" || String(n.id || "").includes("X600")))
         .map(n => ({
           id: n.id || null, role: n.role || null, online: n.online ?? null,
+          identityStatus: n.identityStatus ?? null, identityEvidence: n.identityEvidence ?? null,
+          identitySource: n.identitySource ?? null, lanIP: n.lanIP ?? null,
+          lanScan: n.lanScan ?? null, windowsCandidates: n.windowsCandidates ?? null,
           openPorts: n.openPorts ?? null, latencyMs: n.latencyMs ?? null,
           hashrate: n.hashrate ?? null, temperature: n.temperature ?? null, power: n.power ?? null,
           poolWorkers: n.poolWorkers ?? null, workerNameSource: n.workerNameSource ?? null,
