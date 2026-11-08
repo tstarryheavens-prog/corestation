@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-07T23:59:30.248561+00:00",
-  "generated_at_jst": "2026-11-08 08:59:30 JST",
+  "generated_at": "2026-11-08T03:19:56.703805+00:00",
+  "generated_at_jst": "2026-11-08 12:19:56 JST",
   "schema": "corestation-live/1",
   "chain": {
     "ok": true,
     "source": "https://blockindex.net/api/v2",
-    "measured_at": "2026-11-08T00:00:13.323785+00:00",
+    "measured_at": "2026-11-08T03:20:38.089186+00:00",
     "data": {
-      "blockHeight": 19645812,
-      "difficulty": "332286911",
-      "difficulty_display": "332.29 M",
-      "lastBlockTime": "2026-11-07T23:59:43.873348906Z",
+      "blockHeight": 19647470,
+      "difficulty": "318026248",
+      "difficulty_display": "318.03 M",
+      "lastBlockTime": "2026-11-08T03:20:17.068485769Z",
       "inSync": true,
       "coin": "Core Coin",
       "backendVersion": "Gocore/v2.2.2-a091fe2d-20260116/linux-amd64/go1.25.6",
@@ -18,7 +18,7 @@
       "walletBalanceXcb": 7624.281268,
       "payoutTxCount": 100,
       "lastPayoutAtJst": "2026-11-07 00:16 JST",
-      "lastPayoutAgeMin": 1963,
+      "lastPayoutAgeMin": 2164,
       "earnedXcb24h": 0.6324,
       "earnedXcb7d": 44.9316,
       "earnedXcb30d": 157.3893,
@@ -31,7 +31,7 @@
   "pool": {
     "ok": false,
     "source": "https://api.catchthatrabbit.com/api/v2",
-    "measured_at": "2026-11-07T23:59:36.558381+00:00",
+    "measured_at": "2026-11-08T03:20:03.045521+00:00",
     "reason": "プール API が応答しない（522/404・TLS 証明期限切れの実測）",
     "attempts": [
       {
@@ -55,7 +55,7 @@
   "db": {
     "ok": true,
     "source": "/Volumes/Docker/CoreGeeksEXp/data/wallet.db",
-    "measured_at": "2026-11-07T23:59:36.162867+00:00",
+    "measured_at": "2026-11-08T03:20:01.965450+00:00",
     "data": {
       "dbPath": "/volume1/Docker/CoreGeeksEXp/data/wallet.db",
       "fileSizeBytes": 10973184,
@@ -171,10 +171,14 @@
   "content": {
     "ok": true,
     "source": "articles/, hub/output/, hub/config/last_seen_*.json, data/local_articles.js",
-    "measured_at": "2026-11-07T23:59:35.976717+00:00",
+    "measured_at": "2026-11-08T03:20:02.368164+00:00",
     "data": {
-      "articlesDirCount": 37,
+      "articlesDirCount": 38,
       "articlesNewest": [
+        {
+          "file": "articles/community-voice-roundup-vol3.html",
+          "mtimeJst": "2026-11-08 10:01 JST"
+        },
         {
           "file": "articles/community-voice-roundup-vol2.html",
           "mtimeJst": "2026-11-08 07:02 JST"
@@ -194,13 +198,13 @@
         {
           "file": "articles/core-blockchain-ecosystem-complete-guide.html",
           "mtimeJst": "2026-10-18 14:11 JST"
-        },
-        {
-          "file": "articles/crypto-beginner-investing-and-exchange-guide.html",
-          "mtimeJst": "2026-10-18 14:11 JST"
         }
       ],
       "hubOutputNewest": [
+        {
+          "file": "hub/output/community-voice-roundup-vol3.html",
+          "mtimeJst": "2026-11-08 10:01 JST"
+        },
         {
           "file": "hub/output/community-voice-roundup-vol2.html",
           "mtimeJst": "2026-11-08 07:02 JST"
@@ -220,15 +224,16 @@
         {
           "file": "hub/output/chronicle_update_codetechcc_1604.html",
           "mtimeJst": "2026-10-18 16:36 JST"
-        },
-        {
-          "file": "hub/output/beginner_crypto-beginner-investing-and-exchange-guide.html",
-          "mtimeJst": "2026-10-15 23:31 JST"
         }
       ],
-      "archiveCount": 36,
+      "archiveCount": 37,
       "archiveNewestDate": "2026-11-08",
       "archiveLatestItems": [
+        {
+          "id": "community-voice-roundup-vol3",
+          "title": "【リコロのコミュニティ定点観測 Vol.3】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リア",
+          "date": "2026-11-08"
+        },
         {
           "id": "community-voice-roundup-vol2",
           "title": "【リコロのコミュニティ定点観測 Vol.2】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リア",
@@ -253,28 +258,23 @@
           "id": "crypto-beginner-what-is-cryptocurrency-history",
           "title": "【超初心者向け】仮想通貨（暗号資産）とは何か？ビットコイン誕生の歴史からブロックチェーンの本質までゼロからわかる完全入門",
           "date": "2026-10-15"
-        },
-        {
-          "id": "crypto-beginner-learn-gains-and-risks",
-          "title": "【初心者の疑問】仮想通貨を持つと何が学べる？実際に保有して初めて見えてくる「得られる体験」と「失うリスク」のリアル",
-          "date": "2026-10-15"
         }
       ],
-      "archiveFileMtimeJst": "2026-11-08 07:02 JST",
+      "archiveFileMtimeJst": "2026-11-08 10:01 JST",
       "watcherLastCheckedChronicle": "2026-11-08T07:01:02.779908",
       "watcherLastPublishedCommunity": "2026-11-08",
       "watcherSeenPosts": 24,
       "shortfallCount": 0,
       "shortfallNewest": [],
-      "gitLastCommit": "2c534e7 2026-11-08 07:02 feat(community): publish community sentiment roundup [2026-11-08 07:02]"
+      "gitLastCommit": "1353abd 2026-11-08 12:09 chore(dashboard): remove マイマシン計測 & データ鮮度（実測）panel (user: 不要) — drop machineMetricsCard, renderMachineMetrics, renderDataFreshness"
     }
   },
   "watcher": {
     "ok": true,
     "source": "hub/config/last_seen_*.json + hub/output mtime + NAS crontab (if readable)",
-    "measured_at": "2026-11-07T23:59:33.768804+00:00",
+    "measured_at": "2026-11-08T03:20:01.177087+00:00",
     "data": {
-      "lastHubOutputAtJst": "2026-11-08 07:02 JST",
+      "lastHubOutputAtJst": "2026-11-08 10:01 JST",
       "crontabEntriesVisibleToCollector": [],
       "note": "巡回の間隔は crontab 実体から。crontab が見えないマシンで実行中は null。"
     }
@@ -282,7 +282,7 @@
   "machines": {
     "ok": true,
     "source": "local proc + inference HTTP probes + NAS HUD + machine_metrics/*.json",
-    "measured_at": "2026-11-07T23:59:32.341768+00:00",
+    "measured_at": "2026-11-08T03:20:41.663355+00:00",
     "data": {
       "nodes": [
         {
@@ -292,33 +292,94 @@
             "hostname": "MacBook.local",
             "os": "Darwin 27.2.0",
             "cpuLogical": 8,
-            "measured_at": "2026-11-07T23:59:30.450344+00:00",
+            "measured_at": "2026-11-08T03:19:56.795288+00:00",
             "loadAvg": [
-              2.88,
-              2.46,
-              2.33
+              3.02,
+              3.22,
+              3.71
             ],
             "ramBytes": 8589934592,
-            "ramUsedBytes": 1011732480,
-            "ramFreeBytes": 17891328,
-            "uptimeSeconds": 42927,
-            "diskFreeBytes": 2895121035264,
+            "ramUsedBytes": 862130176,
+            "ramFreeBytes": 18178048,
+            "uptimeSeconds": 54953,
+            "diskFreeBytes": 2895034109952,
             "diskTotalBytes": 3991400349696,
             "topProcesses": [
-              "0.0 launchd",
-              "0.0 logd",
+              "0.3 launchd",
+              "0.2 logd",
               "0.0 UserEventAgent",
-              "0.0 fseventsd",
+              "0.1 fseventsd",
               "0.0 mediaremoted"
             ]
           },
           "kind": "local"
         },
         {
+          "id": "z790-al (Strata)",
+          "role": "Hermes 推論 / llama-swap",
+          "kind": "inference",
+          "measured_at": "2026-11-08T03:19:56.838330+00:00",
+          "pingLatencyMs": 17.0,
+          "online": true,
+          "endpoint": "http://100.86.91.70:47832",
+          "models": [
+            {
+              "id": "iq3_xxs",
+              "label": "Qwen3.8-Flash-Next IQ3_XXS",
+              "gpus": [
+                1,
+                0
+              ]
+            }
+          ],
+          "throughputProbe": {
+            "ok": true,
+            "wallSeconds": 34.59,
+            "tokens": 55,
+            "measured_at": "2026-11-08T03:20:31.479429+00:00",
+            "timeToFirstTokenSeconds": 33.27,
+            "decodeTokensPerSecond": 41.21,
+            "overallTokensPerSecond": 1.59
+          },
+          "metricsEndpoint": {
+            "available": false,
+            "note": "HTTPError: HTTP Error 404: Not Found"
+          }
+        },
+        {
+          "id": "bc250-1",
+          "role": "Phi-4 14B (llama.cpp)",
+          "kind": "inference",
+          "measured_at": "2026-11-08T03:20:33.074658+00:00",
+          "pingLatencyMs": 87.9,
+          "online": true,
+          "endpoint": "http://100.79.26.62:8080",
+          "models": [
+            {
+              "id": "/home/bc250/models/phi-4-Q4_K_M.gguf",
+              "label": null,
+              "gpus": null
+            }
+          ],
+          "throughputProbe": {
+            "ok": true,
+            "wallSeconds": 4.22,
+            "tokens": 140,
+            "measured_at": "2026-11-08T03:20:37.463387+00:00",
+            "timeToFirstTokenSeconds": 0.25,
+            "decodeTokensPerSecond": 35.03,
+            "overallTokensPerSecond": 33.16
+          },
+          "metricsEndpoint": {
+            "available": false,
+            "note": "HTTPError: HTTP Error 501: Not Implemented"
+          }
+        },
+        {
           "id": "NAS (Asustor) HUD",
           "role": "運用 HUD / wallet.db ホスト",
           "kind": "nas",
-          "measured_at": "2026-11-07T23:59:32.231660+00:00",
+          "measured_at": "2026-11-08T03:20:40.030963+00:00",
           "online": true,
           "status": {
             "pending_approval": 5,
@@ -332,12 +393,23 @@
             "archived": 142,
             "trash": 16,
             "duplicate_reappearing": 0,
-            "server_time": "2026-11-08 08:59:31",
+            "server_time": "2026-11-08 12:20:39",
             "rev": "2026-11-08a",
             "root_dir": "/app"
           },
           "error": null,
           "source": "http://192.168.2.100:8899/api/status"
+        },
+        {
+          "id": "CoreStation NAS サーバー (8088)",
+          "role": "server.py 常駐（巡回・data_sync・live_blocks ワーカー）",
+          "kind": "nas_service",
+          "measured_at": "2026-11-08T03:20:41.651666+00:00",
+          "online": false,
+          "status": null,
+          "error": "URLError: <urlopen error [Errno 61] Connection refused>",
+          "note": "稼働していれば NAS 側で巡回と DB 同期が自動で走る。停止中は Hermes ジョブがその役を担っている。",
+          "source": "http://192.168.2.100:8088/api/db/status"
         }
       ],
       "rigReporters": [],
@@ -347,19 +419,19 @@
   },
   "tls": {
     "note": "verified:/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/certifi/cacert.pem",
-    "measured_at": "2026-11-08T00:00:14.396078+00:00"
+    "measured_at": "2026-11-08T03:20:42.068326+00:00"
   },
   "staleness": {
     "articles_newest_age_days": null,
-    "archive_newest_date_age_days": 0.0,
-    "watcher_last_run_age_days": 0.08,
+    "archive_newest_date_age_days": 0.14,
+    "watcher_last_run_age_days": 0.22,
     "db_last_sync_age_days": null,
     "db_file_age_days": null,
-    "last_payout_age_minutes": 1963
+    "last_payout_age_minutes": 2164
   },
   "deployGate": {
-    "minIntervalMin": 120,
-    "deployFlag": false
+    "minIntervalMin": 30,
+    "deployFlag": true
   },
-  "signature": "f6b02753b6fa6e07"
+  "signature": "9d8c03c137a98251"
 }
