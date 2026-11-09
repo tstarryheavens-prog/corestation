@@ -39,6 +39,8 @@ export async function onRequest(context) {
   const chain = (liveData.chain && liveData.chain.data) || {};
   const dbSection = (liveData.db && liveData.db.data) || {};
   const dbWorkers = Array.isArray(dbSection.dbWorkersSnapshot) ? dbSection.dbWorkersSnapshot : [];
+  const dbWorkersProv = dbSection.dbWorkersProvenance || null;
+  const syntheticHrWorkers = new Set((dbWorkersProv && dbWorkersProv.syntheticHrWorkers) || []);
   const workerMachineAlias = machines.workerMachineAlias || {};
 
   // 1) リグ報告（実測 H/s / temperature / power）
@@ -127,13 +129,18 @@ export async function onRequest(context) {
       poolWorkerArchive: Array.isArray(dbWorkers) ? dbWorkers.map(w => ({
         workerName: w.worker_name ?? null,
         pool: w.pool ?? null,
-        hr: w.hr ?? null,
+        hr: syntheticHrWorkers.has(String(w.worker_name || "").trim()) ? null : (w.hr ?? null),
+        hrRaw: w.hr ?? null,
+        hrProvenance: syntheticHrWorkers.has(String(w.worker_name || "").trim())
+          ? "合成値（プール API 522 時のフォールバック 0/2358）— 実測 H/s ではない"
+          : "wallet.db 記録（sync.py）",
         offline: w.offline ?? null,
         archiveUpdatedAt: w.updated_at ?? null,
         machineAlias: workerMachineAlias[String(w.worker_name || "").trim()] || null
       })) : [],
+      poolWorkerProvenance: dbWorkersProv,
       poolWorkerArchiveNote: dbWorkers.length
-        ? "wallet.db の workers 卓は最後にデータ同期できた時点の実測（ライブ値ではない）。worker と物理 PC の対応は、実測で確定できた分だけ machineAlias に出す（今は未確定）。"
+        ? "wallet.db の workers 卓は sync.py が最後に更新した時点の値（ライブ H/s ではない）。プール API が 522 の間は hr は 0 / 2358 のフォールバック合成値なので、この API は null（未取得）として出す。採掘が動いているかの実測証拠は on-chain の着金間隔。"
         : "wallet.db に workers 記録が無い",
       machineAlias: workerMachineAlias,
       lanIdentities: (machines.lanIdentities && typeof machines.lanIdentities === "object") ? machines.lanIdentities : null,

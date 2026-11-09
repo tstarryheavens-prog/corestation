@@ -365,6 +365,20 @@ def collect_db() -> dict:
         latest_rates = [dict(r) for r in cur.fetchall()]
         cur.execute("SELECT * FROM workers")
         db_workers = [dict(r) for r in cur.fetchall()]
+        # wallet.db の workers 卓は sync.py が書く。プール API が生きていれば実測だが、
+        # 落ちたときは sync.py がフォールバックで「24h 以内に MiningRewards が有るか」だけから
+        # active を推定し、hr を 0 か 2358（sync.py:476 の定数）で書く（2026-11-09 実測で確認）。
+        synthetic_rows = [str(w.get("worker_name")) for w in db_workers
+                          if str(w.get("hr")) in ("0", "2358")]
+        workers_provenance = {
+            "writtenBy": "sync.py（プール API → 無ければ on-chain フォールバック）",
+            "livePoolApi": "未取得（api.catchthatrabbit.com / as.catchthatrabbit.com の api/v2 は HTTP 522 "
+                           "= Cloudflare が origin に到達していない。2026-11-09 実測）",
+            "fallbackRule": "プール API 応答時は hr は実測。522 のときの行は hr = 0 / 2358 の合成値で、"
+                            "online・offline は直近 24 時間の MiningRewards 有無から算出（実測 H/s ではない）",
+            "syntheticHrWorkers": synthetic_rows,
+            "meaning": "ライブ H/s はプール API 復旧時のみ実測になる。on-chain の着金間隔が採掘稼働の実測証拠",
+        }
         cur.execute("SELECT MAX(updated_at) AS a FROM currency_rates") if False else None
         conn.close()
         data = {
@@ -386,6 +400,7 @@ def collect_db() -> dict:
             "lastSyncAtJst": datetime.fromtimestamp(last_sync_ts, JST).strftime("%Y-%m-%d %H:%M JST") if last_sync_ts else None,
             "latestRates": latest_rates[:12],
             "dbWorkersSnapshot": db_workers,
+            "dbWorkersProvenance": workers_provenance,
         }
         return {"ok": True, "source": db, "measured_at": iso_now(), "data": data}
     except Exception as exc:  # noqa: BLE001
@@ -661,6 +676,21 @@ def tailnet_ping_latency(ip: str):
     return round(max(vals), 1) if vals else None
 
 
+def tailnet_lan_endpoint(ip: str):
+    """tailscale ping 1 発の応答から「via <LAN IP>:<port>」を実測する（tailnet 名 ⇔ LAN IP の対応）。
+    返り値: (LAN direct endpoint 文字列、DERP 経由なら None; 往復 ms or None)。失敗は (None, None)。"""
+    ts = shutil.which("tailscale") or ("/usr/local/bin/tailscale" if os.path.exists("/usr/local/bin/tailscale") else None)
+    if not ts or not ip:
+        return None, None
+    rc, out, err = _subprocess_run([ts, "ping", "-c", "1", ip], 12)
+    text = out or err or ""
+    eps = re.findall(r"via\s+([\d.]+:\d+|\[[0-9a-f:]+\]:\d+)", text)
+    # IPv4 の方を LAN 身元表と突き合わせたいので IPv4 を優先、無ければ IPv6 direct をそのまま出す
+    ep = next((e for e in eps if e[:1].isdigit()), (eps[0] if eps else None))
+    ms = [float(v) for v in re.findall(r"in\s+([\d.]+)\s*ms", text)]
+    return ep, (round(max(ms), 1) if ms else None)
+
+
 def lan_identities(max_age_s: int = 6 * 3600):
     """scripts/lan_scan.py が書く data/lan_identities.json を取り込む。
 
@@ -845,6 +875,7 @@ def collect_machines() -> dict:
     # tailnet 側の実測（X600 に Tailscale が入ればここに実データが来る。無ければ「無い」と書く）
     tailnet_node = None
     tailnet_error = None
+    tailnet_windows_peers = []
     if tail.get("ok"):
         for key, peer in (tail.get("peers") or {}).items():
             if any(al in key for al in x_aliases):
@@ -862,16 +893,32 @@ def collect_machines() -> dict:
                     tailnet_node["sshPortOpen"] = ssh_open
                 break
         if tailnet_node is None:
-            offline_peers = []
+            offline_peers, win_desc = [], []
             for pe in (tail.get("peers") or {}).values():
-                if pe.get("online"):
+                if not pe.get("online"):
+                    ls = str(pe.get("lastSeen") or "")[:10]
+                    offline_peers.append(f"{pe.get('hostname')}({pe.get('os')}"
+                                         f"{', last seen ' + ls if ls else ''})")
+                if str(pe.get("os") or "").lower() != "windows":
                     continue
-                ls = str(pe.get("lastSeen") or "")[:10]
-                offline_peers.append(f"{pe.get('hostname')}({pe.get('os')}"
-                                     f"{', last seen ' + ls if ls else ''})")
+                ep, ms = (None, None)
+                if pe.get("online") and pe.get("ips"):
+                    ep, ms = tailnet_lan_endpoint(pe["ips"][0])
+                tailnet_windows_peers.append({
+                    "hostname": pe.get("hostname"),
+                    "tailnetIP": (pe.get("ips") or [None])[0],
+                    "online": bool(pe.get("online")),
+                    "lastSeen": (str(pe.get("lastSeen") or "")[:19] or None),
+                    "lanDirect": ep, "pingMs": ms,
+                })
+                win_desc.append(f"{pe.get('hostname')}({(pe.get('ips') or ['-'])[0]}"
+                                f"{', LAN direct ' + ep if ep else ''}"
+                                f"{', ' + str(ms) + 'ms' if ms else ''}"
+                                f"{', online' if pe.get('online') else ', offline last seen ' + (str(pe.get('lastSeen') or '')[:10])})")
             tailnet_error = (f"tailnet に X600 ノードが見えない。既知ノード: "
                              f"{', '.join(sorted((tail.get('peers') or {}).keys()))}。"
-                             f"この巡回時点で offline: {', '.join(offline_peers) or '無し'}"
+                             f"この巡回時点で offline: {', '.join(offline_peers) or '無し'}。"
+                             f"tailnet の Windows ノード実測: {', '.join(win_desc) or '無し'}"
                              "（X600 は Tailscale 未導入か、電源 OFF の可能性）")
     else:
         tailnet_error = tail.get("error")
@@ -901,6 +948,7 @@ def collect_machines() -> dict:
                                "identitySource": r.get("identitySource"),
                                "openPorts": r.get("openPorts") or []} for r in windows_hosts],
         "online": bool(open_ports), "openPorts": open_ports, "latencyMs": latency,
+        "tailnetWindowsPeers": tailnet_windows_peers,
         "mac": xmac,
         "wolReady": bool(xmac),
         "hashrate": None, "temperature": None, "power": None,

@@ -1,8 +1,8 @@
 {
  "schema": "corestation-lan/1",
- "measuredAt": "2026-11-08T16:32:29.936602+00:00",
+ "measuredAt": "2026-11-09T13:46:35.973272+00:00",
  "subnet": "192.168.2.0/24",
- "aliveCount": 40,
+ "aliveCount": 42,
  "hosts": [
   {
    "ip": "192.168.2.1",
@@ -92,16 +92,6 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.109",
-   "pingMs": null,
-   "openPorts": [
-    80
-   ],
-   "tailnet": null,
-   "identity": "404 Not Found",
-   "identitySource": "http:80 title"
-  },
-  {
    "ip": "192.168.2.11",
    "pingMs": null,
    "openPorts": [
@@ -115,6 +105,22 @@
    "identitySource": null
   },
   {
+   "ip": "192.168.2.112",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.113",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
    "ip": "192.168.2.114",
    "pingMs": null,
    "openPorts": [
@@ -123,6 +129,18 @@
    "tailnet": null,
    "identity": "NEC クイック設定Web | Aterm",
    "identitySource": "http:80 title"
+  },
+  {
+   "ip": "192.168.2.12",
+   "pingMs": null,
+   "openPorts": [
+    135,
+    445,
+    3389
+   ],
+   "tailnet": null,
+   "identity": "Z790",
+   "identitySource": "rdp certificate CN"
   },
   {
    "ip": "192.168.2.121",
@@ -283,7 +301,9 @@
    "ip": "192.168.2.155",
    "pingMs": null,
    "openPorts": [
-    22
+    22,
+    8080,
+    9090
    ],
    "tailnet": null,
    "identity": "SSH-2.0-OpenSSH_10.6",
@@ -316,8 +336,7 @@
    "pingMs": null,
    "openPorts": [
     22,
-    80,
-    8080
+    80
    ],
    "tailnet": null,
    "identity": "ATOMCam Hack Setup",

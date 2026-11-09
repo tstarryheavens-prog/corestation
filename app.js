@@ -1181,6 +1181,7 @@
       if (workerRes && workerRes.state && workerRes.data) {
         state.workers = Array.isArray(workerRes.data) ? workerRes.data : (workerRes.data.workers || []);
         state.poolWorkerArchive = (workerRes.data && workerRes.data.poolWorkerArchive) || [];
+        state.poolWorkerProvenance = (workerRes.data && workerRes.data.poolWorkerProvenance) || null;
         state.machineAlias = (workerRes.data && workerRes.data.machineAlias) || {};
         state.lanIdentities = (workerRes.data && workerRes.data.lanIdentities) || state.lanIdentities || null;
         state.poolApiStatus = (workerRes.data && workerRes.data.poolApi) || null;
@@ -1472,6 +1473,7 @@
             ${(n.openPorts && n.openPorts.length) ? `LAN open ports: ${n.openPorts.join(", ")} · ` : ""}${typeof n.latencyMs === "number" ? `LAN latency ${n.latencyMs} ms · ` : ""}実測 ${n.measuredAt || "未取得"}<br>
             プール上の worker 名: ${(n.poolWorkers || []).join(", ") || "未取得"}${n.workerNameSource ? ` <span style="font-size: 12px;">（${n.workerNameSource}）</span>` : ""}<br>
             tailnet: ${n.tailnet ? `${n.tailnet.hostname}${(n.tailnet.ips||[]).length ? ` (${n.tailnet.ips[0]})` : ""} — ${n.tailnet.online ? "online" : "offline"}${typeof n.tailnet.pingMs === "number" ? ` · tailscale ping ${n.tailnet.pingMs} ms` : ""}${n.tailnet.sshPortOpen === true ? " · SSH 22 到達可" : (n.tailnet.sshPortOpen === false ? " · SSH 22 応答なし" : "")}` : (n.tailnetError || "未取得")}<br>
+            ${(n.tailnetWindowsPeers && n.tailnetWindowsPeers.length) ? `tailnet の Windows ノード（tailscale ping 実測）: ${n.tailnetWindowsPeers.map(p => `${p.hostname}${p.tailnetIP ? ` (${p.tailnetIP})` : ""}${p.lanDirect ? ` → LAN direct ${p.lanDirect}${p.pingMs ? ` ${p.pingMs}ms` : ""}` : ""}${p.online ? " · online" : ` · offline (last seen ${p.lastSeen || "?"})`}`).join(" / ")}<br>` : ""}
             ${n.mac ? `WoL: MAC 実測 ${n.mac}${n.macSource ? `（出典: ${n.macSource}）` : ""} — scripts/x600_wake.sh --wake で起動できる` : "WoL: MAC 未取得（ARP に出ないため遠隔では起こせません。リグ側 reporter が MAC を報告すれば起こせる）"}<br>
             ${n.computerName ? `マシン名（リグ実測）: ${n.computerName}${n.uptimeHours !== null && n.uptimeHours !== undefined ? ` · 稼働 ${n.uptimeHours} 時間` : ""}<br>` : ""}${n.lanIdentityVerified ? `IP 照合: ${n.lanIdentitySource}<br>` : ""}
             H/s・温度・消費電力: ${(n.hashrate !== null && n.hashrate !== undefined) || (n.temperature !== null && n.temperature !== undefined) || (n.power !== null && n.power !== undefined)
@@ -1494,6 +1496,10 @@
 
       const ev = state.onchainEvidence || {};
       const poolReason = (state.poolApiStatus && state.poolApiStatus.reason) || "プールAPI 未応答";
+      const wProv = state.poolWorkerProvenance || {};
+      const provNote = `プールAPI: ${poolReason}`
+        + (wProv.fallbackRule ? ` / ${wProv.fallbackRule}` : "")
+        + ((wProv.syntheticHrWorkers || []).length ? ` / 合成値だった行: ${(wProv.syntheticHrWorkers || []).join(", ")}（この API では未取得として出す）` : "");
 
       const lanMeta = state.lanIdentities || {};
       const lanRows = (lanMeta.hosts || [])
@@ -1528,7 +1534,7 @@
             </tr></thead>
             <tbody>${archiveRows}</tbody>
           </table>
-          <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 6px;">プールAPI: ${poolReason}</div>
+          <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 6px;">${provNote}</div>
         </div>` : ""}
         <div style="margin-top: 12px; padding: 10px 12px; border-left: 3px solid var(--primary); background: var(--bg-surface); border-radius: 6px; font-size: 13.5px; color: var(--text-muted); line-height: 1.7;">
           <strong style="color: var(--text-main);">オンチェーン実測（マシン実測ではなく確定実績）</strong><br>
@@ -2928,6 +2934,7 @@
           if (wRes && wRes.data) {
             if (Array.isArray(wRes.data.workers)) state.workers = wRes.data.workers;
             state.poolWorkerArchive = wRes.data.poolWorkerArchive || state.poolWorkerArchive;
+            state.poolWorkerProvenance = wRes.data.poolWorkerProvenance || state.poolWorkerProvenance;
             state.machineAlias = wRes.data.machineAlias || state.machineAlias;
             state.lanIdentities = wRes.data.lanIdentities || state.lanIdentities || null;
             state.rigNodes = wRes.data.rigNodes || state.rigNodes;
