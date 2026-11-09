@@ -151,6 +151,7 @@ export async function onRequest(context) {
           identityStatus: n.identityStatus ?? null, identityEvidence: n.identityEvidence ?? null,
           identitySource: n.identitySource ?? null, lanIP: n.lanIP ?? null,
           lanScan: n.lanScan ?? null, windowsCandidates: n.windowsCandidates ?? null,
+          tailnetWindowsPeers: n.tailnetWindowsPeers ?? null,
           openPorts: n.openPorts ?? null, latencyMs: n.latencyMs ?? null,
           hashrate: n.hashrate ?? null, temperature: n.temperature ?? null, power: n.power ?? null,
           poolWorkers: n.poolWorkers ?? null, workerNameSource: n.workerNameSource ?? null,
