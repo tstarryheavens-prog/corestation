@@ -1008,5 +1008,11 @@
     "minIntervalMin": 90,
     "deployFlag": true
   },
-  "signature": "44904106154ed818"
+  "signature": "44904106154ed818",
+  "deploy": {
+    "pushed": true,
+    "commitMessage": "chore(live): dashboard 実測スナップショット 44904106154e",
+    "signature": "44904106154ed818",
+    "at": "2026-11-09T17:40:36.193183+00:00"
+  }
 }
