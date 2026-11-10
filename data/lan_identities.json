@@ -1,8 +1,8 @@
 {
  "schema": "corestation-lan/1",
- "measuredAt": "2026-11-10T07:20:38.396505+00:00",
+ "measuredAt": "2026-11-10T20:22:11.885482+00:00",
  "subnet": "192.168.2.0/24",
- "aliveCount": 45,
+ "aliveCount": 43,
  "hosts": [
   {
    "ip": "192.168.2.1",
@@ -20,11 +20,12 @@
    "openPorts": [
     22,
     445,
-    5900
+    5900,
+    8520
    ],
    "tailnet": null,
-   "identity": "SSH-2.0-OpenSSH_10.5",
-   "identitySource": "ssh banner",
+   "identity": "Motor Engineering Research Workbench — 電動機学術文献・技術体系データベース",
+   "identitySource": "http:8520 title",
    "sshBanner": "SSH-2.0-OpenSSH_10.5"
   },
   {
@@ -38,10 +39,7 @@
     8520,
     8899
    ],
-   "tailnet": {
-    "tailnetName": "tokage",
-    "source": "tailscale ping via endpoint"
-   },
+   "tailnet": null,
    "identity": "Smart AI Life Lab ｜ 運営HUD",
    "identitySource": "http:8899 title",
    "sshBanner": "SSH-2.0-OpenSSH_9.8"
@@ -112,14 +110,6 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.112",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.114",
    "pingMs": null,
    "openPorts": [
@@ -173,17 +163,12 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.13",
+   "ip": "192.168.2.129",
    "pingMs": null,
-   "openPorts": [
-    135,
-    139,
-    445,
-    3389
-   ],
+   "openPorts": [],
    "tailnet": null,
-   "identity": "Z690",
-   "identitySource": "rdp certificate CN"
+   "identity": null,
+   "identitySource": null
   },
   {
    "ip": "192.168.2.133",
@@ -200,6 +185,7 @@
     80,
     139,
     443,
+    445,
     631
    ],
    "tailnet": null,
@@ -234,10 +220,7 @@
     445,
     3389
    ],
-   "tailnet": {
-    "tailnetName": "x600",
-    "source": "tailscale ping via endpoint"
-   },
+   "tailnet": null,
    "identity": "X600",
    "identitySource": "rdp certificate CN",
    "sshBanner": "SSH-2.0-OpenSSH_for_Windows_9.5"
@@ -326,10 +309,7 @@
     8080,
     9090
    ],
-   "tailnet": {
-    "tailnetName": "bc250-1",
-    "source": "tailscale ping via endpoint"
-   },
+   "tailnet": null,
    "identity": "SSH-2.0-OpenSSH_10.6",
    "identitySource": "ssh banner",
    "sshBanner": "SSH-2.0-OpenSSH_10.6"
@@ -377,14 +357,6 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.165",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.167",
    "pingMs": null,
    "openPorts": [
@@ -403,7 +375,7 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.174",
+   "ip": "192.168.2.169",
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
