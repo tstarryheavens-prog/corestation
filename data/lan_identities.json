@@ -1,8 +1,8 @@
 {
  "schema": "corestation-lan/1",
- "measuredAt": "2026-11-10T01:20:13.597076+00:00",
+ "measuredAt": "2026-11-10T02:58:05.387476+00:00",
  "subnet": "192.168.2.0/24",
- "aliveCount": 38,
+ "aliveCount": 45,
  "hosts": [
   {
    "ip": "192.168.2.1",
@@ -50,6 +50,17 @@
    "ip": "192.168.2.101",
    "pingMs": null,
    "openPorts": [],
+   "tailnet": {
+    "tailnetName": "iphone182",
+    "source": "tailscale ping via endpoint"
+   },
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.103",
+   "pingMs": null,
+   "openPorts": [],
    "tailnet": null,
    "identity": null,
    "identitySource": null
@@ -85,6 +96,16 @@
    "tailnet": null,
    "identity": null,
    "identitySource": null
+  },
+  {
+   "ip": "192.168.2.109",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": "404 Not Found",
+   "identitySource": "http:80 title"
   },
   {
    "ip": "192.168.2.11",
@@ -186,12 +207,35 @@
    "identitySource": null
   },
   {
+   "ip": "192.168.2.137",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
    "ip": "192.168.2.139",
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
    "identity": null,
    "identitySource": null
+  },
+  {
+   "ip": "192.168.2.14",
+   "pingMs": null,
+   "openPorts": [
+    3389
+   ],
+   "tailnet": {
+    "tailnetName": "x600",
+    "source": "tailscale ping via endpoint"
+   },
+   "identity": "X600",
+   "identitySource": "rdp certificate CN"
   },
   {
    "ip": "192.168.2.140",
@@ -277,7 +321,10 @@
     8080,
     9090
    ],
-   "tailnet": null,
+   "tailnet": {
+    "tailnetName": "bc250-1",
+    "source": "tailscale ping via endpoint"
+   },
    "identity": "SSH-2.0-OpenSSH_10.6",
    "identitySource": "ssh banner",
    "sshBanner": "SSH-2.0-OpenSSH_10.6"
@@ -307,12 +354,22 @@
    "ip": "192.168.2.158",
    "pingMs": null,
    "openPorts": [
-    22
+    22,
+    80,
+    8080
    ],
    "tailnet": null,
-   "identity": "SSH-2.0-OpenSSH_7.1",
-   "identitySource": "ssh banner",
+   "identity": "ATOMCam Hack Setup",
+   "identitySource": "http:80 title",
    "sshBanner": "SSH-2.0-OpenSSH_7.1"
+  },
+  {
+   "ip": "192.168.2.164",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
   },
   {
    "ip": "192.168.2.167",
@@ -326,6 +383,22 @@
   },
   {
    "ip": "192.168.2.168",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.169",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.174",
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
