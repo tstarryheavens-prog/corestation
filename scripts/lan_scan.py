@@ -113,6 +113,24 @@ def tailnet_direct_endpoints():
             parts = line.split()
             name = parts[1] if len(parts) > 1 else "?"
             pairs[m.group(1)] = {"tailnetName": name, "source": "tailscale status direct endpoint"}
+    # tailscale status の行は direct endpoint を "-" で返すノードがある（x600 / z790 が実際にそう）。
+    # 未解決の tailnet ノードは tailscale ping 1 発の "pong ... via <LAN IP>:41641" から LAN 対応を実測する。
+    for line in out.splitlines():
+        parts = line.split()
+        if len(parts) < 3 or ":" in parts[0] or parts[1] in [n for n in pairs.values()]:
+            continue
+        # 経路選択で IPv6 direct を返すことがある（x600/z790 で実測）。IPv4 が欲しいので最大 2 発打つ。
+        for _ in range(2):
+            pong = sh([ts, "ping", "-c", "1", parts[0]], 15)
+            text = pong[1] if isinstance(pong, tuple) else (pong or "")
+            pm = re.search(r"via\s+(\d+\.\d+\.\d+\.\d+):41641", text)
+            if pm:
+                pairs[pm.group(1)] = {"tailnetName": parts[1], "source": "tailscale ping via endpoint"}
+                break
+            pm6 = re.search(r"via\s+(\[[0-9a-f:]+\]):41641", text)
+            if pm6 and parts[1] not in [v["tailnetName"] for v in pairs.values()]:
+                pairs.setdefault("_v6:" + parts[1], {"tailnetName": parts[1], "source": "tailscale ping via IPv6 endpoint",
+                                                     "lanDirectV6": pm6.group(1)})
     return pairs, (None if ts and rc == 0 else (out[:160] or "tailscale status 失敗"))
 
 
@@ -128,12 +146,15 @@ def main():
     endpoints, tailnet_error = tailnet_direct_endpoints()
     if endpoints:
         for ip, meta in endpoints.items():
+            if ip.startswith("_v6:"):
+                continue          # IPv6 direct endpoint は LAN IPv4 ホスト表にはしない（tailnetWindowsPeers 側で使う）
             alive.setdefault(ip, {"pingMs": None})
             alive[ip]["tailnet"] = meta
 
     ports_pairs = [(h, p) for h in alive for p in PORTS]
     with ThreadPoolExecutor(max_workers=48) as ex:
-        for (host, port), (op, ms) in zip(ports_pairs, ex.map(lambda a: tcp_probe(*a), ports_pairs)):
+        # 1.2 s だと Windows の RDP(3389) ハンドシェイクが間に合わずホスト自体が落ちる（X600=.14 で実測）
+        for (host, port), (op, ms) in zip(ports_pairs, ex.map(lambda a: tcp_probe(a[0], a[1], 2.6), ports_pairs)):
             if op is not None:
                 alive[host].setdefault("openPorts", []).append(op)
 
