@@ -32,6 +32,12 @@ Windows はクライアントとしては全プラットフォームで使えま
 
 ## 1) X600 側（PowerShell を「管理者として実行」）
 
+**ファイルは UTF-8 BOM 付きで再配置した（2026-11-10 訂正）**。BOM が無い .ps1 を Windows PowerShell 5.1 が Shift-JIS (ANSI) として読むと日本語部分が化けて `ParserError: UnexpectedToken` / `演算子 '<' は今後の使用のために予約されています` / `文字列に終端記号 "@ がありません` で起動に失敗した（X600 で実測）。古い `C:\corestation\setup_x600.ps1` は必ず上書きし直すこと。BOM はファイル先頭が `EF BB BF` であることで確認できる:
+
+```powershell
+Format-Hex C:\corestation\setup_x600.ps1 | Select-Object -First 1
+```
+
 ### 手順 A: NAS 共有から取る（ダウンロード不要・推奨）
 
 ```powershell
