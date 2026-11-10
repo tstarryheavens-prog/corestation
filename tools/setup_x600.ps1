@@ -1,4 +1,4 @@
-# CoreStation X600 セットアップ（X600 本体の PowerShell を「管理者として実行」で 1 回だけ）
+﻿# CoreStation X600 セットアップ（X600 本体の PowerShell を「管理者として実行」で 1 回だけ）
 #
 # 【重要】Tailscale SSH は Windows では「サーバー側」が未サポート（公式仕様の現状）:
 #   サーバー側として動くのは Linux / macOS の open source tailscale+tailscaled のみ。

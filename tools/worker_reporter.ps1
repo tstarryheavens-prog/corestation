@@ -1,4 +1,4 @@
-# CoreStation worker reporter (X600 / Windows) — 読取り専用
+﻿# CoreStation worker reporter (X600 / Windows) — 読取り専用
 # H/s・温度・消費電力・ストラーム接続を "測れるものだけ" 集めて JSON に書く。
 # 再起動・設定変更・電源操作・マイナーの起動/停止は一切しない。測れない項目は null のまま。
 # 例:  powershell -NoProfile -ExecutionPolicy Bypass -File C:\corestation\worker_reporter.ps1
