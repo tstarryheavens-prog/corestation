@@ -32,12 +32,29 @@ Windows はクライアントとしては全プラットフォームで使えま
 
 ## 1) X600 側（PowerShell を「管理者として実行」）
 
+### 手順 A: NAS 共有から取る（ダウンロード不要・推奨）
+
 ```powershell
 new-item -ItemType Directory -Force C:\corestation | Out-Null
-iwr https://corestation.pages.dev/tools/setup_x600.ps1 -OutFile C:\corestation\setup_x600.ps1
-iwr https://corestation.pages.dev/tools/worker_reporter.ps1 -OutFile C:\corestation\worker_reporter.ps1
+Copy-Item \\192.168.2.100\Docker\CoreGeeksEXp\tools\setup_x600.ps1 C:\corestation\setup_x600.ps1 -Force
+Copy-Item \\192.168.2.100\Docker\CoreGeeksEXp\tools\worker_reporter.ps1 C:\corestation\worker_reporter.ps1 -Force
 powershell -NoProfile -ExecutionPolicy Bypass -File C:\corestation\setup_x600.ps1
 ```
+
+`\\192.168.2.100\Docker\CoreGeeksEXp\tools\` は実在パス（Mac 側が `//kazuki@192.168.2.100/Docker` を `/Volumes/Docker` に SMB マウントしていて、その中に `setup_x600.ps1` と `worker_reporter.ps1` があるのを 2026-11-10 実測で確認）。共有が資格情報を要求する場合は X600 の画面でその場認証になります（パスワードを Hub 側に送らないでください）。`Access is denied` なら手順 B。
+
+### 手順 B: Pages から取る（URL 貼り付け化けを回避）
+
+PowerShell コンソールに URL をそのまま貼ると `@url:` + バッククォート付きに化けて `Could not find a part of the path` になった（2026-11-10 実測）。URL を 1 トークンにしない組み立て方を使う:
+
+```powershell
+new-item -ItemType Directory -Force C:\corestation | Out-Null
+$h = 'corestation' + '.pages.dev'
+Invoke-WebRequest -UseBasicParsing -Uri ('https://' + $h + '/tools/setup_x600.ps1') -OutFile C:\corestation\setup_x600.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\corestation\setup_x600.ps1
+```
+
+`worker_reporter.ps1` は setup_x600.ps1 が同じ URL を見て自分で取りに行くので、落とすファイルは setup 1 個で足ります（Pages 配信は 200 / content-type: application/octet-stream 実測）。ブラウザで `corestation.pages.dev/tools/setup_x600.ps1` を開いてダウンロードしても良いです（setup_x600.ps1 は同ディレクトリに worker_reporter.ps1 が無い時だけ取得します）。
 
 スクリプトがやること（電源操作・再起動・マイナーの設定変更はしません）:
 
@@ -45,13 +62,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\corestation\setup_x600.ps
 2. `sshd` を自動起動にして開始、`sshd` の既定ファイアウォール規則の**送信元を LAN（192.168.2.0/24）と tailnet（100.64.0.0/10）だけに絞る**
 3. 収集専用の公開鍵を `C:\ProgramData\ssh\administrators_authorized_keys` に追記（既存行は保持）、ACL を `SYSTEM` と `Administrators` 単独に fix
 4. `no-port-forwarding,no-agent-forwarding,no-X11-forwarding,no-pty,from="192.168.2.10,100.68.123.120,100.86.91.70"` を鍵行に付ける
-5. `whoami` と `Get-LocalUser` を印字（**ここで出たユーザー名**を鍵行の `from` とACLに入れる）
+5. `whoami` と LAN IPv4 を印字（**ここで出たユーザー名**を Hub 側に教えてほしい）
 6. `worker_reporter.ps1` を初回実行して `C:\corestation\corestation_metrics.json` を書き、5 分毎の定期実行（SYSTEM）を登録
 
-実行後に出る `-CollectorPublicKey` の行をそのまま実行するか、Hub 側で鍵を表示:
+収集鍵はスクリプトの既定値に埋め込んであります（`-CollectorPublicKey` の引数に公開鍵 1 行が入っている。別途コピーして貼る作業は要りません）。鍵を置き換える / 鍵なしで運用する場合は:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\corestation\setup_x600.ps1 -ShowKeyOnly
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\corestation\setup_x600.ps1 -CollectorPublicKey ""
 ```
 
 鍵自体は Hub 側にあります（秘密鍵は X600 に置かない・コミットしない）:
