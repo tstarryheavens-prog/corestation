@@ -77,11 +77,14 @@ fi
 
 JSON=""
 ERR=""
+# Get-Content -Raw の素のテキストを受け取ると、PowerShell が日本語コンソール (cp932) に再エンコードして
+# Hub 側の Python が invalid UTF-8 (surrogate) で落ちる（2026-11-10 実測: UnicodeEncodeError '\udc83'）。
+# ファイルの生バイトを base64 で運んで、受け取り側で文字コードを検出する。
+REMOTE_CMD="powershell -NoProfile -Command \"[Convert]::ToBase64String([IO.File]::ReadAllBytes('$REMOTE_PATH'))\""
 for attempt in 1 2; do
   ERR="$(mktemp)"
   JSON="$(ssh -i "$KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=8 \
-      -o StrictHostKeyChecking=accept-new "$USER_NAME@$OPEN" \
-      "powershell -NoProfile -Command \"Get-Content -Raw '$REMOTE_PATH'\"" 2>"$ERR")"
+      -o StrictHostKeyChecking=accept-new "$USER_NAME@$OPEN" "$REMOTE_CMD" 2>"$ERR")"
   if [ -n "$JSON" ]; then break; fi
   echo "[pull] attempt $attempt 失敗: $(head -c 220 "$ERR" | tr '\n' ' ')"
   rm -f "$ERR"
@@ -95,14 +98,24 @@ if [ -z "$JSON" ]; then
 fi
 
 "$PY" - "$OUT_DIR/X600.json" "$JSON" "$OPEN" "$REMOTE_PATH" <<'PY'
-import json, sys, datetime
+import json, sys, datetime, base64
 out_path, raw, via, remote_path = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
-raw = raw.strip().lstrip("\ufeff")
-try:
-    data = json.loads(raw)
-except json.JSONDecodeError as e:
-    print(f"[pull]  remote {remote_path} が JSON として読めない: {e}")
+blob = base64.b64decode("".join(raw.split()))
+text, enc = None, None
+for cand in ("utf-8-sig", "utf-8", "cp932"):
+    try:
+        text = blob.decode(cand); enc = cand; break
+    except UnicodeDecodeError:
+        continue
+if text is None:
+    print(f"[pull]  remote {remote_path} の文字コードを特定できない（{len(blob)} bytes）")
     sys.exit(4)
+try:
+    data = json.loads(text)
+except json.JSONDecodeError as e:
+    print(f"[pull]  remote {remote_path} が JSON として読めない ({enc}): {e}")
+    sys.exit(4)
+data["remoteEncoding"] = enc
 data.setdefault("machine_id", "X600")
 data["pulledAt"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 data["pulledVia"] = f"OpenSSH over {via} (kazukimacbook-air -> X600)"

@@ -767,10 +767,24 @@ def rig_report_metrics(rep: dict) -> dict:
             power = round(sum(pw), 1)
     miners = [m for m in (rep.get("miners") or []) if isinstance(m, dict)]
     worker_names = sorted({m.get("workerName") for m in miners if m.get("workerName")})
-    macs = [str(m).upper() for m in (rep.get("macAddresses") or []) if m]
+    # WoL 用 MAC は「Up になっている有線 NIC」のものを選ぶ（Wi-Fi / Bluetooth / virtual は対象外）
+    net = [a for a in (rep.get("network") or []) if isinstance(a, dict) and a.get("macAddress")]
+
+    def nic_rank(a):
+        name = str(a.get("name") or "").lower()
+        up = 0 if str(a.get("status") or "").lower() == "up" else 1
+        wireless = 1 if any(w in name for w in ("wi-fi", "wifi", "bluetooth", "tailscale",
+                                                 "virtual", "loopback", "lltp", "wan miniport")) else 0
+        return (up, wireless)
+
+    net_sorted = sorted(net, key=nic_rank)
+    macs = [str(a.get("macAddress")).upper() for a in net_sorted]
+    mac_iface = (str(net_sorted[0].get("name") or "") or None) if net_sorted else None
     if not macs:
-        macs = [str(a.get("macAddress")).upper() for a in (rep.get("network") or [])
-                if isinstance(a, dict) and a.get("macAddress")]
+        macs = [str(m).upper() for m in (rep.get("macAddresses") or []) if m]
+    cpu = rep.get("cpu")
+    if not isinstance(cpu, dict):
+        cpu = {}
     return {
         "hashrate": hr if isinstance(hr, (int, float)) else None,
         "temperature": temp if isinstance(temp, (int, float)) else None,
@@ -785,7 +799,13 @@ def rig_report_metrics(rep: dict) -> dict:
         "computerName": rep.get("computer_name"),
         "rigLanIps": [str(i) for i in (rep.get("lanIpv4") or []) if i],
         "rigMacs": macs,
+        "rigMacInterface": mac_iface,
         "uptimeHours": rep.get("uptimeHours"),
+        # CPU 名と負荷は「このマシンで採掘が走っているか」を判定できる実測値（推定ではない）
+        "cpuName": (str(cpu.get("name") or "").strip() or None),
+        "cpuLoadPercent": cpu.get("loadPercent") if isinstance(cpu.get("loadPercent"), (int, float)) else None,
+        "cpuCores": cpu.get("cores") if isinstance(cpu.get("cores"), int) else None,
+        "gpuCount": len(gpus),
     }
 
 
@@ -991,7 +1011,8 @@ def collect_machines() -> dict:
                         node[key] = metrics[key]
                 for key in ("acceptedPct", "minerProcessCount", "minerWorkerNames",
                             "stratumSessions", "rigMeasuredAt", "rigSource", "rigUnavailable",
-                            "computerName", "rigLanIps", "rigMacs", "uptimeHours"):
+                            "computerName", "rigLanIps", "rigMacs", "uptimeHours",
+                            "cpuName", "cpuLoadPercent", "cpuCores", "gpuCount"):
                     if metrics.get(key) is not None:
                         node[key] = metrics[key]
                 # リグ自身が報告した IPv4 に LAN IP が含まれていれば「この IP = このマシン」を実測で確定できる
@@ -1002,8 +1023,16 @@ def collect_machines() -> dict:
                 if metrics.get("rigMacs") and not node.get("mac"):
                     node["mac"] = metrics["rigMacs"][0]
                     node["wolReady"] = True
-                    node["macSource"] = "worker_reporter (Get-NetAdapter) 実測"
+                    node["macSource"] = ("worker_reporter (Get-NetAdapter) 実測 — NIC "
+                                         f"{metrics.get('rigMacInterface') or '?'}"
+                                         f"（候補: {', '.join(metrics['rigMacs'][:4])}）")
                 node["hasRigReport"] = True
+                # 採掘が走っているかどうかは「マイナープロセス数 + stratum 張数 + CPU 負荷」で実測判定する
+                if (metrics.get("minerProcessCount") == 0 and metrics.get("stratumSessions") == 0):
+                    node["miningState"] = ("採掘プロセス無し（マイナー 0・stratum 接続 0・"
+                                           f"CPU 負荷 {metrics.get('cpuLoadPercent')}%）")
+                elif (metrics.get("minerProcessCount") or 0) > 0:
+                    node["miningState"] = f"マイナー {metrics.get('minerProcessCount')} プロセス検出"
                 break
     rig_identity_verified = any(n.get("lanIdentityVerified") for n in nodes)
     alias_source = ("wallet.db workers 実測（worker 7950X @ as.catchthatrabbit.com / status 0 / 0 H/s / "
@@ -1013,6 +1042,9 @@ def collect_machines() -> dict:
                     "実測で z790-al）")
     if rig_identity_verified:
         alias_source += f" + worker_reporter が {xhost} を自マシンの IPv4 として報告（実測で確定）"
+        rig_cpu = next((n.get("cpuName") for n in nodes if n.get("cpuName")), None)
+        if rig_cpu and "7950" in str(rig_cpu).lower():
+            alias_source += (f" + X600 のリグ報告で CPU 名 = {rig_cpu} を実測（プール worker 名 7950X と同名）")
     lan_records = [{"ip": r.get("ip"), "pingMs": r.get("pingMs"), "openPorts": r.get("openPorts") or [],
                     "identity": r.get("identity"), "identitySource": r.get("identitySource"),
                     "sshBanner": r.get("sshBanner"),
@@ -1024,10 +1056,13 @@ def collect_machines() -> dict:
                      "tailnet": {"ok": tail.get("ok"), "self": tail.get("self"),
                                  "error": tail.get("error"),
                                  "peers": sorted((tail.get("peers") or {}).keys())},
-                     "workerMachineAlias": {"7950X": {"machine": None, "lan": None,
-                                                      "status": "未確定",
-                                                      "verifiedByRigReport": rig_identity_verified,
-                                                      "source": alias_source}},
+                     "workerMachineAlias": {"7950X": {
+                         "machine": ("X600" if rig_identity_verified else None),
+                         "lan": (xhost if rig_identity_verified else None),
+                         "status": ("X600（リグ報告で身元実測）" if rig_identity_verified else "未確定"),
+                         "verifiedByRigReport": rig_identity_verified,
+                         "miningOnX600": next((n.get("miningState") for n in nodes if n.get("miningState")), None),
+                         "source": alias_source}},
                      "lanIdentities": {"measuredAt": (lan_scan or {}).get("measuredAt"),
                                        "subnet": (lan_scan or {}).get("subnet"),
                                        "aliveCount": (lan_scan or {}).get("aliveCount"),

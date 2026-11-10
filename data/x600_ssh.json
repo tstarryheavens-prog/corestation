@@ -1,0 +1,12 @@
+{
+ "user": "thest",
+ "domain": "X600",
+ "lanIp": "192.168.2.14",
+ "tailnetName": "x600",
+ "tailnetDns": "x600.tail8fffd8.ts.net",
+ "tailnetIp": "100.123.199.109",
+ "sshUserAtHost": "thest@192.168.2.14",
+ "keyFile": "~/.ssh/x600_collector_ed25519",
+ "authVerifiedAt": "2026-11-10T06:44:41.999222+00:00",
+ "note": "鍵認証で whoami 実測成功 (x600\\\\thest)。パスワード認証は使わない。from= で送信元を 192.168.2.10 / 100.68.123.120 / 100.86.91.70 に限定"
+}
