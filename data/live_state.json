@@ -1247,5 +1247,11 @@
     "minIntervalMin": 90,
     "deployFlag": true
   },
-  "signature": "cbd1dcef30036c37"
+  "signature": "cbd1dcef30036c37",
+  "deploy": {
+    "pushed": true,
+    "commitMessage": "chore(live): dashboard 実測スナップショット cbd1dcef3003",
+    "signature": "cbd1dcef30036c37",
+    "at": "2026-11-11T21:15:31.808544+00:00"
+  }
 }
