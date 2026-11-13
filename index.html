@@ -41,8 +41,8 @@
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;">
     <div style="display:flex;align-items:center;gap:6px;font-weight:700;">
       <span>🐼 AIカンパニー相互ネットワーク:</span>
-      <a href="https://ai-living-lab.pages.dev" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;background:rgba(56,189,248,0.15);padding:3px 8px;border-radius:6px;">🏠 Smart AI Life (本社ハブ)</a>
-      <a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" rel="noopener" style="color:#a5b4fc;text-decoration:none;background:rgba(165,180,252,0.15);padding:3px 8px;border-radius:6px;">📚 CoreStation × Smart AI Life 特集記事アーカイブ</a>
+      <a href="https://eosinophilicgastroenteritis-ege.pages.dev/ai-living-lab" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;background:rgba(56,189,248,0.15);padding:3px 8px;border-radius:6px;">🏠 Smart AI Life (本社ハブ)</a>
+      <a href="https://eosinophilicgastroenteritis-ege.pages.dev/ai-living-lab/divisions/smartailife" target="_blank" rel="noopener" style="color:#a5b4fc;text-decoration:none;background:rgba(165,180,252,0.15);padding:3px 8px;border-radius:6px;">📚 CoreStation × Smart AI Life 特集記事アーカイブ</a>
     </div>
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:11.5px;">
       <a href="https://ikomainagoyaaichihighschool.pages.dev" target="_blank" rel="noopener" style="color:#cbd5e1;text-decoration:none;">🎓 愛知高校受験ナビ</a>
@@ -51,6 +51,8 @@
       <a href="https://corestation.pages.dev" target="_blank" rel="noopener" style="color:#cbd5e1;text-decoration:none;">💻 CoreStation</a>
       <a href="/en/" style="color:#38bdf8;text-decoration:none;font-weight:700;background:rgba(56,189,248,0.2);padding:2px 6px;border-radius:4px;">🌐 EN (English)</a>
       <a href="https://kurashi-ai.hatenadiary.com/" target="_blank" rel="noopener" style="color:#cbd5e1;text-decoration:none;">📝 公式はてな</a>
+      <a href="https://www.youtube.com/@PotoRuthege" target="_blank" rel="noopener" style="color:#fca5a5;text-decoration:none;">📺 YouTube</a>
+      <a href="https://x.com/PotoRuthege" target="_blank" rel="noopener" style="color:#93c5fd;text-decoration:none;">𝕏 @PotoRuthege</a>
     </div>
   </div>
 </div>
@@ -2413,8 +2415,8 @@ swap=0</code></pre>
       <h2 style="font-size:18px;font-weight:800;margin:0;color:#0f172a;">📚 CoreStation × Smart AI Life 統合記事アーカイブ（最新特集）</h2>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" rel="noopener" style="background:#1e40af;color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;text-decoration:none;">事業部ポータルで全記事を見る ➔</a>
-      <a href="https://ai-living-lab.pages.dev" target="_blank" rel="noopener" style="background:#f8fafc;color:#334155;border:1px solid #cbd5e1;font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;text-decoration:none;">Smart AI Life 本社へ ↗</a>
+      <a href="https://eosinophilicgastroenteritis-ege.pages.dev/ai-living-lab/divisions/smartailife" target="_blank" rel="noopener" style="background:#1e40af;color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;text-decoration:none;">事業部ポータルで全記事を見る ➔</a>
+      <a href="https://eosinophilicgastroenteritis-ege.pages.dev/ai-living-lab" target="_blank" rel="noopener" style="background:#f8fafc;color:#334155;border:1px solid #cbd5e1;font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;text-decoration:none;">Smart AI Life 本社へ ↗</a>
     </div>
   </div>
   <div id="emdash-feed-grid-smartailife" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
@@ -2425,16 +2427,16 @@ swap=0</code></pre>
 (function(){
   var grid = document.getElementById('emdash-feed-grid-smartailife');
   if (!grid) return;
-  fetch('https://ai-living-lab.pages.dev/_emdash/api/content/posts?site_id=smartailife&limit=6')
+  fetch('https://eosinophilicgastroenteritis-ege.pages.dev/_emdash/api/content/posts?site_id=smartailife&limit=6')
     .then(function(r){ return r.json(); })
     .then(function(res){
       var items = (res && res.data && res.data.items) ? res.data.items.slice(0, 6) : [];
       if (!items.length) {
-        grid.innerHTML = '<p style="font-size:13px;color:#64748b;">記事一覧は <a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" style="color:#1e40af;font-weight:700;">Smart AI Life 事業部ページ</a> からご覧いただけます。</p>';
+        grid.innerHTML = '<p style="font-size:13px;color:#64748b;">記事一覧は <a href="https://eosinophilicgastroenteritis-ege.pages.dev/ai-living-lab/divisions/smartailife" target="_blank" style="color:#1e40af;font-weight:700;">Smart AI Life 事業部ページ</a> からご覧いただけます。</p>';
         return;
       }
       grid.innerHTML = items.map(function(it){
-        var url = 'https://ai-living-lab.pages.dev/articles/' + encodeURIComponent(it.slug || it.id);
+        var url = 'https://eosinophilicgastroenteritis-ege.pages.dev/articles/' + encodeURIComponent(it.slug || it.id);
         var title = (it.title || '記事詳細').replace(/</g, '&lt;');
         var excerpt = ((it.excerpt || (it.data && it.data.excerpt) || '') + '').replace(/</g, '&lt;').slice(0, 80);
         return '<a href="' + url + '" target="_blank" rel="noopener" style="display:flex;flex-direction:column;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-decoration:none;color:inherit;transition:all 0.15s ease;">' +
@@ -2445,7 +2447,7 @@ swap=0</code></pre>
       }).join('');
     })
     .catch(function(){
-      grid.innerHTML = '<p style="font-size:13px;color:#64748b;"><a href="https://ai-living-lab.pages.dev/divisions/smartailife" target="_blank" style="color:#1e40af;font-weight:700;">📚 Smart AI Life 統合記事アーカイブを開く ↗</a></p>';
+      grid.innerHTML = '<p style="font-size:13px;color:#64748b;"><a href="https://eosinophilicgastroenteritis-ege.pages.dev/ai-living-lab/divisions/smartailife" target="_blank" style="color:#1e40af;font-weight:700;">📚 Smart AI Life 統合記事アーカイブを開く ↗</a></p>';
     });
 })();
 </script>
