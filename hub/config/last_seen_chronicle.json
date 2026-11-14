@@ -1,30 +1,32 @@
 {
-  "last_checked": "2026-11-12T07:01:13.459731",
+  "last_checked": "2026-11-14T07:04:10.302049",
   "seen_posts": [
-    "codetechcc/1605",
-    "codetechcc/1593",
-    "codetechcc/1581",
-    "codetechcc/1602",
-    "codetechcc/1600",
-    "codetechcc/1606",
-    "youtube/uDvSB5K7u_I",
-    "codetechcc/1582",
+    "codetechcc/1589",
     "codetechcc/1587",
-    "codetechcc/1590",
-    "codetechcc/1604",
-    "youtube/min56wg2HQU",
-    "codetechcc/1592",
-    "youtube/wDvHVD6Ruas",
-    "codetechcc/1580",
-    "codetechcc/1586",
-    "codetechcc/1599",
-    "codetechcc/1585",
+    "youtube/uDvSB5K7u_I",
     "codetechcc/1579",
+    "codetechcc/1592",
+    "codetechcc/1600",
+    "codetechcc/1582",
+    "codetechcc/1604",
+    "codetechcc/1590",
     "codetechcc/1603",
-    "youtube/PncTsHmJl8s",
+    "codetechcc/1585",
+    "youtube/min56wg2HQU",
+    "codetechcc/1581",
+    "codetechcc/1599",
+    "codetechcc/1580",
+    "youtube/wDvHVD6Ruas",
     "codetechcc/1598",
+    "codetechcc/1593",
+    "codetechcc/1606",
     "youtube/7FJUZLEGhjE",
-    "codetechcc/1589"
+    "youtube/PncTsHmJl8s",
+    "codetechcc/1605",
+    "codetechcc/1602",
+    "codetechcc/1586"
   ],
-  "longform_attempts": {}
+  "longform_attempts": {
+    "codetechcc/1607": 2
+  }
 }
