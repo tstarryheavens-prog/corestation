@@ -1,8 +1,8 @@
 {
  "schema": "corestation-lan/1",
- "measuredAt": "2026-11-14T18:19:48.307538+00:00",
+ "measuredAt": "2026-11-15T19:18:46.796475+00:00",
  "subnet": "192.168.2.0/24",
- "aliveCount": 48,
+ "aliveCount": 47,
  "hosts": [
   {
    "ip": "192.168.2.1",
@@ -42,7 +42,7 @@
     "tailnetName": "tokage-1",
     "source": "tailscale ping via endpoint"
    },
-   "identity": "Smart AI Life Lab ｜ 運営HUD",
+   "identity": "AIカンパニー 2Dドット絵リアルタイムオフィス",
    "identitySource": "http:8899 title",
    "sshBanner": "SSH-2.0-OpenSSH_9.8"
   },
@@ -59,6 +59,14 @@
    "identity": "Not Found - CUPS v1.7.2",
    "identitySource": "http:631 title",
    "sshBanner": "SSH-2.0-OpenSSH_7.9"
+  },
+  {
+   "ip": "192.168.2.102",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
   },
   {
    "ip": "192.168.2.103",
@@ -78,14 +86,6 @@
   },
   {
    "ip": "192.168.2.105",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
-   "ip": "192.168.2.106",
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
@@ -195,25 +195,19 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.136",
+   "ip": "192.168.2.137",
    "pingMs": null,
    "openPorts": [
-    80,
-    139,
-    443,
-    445,
-    631
+    80
    ],
    "tailnet": null,
    "identity": null,
    "identitySource": null
   },
   {
-   "ip": "192.168.2.137",
+   "ip": "192.168.2.138",
    "pingMs": null,
-   "openPorts": [
-    80
-   ],
+   "openPorts": [],
    "tailnet": null,
    "identity": null,
    "identitySource": null
@@ -325,7 +319,10 @@
     8080,
     9090
    ],
-   "tailnet": null,
+   "tailnet": {
+    "tailnetName": "bc250-1",
+    "source": "tailscale ping via endpoint"
+   },
    "identity": "SSH-2.0-OpenSSH_10.6",
    "identitySource": "ssh banner",
    "sshBanner": "SSH-2.0-OpenSSH_10.6"
@@ -335,7 +332,8 @@
    "pingMs": null,
    "openPorts": [
     22,
-    80
+    80,
+    8080
    ],
    "tailnet": null,
    "identity": "ATOMCam Hack Setup",
@@ -365,14 +363,6 @@
   },
   {
    "ip": "192.168.2.164",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
-   "ip": "192.168.2.165",
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
