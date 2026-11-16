@@ -266,13 +266,13 @@ def append_body_sections(body_html, extra_html):
 
 def call_gemini_text(prompt, max_output_tokens=MAX_OUTPUT_TOKENS, timeout=GEMINI_TIMEOUT_SECONDS,
                      temperature=0.7, label=""):
-    """gemini-2.5-flash を呼んで本文テキストを返す。失敗時 None（キーはログに出さない）。"""
+    """gemini-4-hydrogen を呼んで本文テキストを返す。失敗時 None（キーはログに出さない）。"""
     api_key = load_gemini_key()
     if not api_key:
         print("❌ GEMINI_API_KEY が見つかりません。", file=sys.stderr)
         return None
 
-    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-4-hydrogen:generateContent?key={api_key}"
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
@@ -538,7 +538,7 @@ SUMMARY: 100〜150文字程度の客観的かつ魅力的な記事要約
 </div>
 """
 
-    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-4-hydrogen:generateContent?key={api_key}"
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {

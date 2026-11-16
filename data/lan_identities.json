@@ -1,8 +1,8 @@
 {
  "schema": "corestation-lan/1",
- "measuredAt": "2026-11-15T19:18:46.796475+00:00",
+ "measuredAt": "2026-11-16T20:06:23.544834+00:00",
  "subnet": "192.168.2.0/24",
- "aliveCount": 47,
+ "aliveCount": 40,
  "hosts": [
   {
    "ip": "192.168.2.1",
@@ -59,14 +59,6 @@
    "identity": "Not Found - CUPS v1.7.2",
    "identitySource": "http:631 title",
    "sshBanner": "SSH-2.0-OpenSSH_7.9"
-  },
-  {
-   "ip": "192.168.2.102",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
   },
   {
    "ip": "192.168.2.103",
@@ -128,14 +120,6 @@
    "identitySource": "http:80 title"
   },
   {
-   "ip": "192.168.2.116",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.12",
    "pingMs": null,
    "openPorts": [
@@ -195,19 +179,15 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.137",
+   "ip": "192.168.2.136",
    "pingMs": null,
    "openPorts": [
-    80
+    80,
+    139,
+    443,
+    445,
+    631
    ],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
-   "ip": "192.168.2.138",
-   "pingMs": null,
-   "openPorts": [],
    "tailnet": null,
    "identity": null,
    "identitySource": null
@@ -278,14 +258,6 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.150",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.151",
    "pingMs": null,
    "openPorts": [],
@@ -297,16 +269,6 @@
    "ip": "192.168.2.152",
    "pingMs": null,
    "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
-   "ip": "192.168.2.154",
-   "pingMs": null,
-   "openPorts": [
-    80
-   ],
    "tailnet": null,
    "identity": null,
    "identitySource": null
@@ -341,14 +303,6 @@
    "sshBanner": "SSH-2.0-OpenSSH_7.1"
   },
   {
-   "ip": "192.168.2.157",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.158",
    "pingMs": null,
    "openPorts": [
@@ -362,7 +316,7 @@
    "sshBanner": "SSH-2.0-OpenSSH_7.1"
   },
   {
-   "ip": "192.168.2.164",
+   "ip": "192.168.2.165",
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
@@ -389,14 +343,6 @@
   },
   {
    "ip": "192.168.2.169",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
-   "ip": "192.168.2.174",
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
