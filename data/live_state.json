@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-18T15:38:40.395300+00:00",
-  "generated_at_jst": "2026-11-19 00:38:40 JST",
+  "generated_at": "2026-11-18T16:03:21.559309+00:00",
+  "generated_at_jst": "2026-11-19 01:03:21 JST",
   "schema": "corestation-live/1",
   "chain": {
     "ok": true,
     "source": "https://blockindex.net/api/v2",
-    "measured_at": "2026-11-18T15:39:08.514681+00:00",
+    "measured_at": "2026-11-18T16:04:24.693674+00:00",
     "data": {
-      "blockHeight": 19776246,
-      "difficulty": "339584254",
-      "difficulty_display": "339.58 M",
-      "lastBlockTime": "2026-11-18T15:38:35.203533761Z",
+      "blockHeight": 19776474,
+      "difficulty": "343572566",
+      "difficulty_display": "343.57 M",
+      "lastBlockTime": "2026-11-18T16:03:32.710945255Z",
       "inSync": true,
       "coin": "Core Coin",
       "backendVersion": "Gocore/v2.2.2-a091fe2d-20260116/linux-amd64/go1.25.6",
@@ -21,10 +21,10 @@
       "txWindowOldestAtJst": "2026-10-13 07:15 JST",
       "earnedWindowLabel": "ローリング実測 (24h/7d/30d, epoch 基準)",
       "payoutIntervalMeasuredH": 4.0,
-      "payoutGapNowH": 0.14,
+      "payoutGapNowH": 0.56,
       "payoutGapExceedsCadence": false,
       "lastPayoutAtJst": "2026-11-19 00:30 JST",
-      "lastPayoutAgeMin": 8,
+      "lastPayoutAgeMin": 33,
       "earnedXcb24h": 9.1572,
       "earnedXcb7d": 69.5231,
       "earnedXcb30d": 214.1856,
@@ -32,21 +32,21 @@
       "blocksFoundPerDay7dEstimate": 6.019,
       "addressFetchError": null,
       "circulatingSupplyRaw": null,
-      "bestBlockHash": "0xc6dee397eb020dae16fab9776fbf4dbfb319358825619fbf7b9f52198503392c",
+      "bestBlockHash": "0x3e329e0446ae2c3780f228cf80d7f163a3eba659e51fd1c58d157f86d5868c9a",
       "freshness": {
-        "lastBlockAgeSeconds": 33,
-        "lastBlockAgeLabel": "33秒前",
-        "ownTxMeasuredAgoMinutes": 8.2,
-        "ownTxMeasuredAgoLabel": "8分前",
-        "blockIntervalMeasuredAgoMinutes": 8.2,
-        "blockIntervalMeasuredAgoLabel": "8分前"
+        "lastBlockAgeSeconds": 51,
+        "lastBlockAgeLabel": "51秒前",
+        "ownTxMeasuredAgoMinutes": 33.4,
+        "ownTxMeasuredAgoLabel": "33分前",
+        "blockIntervalMeasuredAgoMinutes": 33.4,
+        "blockIntervalMeasuredAgoLabel": "33分前"
       }
     }
   },
   "pool": {
     "ok": false,
     "source": "https://api.catchthatrabbit.com/api/v2",
-    "measured_at": "2026-11-18T15:38:47.271555+00:00",
+    "measured_at": "2026-11-18T16:03:28.700118+00:00",
     "reason": "プール API が応答しない（522/404・TLS 証明期限切れの実測）",
     "attempts": [
       {
@@ -70,7 +70,7 @@
   "db": {
     "ok": true,
     "source": "/Volumes/Docker/CoreGeeksEXp/data/wallet.db",
-    "measured_at": "2026-11-18T15:38:46.400545+00:00",
+    "measured_at": "2026-11-18T16:03:30.106115+00:00",
     "data": {
       "dbPath": "/volume1/Docker/CoreGeeksEXp/data/wallet.db",
       "fileSizeBytes": 11005952,
@@ -199,10 +199,14 @@
   "content": {
     "ok": true,
     "source": "articles/, hub/output/, hub/config/last_seen_*.json, data/local_articles.js",
-    "measured_at": "2026-11-18T15:38:42.292875+00:00",
+    "measured_at": "2026-11-18T16:03:29.984764+00:00",
     "data": {
-      "articlesDirCount": 43,
+      "articlesDirCount": 44,
       "articlesNewest": [
+        {
+          "file": "articles/community-voice-roundup-vol8.html",
+          "mtimeJst": "2026-11-19 00:48 JST"
+        },
         {
           "file": "articles/corepass-update-1-72-78-ricolo-analysis.html",
           "mtimeJst": "2026-11-15 07:03 JST"
@@ -222,13 +226,17 @@
         {
           "file": "articles/community-voice-roundup-vol4.html",
           "mtimeJst": "2026-11-08 13:01 JST"
-        },
-        {
-          "file": "articles/community-voice-roundup-vol3.html",
-          "mtimeJst": "2026-11-08 10:01 JST"
         }
       ],
       "hubOutputNewest": [
+        {
+          "file": "hub/output/community-voice-roundup-vol8.html",
+          "mtimeJst": "2026-11-19 00:48 JST"
+        },
+        {
+          "file": "hub/output/community-voice-roundup-vol8_body.html",
+          "mtimeJst": "2026-11-19 00:48 JST"
+        },
         {
           "file": "hub/output/chronicle_update_codetechcc_1607.html",
           "mtimeJst": "2026-11-15 07:02 JST"
@@ -244,19 +252,16 @@
         {
           "file": "hub/output/community-voice-roundup-vol5.html",
           "mtimeJst": "2026-11-09 07:02 JST"
-        },
-        {
-          "file": "hub/output/community-voice-roundup-vol4.html",
-          "mtimeJst": "2026-11-08 13:01 JST"
-        },
-        {
-          "file": "hub/output/community-voice-roundup-vol3.html",
-          "mtimeJst": "2026-11-08 10:01 JST"
         }
       ],
-      "archiveCount": 42,
-      "archiveNewestDate": "2026-11-15",
+      "archiveCount": 43,
+      "archiveNewestDate": "2026-11-19",
       "archiveLatestItems": [
+        {
+          "id": "community-voice-roundup-vol8",
+          "title": "【リコロのコミュニティ定点観測 Vol.8】CorePulse 1.1.0・Intel Mac対応CoreStarter・CorePass ",
+          "date": "2026-11-19"
+        },
         {
           "id": "corepass-update-1-72-78-ricolo-analysis",
           "title": "🚀🔵CorePassが神アプデ！KYBが爆速＆ウォレットも超快適に！リコロが自作PC・ゲーム目線で深掘り解説！🎮💻✨",
@@ -281,28 +286,23 @@
           "id": "community-voice-roundup-vol4",
           "title": "【リコロのコミュニティ定点観測 Vol.4】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リア",
           "date": "2026-11-08"
-        },
-        {
-          "id": "community-voice-roundup-vol3",
-          "title": "【リコロのコミュニティ定点観測 Vol.3】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リア",
-          "date": "2026-11-08"
         }
       ],
-      "archiveFileMtimeJst": "2026-11-15 07:03 JST",
+      "archiveFileMtimeJst": "2026-11-19 00:48 JST",
       "watcherLastCheckedChronicle": "2026-11-18T10:01:08.868738",
-      "watcherLastPublishedCommunity": "2026-11-10",
+      "watcherLastPublishedCommunity": "2026-11-19",
       "watcherSeenPosts": 25,
       "shortfallCount": 0,
       "shortfallNewest": [],
-      "gitLastCommit": "4460af3 2026-11-18 20:57 chore(live): dashboard 実測スナップショット ccc8e2510200"
+      "gitLastCommit": "e0da902 2026-11-19 00:49 feat(community): publish community voice roundup vol8 (X & YouTube Nov 2026)"
     }
   },
   "watcher": {
     "ok": true,
     "source": "hub/config/last_seen_*.json + hub/output mtime + NAS crontab (if readable)",
-    "measured_at": "2026-11-18T15:38:41.179640+00:00",
+    "measured_at": "2026-11-18T16:03:22.826632+00:00",
     "data": {
-      "lastHubOutputAtJst": "2026-11-15 07:02 JST",
+      "lastHubOutputAtJst": "2026-11-19 00:48 JST",
       "crontabEntriesVisibleToCollector": [],
       "note": "巡回の間隔は crontab 実体から。crontab が見えないマシンで実行中は null。"
     }
@@ -310,7 +310,7 @@
   "machines": {
     "ok": true,
     "source": "local proc + inference HTTP probes + NAS HUD + tailnet + machine_metrics/*.json",
-    "measured_at": "2026-11-18T15:38:46.245718+00:00",
+    "measured_at": "2026-11-18T16:03:34.033333+00:00",
     "data": {
       "nodes": [
         {
@@ -320,47 +320,102 @@
             "hostname": "MacBook.local",
             "os": "Darwin 27.2.0",
             "cpuLogical": 8,
-            "measured_at": "2026-11-18T15:38:41.031255+00:00",
+            "measured_at": "2026-11-18T16:03:22.337464+00:00",
             "loadAvg": [
-              20.57,
-              14.38,
-              9.6
+              1.58,
+              2.9,
+              4.81
             ],
             "ramBytes": 8589934592,
-            "ramUsedBytes": 859414528,
-            "ramFreeBytes": 40554496,
-            "uptimeSeconds": 449208,
-            "diskFreeBytes": 2885348298752,
+            "ramUsedBytes": 839966720,
+            "ramFreeBytes": 28065792,
+            "uptimeSeconds": 450689,
+            "diskFreeBytes": 2885319913472,
             "diskTotalBytes": 3991400349696,
             "topProcesses": [
-              "0.5 launchd",
-              "0.7 logd",
+              "0.6 launchd",
+              "0.6 logd",
               "0.0 UserEventAgent",
-              "0.0 fseventsd",
-              "0.0 mediaremoted"
+              "0.2 fseventsd",
+              "0.1 mediaremoted"
             ]
           },
           "kind": "local"
         },
         {
+          "id": "z790-al (Strata)",
+          "role": "Hermes 推論 / llama-swap",
+          "kind": "inference",
+          "measured_at": "2026-11-18T16:03:22.414036+00:00",
+          "pingLatencyMs": 24.2,
+          "online": true,
+          "endpoint": "http://100.86.91.70:47832",
+          "models": [
+            {
+              "id": "/mnt/nas_models/models/Qwen3-30B-A3B-Q4_K_M.gguf",
+              "label": null,
+              "gpus": null
+            }
+          ],
+          "throughputProbe": {
+            "ok": true,
+            "wallSeconds": 1.41,
+            "tokens": 0,
+            "measured_at": "2026-11-18T16:03:23.927206+00:00"
+          },
+          "metricsEndpoint": {
+            "available": false,
+            "note": "HTTPError: HTTP Error 501: Not Implemented"
+          }
+        },
+        {
+          "id": "bc250-1",
+          "role": "Phi-4 14B (llama.cpp)",
+          "kind": "inference",
+          "measured_at": "2026-11-18T16:03:25.477424+00:00",
+          "pingLatencyMs": 69.3,
+          "online": true,
+          "endpoint": "http://100.79.26.62:8080",
+          "models": [
+            {
+              "id": "/home/bc250/models/Mistral-Nemo-Instruct-2407-Q4_K_M.gguf",
+              "label": null,
+              "gpus": null
+            }
+          ],
+          "throughputProbe": {
+            "ok": true,
+            "wallSeconds": 3.85,
+            "tokens": 140,
+            "measured_at": "2026-11-18T16:03:29.452012+00:00",
+            "timeToFirstTokenSeconds": 0.43,
+            "decodeTokensPerSecond": 40.72,
+            "overallTokensPerSecond": 36.34
+          },
+          "metricsEndpoint": {
+            "available": false,
+            "note": "HTTPError: HTTP Error 501: Not Implemented"
+          }
+        },
+        {
           "id": "NAS (Asustor) HUD",
           "role": "運用 HUD / wallet.db ホスト",
           "kind": "nas",
-          "measured_at": "2026-11-18T15:38:44.478450+00:00",
+          "measured_at": "2026-11-18T16:03:32.348223+00:00",
           "online": true,
           "status": {
-            "pending_approval": 44,
-            "working": 0,
+            "pending_approval": 13,
+            "working": 5,
             "working_non_idea_files": 0,
             "working_stale": [],
-            "outbox_ready": 42,
-            "outbox_published": 42,
+            "outbox_ready": 43,
+            "outbox_published": 43,
             "outbox_draft": 0,
-            "rejected": 145,
-            "archived": 408,
-            "trash": 20,
+            "rejected": 148,
+            "archived": 409,
+            "trash": 42,
             "duplicate_reappearing": 1,
-            "server_time": "2026-11-19 00:38:44",
+            "server_time": "2026-11-19 01:03:32",
             "rev": "2026-11-15a",
             "root_dir": "/app"
           },
@@ -371,7 +426,7 @@
           "id": "CoreStation NAS サーバー (8088)",
           "role": "server.py 常駐（巡回・data_sync・live_blocks ワーカー）",
           "kind": "nas_service",
-          "measured_at": "2026-11-18T15:38:46.047354+00:00",
+          "measured_at": "2026-11-18T16:03:33.873765+00:00",
           "online": false,
           "status": null,
           "error": "URLError: <urlopen error [Errno 61] Connection refused>",
@@ -382,7 +437,7 @@
           "id": "X600 (採掘リグ)",
           "role": "LAN 192.168.2.14 — TCP 到達性のみ実測（認証情報なし）",
           "kind": "rig",
-          "measured_at": "2026-11-18T15:38:46.145767+00:00",
+          "measured_at": "2026-11-18T16:03:33.976916+00:00",
           "identityStatus": "確定",
           "identityEvidence": "X600",
           "identitySource": "rdp certificate CN",
@@ -445,7 +500,7 @@
             3389,
             22
           ],
-          "latencyMs": 6.5,
+          "latencyMs": 6.9,
           "tailnetWindowsPeers": [],
           "mac": "9C-6B-00-65-F8-61",
           "wolReady": true,
@@ -473,7 +528,7 @@
           "minerProcessCount": 0,
           "minerWorkerNames": [],
           "stratumSessions": 0,
-          "rigMeasuredAt": "2026-11-18T15:00:01.268Z",
+          "rigMeasuredAt": "2026-11-18T16:00:01.363Z",
           "rigSource": "worker_reporter.ps1 (read-only: CIM + nvidia-smi + WMI + logs + TCP + NetAdapter)",
           "rigUnavailable": [
             "マイナープロセスが見つからない（採掘が走っていない or 別名で実行中）",
@@ -492,7 +547,7 @@
             "FC-70-2E-88-58-CB",
             "FC-70-2E-88-58-CC"
           ],
-          "uptimeHours": 187.21,
+          "uptimeHours": 188.21,
           "cpuName": "AMD Ryzen 9 7950X 16-Core Processor",
           "cpuLoadPercent": 4,
           "cpuCores": 16,
@@ -509,7 +564,7 @@
           "schema": "corestation-rig/1",
           "machine_id": "X600",
           "computer_name": "X600",
-          "measured_at": "2026-11-18T15:00:01.268Z",
+          "measured_at": "2026-11-18T16:00:01.363Z",
           "source": "worker_reporter.ps1 (read-only: CIM + nvidia-smi + WMI + logs + TCP + NetAdapter)",
           "miners": [],
           "minerCount": 0,
@@ -612,14 +667,14 @@
             "FC-70-2E-88-58-CC",
             "9C-6B-00-65-F8-61"
           ],
-          "uptimeHours": 187.21,
+          "uptimeHours": 188.21,
           "unavailable_reason": [
             "マイナープロセスが見つからない（採掘が走っていない or 別名で実行中）",
             "ログから H/s を見つけられない（null のまま）",
             "WMI thermal zone が無い/読めない（CPU 温度 null。正確に測るなら HWiNFO/LibreHardwareMonitor 側が必要）"
           ],
           "remoteEncoding": "utf-8-sig",
-          "pulledAt": "2026-11-18T15:01:52.201235+00:00",
+          "pulledAt": "2026-11-18T16:03:20.574843+00:00",
           "pulledVia": "OpenSSH over 192.168.2.14 (kazukimacbook-air -> X600)",
           "pulledSource": "C:/corestation/corestation_metrics.json"
         }
@@ -1189,19 +1244,19 @@
   },
   "tls": {
     "note": "verified:/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/certifi/cacert.pem",
-    "measured_at": "2026-11-18T15:39:09.102212+00:00"
+    "measured_at": "2026-11-18T16:04:28.474526+00:00"
   },
   "staleness": {
     "articles_newest_age_days": null,
-    "archive_newest_date_age_days": 3.65,
-    "watcher_last_run_age_days": 0.61,
+    "archive_newest_date_age_days": -0.33,
+    "watcher_last_run_age_days": 0.63,
     "db_last_sync_age_days": null,
     "db_file_age_days": null,
-    "last_payout_age_minutes": 8
+    "last_payout_age_minutes": 33
   },
   "deployGate": {
-    "minIntervalMin": 120,
-    "deployFlag": false
+    "minIntervalMin": 15,
+    "deployFlag": true
   },
-  "signature": "b08aeb43ce68d3bc"
+  "signature": "76390f20d06036ae"
 }
