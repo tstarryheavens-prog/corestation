@@ -378,20 +378,23 @@
           source: "collector (blockindex 実測)"
         });
       }
-      state.onchainEvidence = {
-        earnedXcb24h: chainRes.data.earnedXcb24h,
-        earnedXcb7d: chainRes.data.earnedXcb7d,
-        earnedXcb30d: chainRes.data.earnedXcb30d,
-        lastPayoutAtJst: chainRes.data.lastPayoutAtJst,
-        lastPayoutAgeMin: chainRes.data.lastPayoutAgeMin,
-        balanceXcb: chainRes.data.walletBalanceXcb,
-        blocksFound24hEstimate: chainRes.data.blocksFound24hEstimate,
-        payoutIntervalMeasuredH: chainRes.data.payoutIntervalMeasuredH,
-        payoutGapNowH: chainRes.data.payoutGapNowH,
-        payoutGapExceedsCadence: chainRes.data.payoutGapExceedsCadence,
-        earnedWindowLabel: chainRes.data.earnedWindowLabel
-      };
-      if (typeof chainRes.data.walletBalanceXcb === "number" && chainRes.data.walletBalanceXcb > 0) {
+      if (prevT <= snapT) {
+        state.onchainEvidence = {
+          earnedXcb24h: chainRes.data.earnedXcb24h,
+          earnedXcb7d: chainRes.data.earnedXcb7d,
+          earnedXcb30d: chainRes.data.earnedXcb30d,
+          lastPayoutAtJst: chainRes.data.lastPayoutAtJst,
+          lastPayoutAgeMin: chainRes.data.lastPayoutAgeMin,
+          balanceXcb: chainRes.data.walletBalanceXcb,
+          blocksFound24hEstimate: chainRes.data.blocksFound24hEstimate,
+          payoutIntervalMeasuredH: chainRes.data.payoutIntervalMeasuredH,
+          payoutGapNowH: chainRes.data.payoutGapNowH,
+          payoutGapExceedsCadence: chainRes.data.payoutGapExceedsCadence,
+          earnedWindowLabel: chainRes.data.earnedWindowLabel
+        };
+      }
+      const liveBalAt = state.liveBalanceMeasuredAt || 0;
+      if (typeof chainRes.data.walletBalanceXcb === "number" && chainRes.data.walletBalanceXcb > 0 && liveBalAt <= snapT) {
         state.liveBalanceXcb = chainRes.data.walletBalanceXcb;
       }
     }
@@ -846,6 +849,7 @@
   async function fetchLiveNetworkStats() {
     const urls = [
       `/api/network?_t=${Date.now()}`,
+      `/api/miner/network-health?_t=${Date.now()}`,
       `/api/blockindex?_t=${Date.now()}`,
       `https://blockindex.net/api/v2?_t=${Date.now()}`,
       `https://corsproxy.io/?url=${encodeURIComponent(`https://blockindex.net/api/v2?_t=${Date.now()}`)}`
@@ -853,7 +857,8 @@
 
     for (const url of urls) {
       try {
-        const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(4500) : undefined;
+        const timeoutMs = url.startsWith("/api/") ? 8000 : 5500;
+        const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(timeoutMs) : undefined;
         const res = await fetch(url, {
           cache: "no-store",
           headers: { "Accept": "application/json" },
@@ -862,8 +867,8 @@
         if (!res.ok) continue;
         const json = await res.json();
         
-        // Handle /api/network structure
-        if (json && json.state && json.data) {
+        // Handle /api/network and /api/miner/network-health structure
+        if (json && json.state && json.data && json.data.blockHeight) {
           return json.data;
         }
         // Handle direct blockindex structure
@@ -899,7 +904,8 @@
 
     for (const url of urls) {
       try {
-        const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined;
+        const timeoutMs = url.startsWith("/api/address") ? 10000 : 6000;
+        const timeoutSignal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(timeoutMs) : undefined;
         const res = await fetch(url, {
           cache: "no-store",
           headers: { "Accept": "application/json" },
@@ -913,6 +919,7 @@
         if (json) {
           if (json.balance) {
             state.liveBalanceXcb = divideBy10e18(json.balance);
+            state.liveBalanceMeasuredAt = Date.now();
           }
           if (Array.isArray(json.transactions) && json.transactions.length > 0) {
             return json.transactions;
@@ -1161,7 +1168,30 @@
         if (w) updateWatcherUI(w);
       });
 
-      // Parallel API calls with multi-tier failovers
+      // Parallel API calls with multi-tier failovers + progressive rendering
+      const liveTxsPromise = fetchLiveTransactions(wallet).then((txs) => {
+        if (Array.isArray(txs) && txs.length > 0) {
+          state.recentTransactions = txs;
+          integrateLiveTransactionsIntoDaily(txs, wallet);
+          ensureLatestDays(wallet);
+          renderWalletOverview();
+          renderDailyTable();
+          renderCharts();
+        }
+        return txs;
+      }).catch(() => null);
+
+      const liveNetPromise = fetchLiveNetworkStats().then((net) => {
+        if (net) {
+          if (!state.networkStats) state.networkStats = {};
+          const prevT = state.networkStats.measuredAt ? Date.parse(state.networkStats.measuredAt) : 0;
+          const liveT = net.measuredAt ? Date.parse(net.measuredAt) : Date.now();
+          if (liveT >= prevT) Object.assign(state.networkStats, net);
+          renderNetworkView();
+        }
+        return net;
+      }).catch(() => null);
+
       const [rateRes, workerRes, txRes, dbRes, supplyRes, healthRes, explorerRes, liveTxs, liveNet] = await Promise.all([
         fetchApi(`currency/last_rate/token/${currency}`).catch(() => null),
         fetchWorkers(wallet).catch(() => null),
@@ -1170,8 +1200,8 @@
         fetchApi(`core/getSupply`).catch(() => null),
         fetchApi(`miner/network-health`).catch(() => null),
         fetchApi(`explorer/blocks/1/10`).catch(() => null),
-        fetchLiveTransactions(wallet).catch(() => null),
-        fetchLiveNetworkStats().catch(() => null)
+        liveTxsPromise,
+        liveNetPromise
       ]);
 
       if (rateRes && rateRes.state && rateRes.data) {
@@ -3113,8 +3143,49 @@
     // 4. 重い外部 API 群は 5 分毎
     setInterval(loadData, 300000);
 
+    // 4.5 オンチェーンのライブ値（ブロック高・難易度・残高・着金）は 30 秒毎にリアルタイム更新
+    let liveOnChainBusy = false;
+    async function refreshLiveOnChain() {
+      if (liveOnChainBusy || document.hidden) return;
+      liveOnChainBusy = true;
+      try {
+        const wallet = state.walletAddress;
+        const [liveNet, liveTxs] = await Promise.all([
+          fetchLiveNetworkStats().catch(() => null),
+          fetchLiveTransactions(wallet).catch(() => null)
+        ]);
+        if (liveNet) {
+          if (!state.networkStats) state.networkStats = {};
+          const prevT = state.networkStats.measuredAt ? Date.parse(state.networkStats.measuredAt) : 0;
+          const liveT = liveNet.measuredAt ? Date.parse(liveNet.measuredAt) : Date.now();
+          if (liveT >= prevT) Object.assign(state.networkStats, liveNet);
+          renderNetworkView();
+        }
+        if (Array.isArray(liveTxs) && liveTxs.length > 0) {
+          state.recentTransactions = liveTxs;
+          integrateLiveTransactionsIntoDaily(liveTxs, wallet);
+          ensureLatestDays(wallet);
+          renderWalletOverview();
+          renderDailyTable();
+          renderCharts();
+        }
+        if (liveNet || liveTxs) {
+          const timeStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+          const navBadge = document.getElementById("navDbBadgeText");
+          if (navBadge) navBadge.textContent = `最新同期 (${timeStr})`;
+        }
+      } finally {
+        liveOnChainBusy = false;
+      }
+    }
+    setInterval(refreshLiveOnChain, 30000);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) refreshLiveOnChain();
+    });
+
     // 5. 実測スナップショット（軽量・同源）は 60 秒毎に反映
     setInterval(async () => {
+      if (document.hidden) return;
       const snap = await loadLiveSnapshot();
       if (!snap) return;
       applyLiveSnapshot(snap);
@@ -3124,6 +3195,8 @@
       renderWalletOverview();
       renderDailyTable();
       renderCharts();
+      renderNetworkView();
+      renderWorkers();
       renderMiningView();
     }, 60000);
 

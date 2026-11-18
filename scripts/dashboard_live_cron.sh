@@ -16,9 +16,9 @@ LAST=$(cat "$STAMP" 2>/dev/null || echo 0)
 
 if [ $((NOW - LAST)) -ge $FULL_INTERVAL ]; then
   echo "=== full run $(date '+%F %T') ===" >> "$LOG"
-  "$PY" scripts/dashboard_live.py --deploy --min-deploy-interval-min 120 >> "$LOG" 2>&1
+  "$PY" scripts/dashboard_live.py --deploy --min-deploy-interval-min 15 >> "$LOG" 2>&1
   echo "$NOW" > "$STAMP"
 else
-  "$PY" scripts/dashboard_live.py --no-probe >> "$LOG" 2>&1
+  "$PY" scripts/dashboard_live.py --no-probe --deploy --min-deploy-interval-min 15 >> "$LOG" 2>&1
 fi
 exit 0

@@ -34,10 +34,10 @@ async function readLiveState(context) {
 
   let liveErr = null;
   try {
-    const signal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(26000) : undefined;
+    const signal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined;
     const res = await fetch("https://blockindex.net/api/v2", {
       headers: { "Accept": "application/json", "User-Agent": "CoreStation/1.0" },
-      signal, cf: { cacheTtl: 15, timeoutMs: 25000 }
+      signal, cf: { cacheTtl: 15, timeoutMs: 8000 }
     });
     if (res.ok) {
       const json = await res.json();

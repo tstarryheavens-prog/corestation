@@ -7,12 +7,14 @@ export async function onRequest(context) {
   const targetUrl = `https://blockindex.net/api/v2/address/${wallet}?details=txs&pageSize=${pageSize}`;
 
   try {
+    const signal = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(10000) : undefined;
     const res = await fetch(targetUrl, {
       headers: {
         "Accept": "application/json",
         "User-Agent": "CoreStation/1.0"
       },
-      cf: { cacheTtl: 15 }
+      signal,
+      cf: { cacheTtl: 15, timeoutMs: 10000 }
     });
 
     if (res.ok) {
