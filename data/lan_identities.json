@@ -1,8 +1,8 @@
 {
  "schema": "corestation-lan/1",
- "measuredAt": "2026-11-16T20:06:23.544834+00:00",
+ "measuredAt": "2026-11-17T23:40:54.825263+00:00",
  "subnet": "192.168.2.0/24",
- "aliveCount": 40,
+ "aliveCount": 47,
  "hosts": [
   {
    "ip": "192.168.2.1",
@@ -125,7 +125,8 @@
    "openPorts": [
     135,
     445,
-    3389
+    3389,
+    8080
    ],
    "tailnet": {
     "tailnetName": "z790",
@@ -188,6 +189,24 @@
     445,
     631
    ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.137",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.138",
+   "pingMs": null,
+   "openPorts": [],
    "tailnet": null,
    "identity": null,
    "identitySource": null
@@ -258,6 +277,14 @@
    "identitySource": null
   },
   {
+   "ip": "192.168.2.150",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
    "ip": "192.168.2.151",
    "pingMs": null,
    "openPorts": [],
@@ -274,17 +301,23 @@
    "identitySource": null
   },
   {
+   "ip": "192.168.2.154",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
    "ip": "192.168.2.155",
    "pingMs": null,
    "openPorts": [
     22,
-    8080,
     9090
    ],
-   "tailnet": {
-    "tailnetName": "bc250-1",
-    "source": "tailscale ping via endpoint"
-   },
+   "tailnet": null,
    "identity": "SSH-2.0-OpenSSH_10.6",
    "identitySource": "ssh banner",
    "sshBanner": "SSH-2.0-OpenSSH_10.6"
@@ -300,7 +333,15 @@
    "tailnet": null,
    "identity": "ATOMCam Hack Setup",
    "identitySource": "http:80 title",
-   "sshBanner": "SSH-2.0-OpenSSH_7.1"
+   "sshBanner": null
+  },
+  {
+   "ip": "192.168.2.157",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
   },
   {
    "ip": "192.168.2.158",
@@ -343,6 +384,22 @@
   },
   {
    "ip": "192.168.2.169",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.174",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.176",
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
