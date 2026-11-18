@@ -2378,7 +2378,393 @@
     }).join("");
   }
 
-  // --- View 4: Mining View Renderer ---
+  // --- View 4: Mining View Renderer & Analytics Suite ---
+  const MINING_CFG_KEY = "corestation_mining_cfg_v1";
+
+  function loadMiningConfig() {
+    try {
+      const raw = localStorage.getItem(MINING_CFG_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        return {
+          rigCost: Math.max(0, Number(p.rigCost) || 0),
+          watts: Math.max(0, Number(p.watts ?? 142)),
+          kwhPrice: Math.max(0, Number(p.kwhPrice ?? 31.0)),
+          hoursPerDay: Math.min(24, Math.max(1, Number(p.hoursPerDay ?? 24))),
+          windowMode: p.windowMode || "all"
+        };
+      }
+    } catch {}
+    return { rigCost: 0, watts: 142, kwhPrice: 31.0, hoursPerDay: 24, windowMode: "all" };
+  }
+
+  function saveMiningConfig(cfg) {
+    try {
+      localStorage.setItem(MINING_CFG_KEY, JSON.stringify(cfg));
+    } catch {}
+  }
+
+  function syncMiningInputsFromConfig(cfg) {
+    const rigEl = document.getElementById("miningRigCostInput");
+    const wattsEl = document.getElementById("miningWattsInput");
+    const kwhEl = document.getElementById("miningKwhPriceInput");
+    const hrsEl = document.getElementById("miningHoursInput");
+    const winEl = document.getElementById("miningWindowSelect");
+    if (rigEl && document.activeElement !== rigEl) rigEl.value = cfg.rigCost;
+    if (wattsEl && document.activeElement !== wattsEl) wattsEl.value = cfg.watts;
+    if (kwhEl && document.activeElement !== kwhEl) kwhEl.value = cfg.kwhPrice;
+    if (hrsEl && document.activeElement !== hrsEl) hrsEl.value = cfg.hoursPerDay;
+    if (winEl && document.activeElement !== winEl) winEl.value = cfg.windowMode;
+  }
+
+  window.applyMiningPreset = function(rigCost, watts, kwhPrice, hoursPerDay) {
+    const cfg = loadMiningConfig();
+    cfg.rigCost = rigCost;
+    cfg.watts = watts;
+    cfg.kwhPrice = kwhPrice;
+    cfg.hoursPerDay = hoursPerDay;
+    saveMiningConfig(cfg);
+    const rigEl = document.getElementById("miningRigCostInput");
+    const wattsEl = document.getElementById("miningWattsInput");
+    const kwhEl = document.getElementById("miningKwhPriceInput");
+    const hrsEl = document.getElementById("miningHoursInput");
+    if (rigEl) rigEl.value = rigCost;
+    if (wattsEl) wattsEl.value = watts;
+    if (kwhEl) kwhEl.value = kwhPrice;
+    if (hrsEl) hrsEl.value = hoursPerDay;
+    renderMiningAnalytics();
+    window.renderMiningTaxSummary();
+    showToast(`プリセット適用: ${watts}W / ${kwhPrice}/kWh`);
+  };
+
+  window.onMiningConfigChange = function() {
+    const rigEl = document.getElementById("miningRigCostInput");
+    const wattsEl = document.getElementById("miningWattsInput");
+    const kwhEl = document.getElementById("miningKwhPriceInput");
+    const hrsEl = document.getElementById("miningHoursInput");
+    const winEl = document.getElementById("miningWindowSelect");
+    const cfg = {
+      rigCost: Math.max(0, Number(rigEl ? rigEl.value : 0) || 0),
+      watts: Math.max(0, Number(wattsEl ? wattsEl.value : 142) || 0),
+      kwhPrice: Math.max(0, Number(kwhEl ? kwhEl.value : 31.0) || 0),
+      hoursPerDay: Math.min(24, Math.max(1, Number(hrsEl ? hrsEl.value : 24) || 24)),
+      windowMode: winEl ? winEl.value : "all"
+    };
+    saveMiningConfig(cfg);
+    renderMiningAnalytics();
+    window.renderMiningTaxSummary();
+  };
+
+  function renderMiningAnalytics() {
+    const cfg = loadMiningConfig();
+    syncMiningInputsFromConfig(cfg);
+
+    const currency = state.currency || "JPY";
+    document.querySelectorAll(".mining-currency-label").forEach(n => {
+      n.textContent = currency;
+    });
+
+    const rate = state.tokenRates && state.tokenRates.xcb ? Number(state.tokenRates.xcb.rate) : 4.71;
+    const txsDesc = Array.isArray(state.dailyTransactions) ? state.dailyTransactions : [];
+    const txsAsc = [...txsDesc].sort((a, b) => new Date(a.day) - new Date(b.day));
+
+    const dailyElecCost = (cfg.watts / 1000) * cfg.hoursPerDay * cfg.kwhPrice;
+    const subset = cfg.windowMode === "all"
+      ? txsDesc
+      : txsDesc.slice(0, Math.min(txsDesc.length, parseInt(cfg.windowMode, 10) || 30));
+
+    const daysCount = subset.length || 1;
+    const periodXcb = subset.reduce((acc, r) => acc + (Number(r.day_amount) || 0), 0);
+    const periodGrossFiat = periodXcb * rate;
+    const periodElecFiat = dailyElecCost * daysCount;
+    const periodNetFiat = periodGrossFiat - periodElecFiat;
+    const avgDailyNet = periodNetFiat / daysCount;
+    const costPerXcb = periodXcb > 0 ? (periodElecFiat / periodXcb) : null;
+
+    const elGross = document.getElementById("miningKpiGross");
+    const elElec = document.getElementById("miningKpiElec");
+    const elNet = document.getElementById("miningKpiNet");
+    const elNetDaily = document.getElementById("miningKpiNetDaily");
+    const elCostPer = document.getElementById("miningKpiCostPerXcb");
+    const elCompare = document.getElementById("miningKpiMarketCompare");
+    const elBePct = document.getElementById("miningKpiBreakEvenPct");
+    const elBeBar = document.getElementById("miningKpiBreakEvenBar");
+    const elBeEta = document.getElementById("miningKpiBreakEvenEta");
+
+    if (elGross) elGross.textContent = `${formatNumber(periodGrossFiat, 0)} ${currency}`;
+    if (elElec) elElec.textContent = `電気代 (${daysCount}日): -${formatNumber(periodElecFiat, 0)} ${currency} (${formatNumber(periodXcb, 2)} XCB)`;
+    if (elNet) {
+      elNet.textContent = `${periodNetFiat >= 0 ? "+" : ""}${formatNumber(periodNetFiat, 0)} ${currency}`;
+      elNet.style.color = periodNetFiat >= 0 ? "var(--success)" : "#ef4444";
+    }
+    if (elNetDaily) {
+      elNetDaily.textContent = `日平均純利益: ${avgDailyNet >= 0 ? "+" : ""}${formatNumber(avgDailyNet, 1)} ${currency}/日`;
+    }
+    if (elCostPer) {
+      elCostPer.textContent = costPerXcb !== null ? `${formatNumber(costPerXcb, 2)} ${currency}/XCB` : "未算出";
+    }
+    if (elCompare) {
+      if (costPerXcb !== null && rate > 0) {
+        const diffPct = ((rate - costPerXcb) / rate) * 100;
+        elCompare.textContent = diffPct >= 0
+          ? `市場単価 (${formatNumber(rate, 2)}) より ${diffPct.toFixed(1)}% 安く採掘`
+          : `市場単価 (${formatNumber(rate, 2)}) より ${Math.abs(diffPct).toFixed(1)}% 割高`;
+        elCompare.style.color = diffPct >= 0 ? "var(--success)" : "#f59e0b";
+      } else {
+        elCompare.textContent = "市場単価比較: データ不足";
+      }
+    }
+
+    // Cumulative Break-Even across full history
+    const allDaysCount = txsAsc.length || 1;
+    const totalMinedXcb = txsAsc.reduce((acc, r) => acc + (Number(r.day_amount) || 0), 0);
+    const totalMinedFiat = totalMinedXcb * rate;
+    const totalCumCost = cfg.rigCost + (dailyElecCost * allDaysCount);
+    const bePct = totalCumCost > 0 ? (totalMinedFiat / totalCumCost) * 100 : 100;
+    const remaining = totalCumCost - totalMinedFiat;
+
+    if (elBePct) elBePct.textContent = `${bePct.toFixed(1)}%`;
+    if (elBeBar) {
+      elBeBar.style.width = `${Math.min(100, Math.max(0, bePct)).toFixed(1)}%`;
+      elBeBar.style.background = bePct >= 100
+        ? "linear-gradient(90deg, #10b981, #059669)"
+        : "linear-gradient(90deg, #3b82f6, #0ea5e9)";
+    }
+    if (elBeEta) {
+      if (remaining <= 0) {
+        elBeEta.textContent = `回収完了！（黒字 +${formatNumber(Math.abs(remaining), 0)} ${currency}）`;
+        elBeEta.style.color = "var(--success)";
+      } else {
+        const recent30 = txsDesc.slice(0, Math.min(30, txsDesc.length));
+        const r30NetPerDay = recent30.length
+          ? ((recent30.reduce((a, r) => a + (Number(r.day_amount) || 0), 0) * rate) / recent30.length) - dailyElecCost
+          : 0;
+        const etaStr = r30NetPerDay > 0 ? ` / 現ペースで約${Math.ceil(remaining / r30NetPerDay)}日` : "";
+        elBeEta.textContent = `残 ${formatNumber(remaining, 0)} ${currency}${etaStr}`;
+        elBeEta.style.color = "var(--text-muted)";
+      }
+    }
+
+    // Break-Even Chart
+    const beCanvas = document.getElementById("miningBreakEvenChart");
+    const beNote = document.getElementById("miningBreakEvenChartNote");
+    if (beNote) {
+      beNote.textContent = `全${txsAsc.length}日実測 / 累計 ${formatNumber(totalMinedXcb, 1)} XCB`;
+    }
+    if (beCanvas && typeof Chart !== "undefined" && txsAsc.length > 0) {
+      const sampleAsc = txsAsc.length > 180 ? txsAsc.slice(txsAsc.length - 180) : txsAsc;
+      const offsetDays = txsAsc.length - sampleAsc.length;
+      let cumXcb = txsAsc.slice(0, offsetDays).reduce((a, r) => a + (Number(r.day_amount) || 0), 0);
+      let cumElec = dailyElecCost * offsetDays;
+
+      const labels = [];
+      const costSeries = [];
+      const valueSeries = [];
+      for (const row of sampleAsc) {
+        cumXcb += (Number(row.day_amount) || 0);
+        cumElec += dailyElecCost;
+        labels.push((row.day || "").slice(0, 10));
+        costSeries.push(Math.round(cfg.rigCost + cumElec));
+        valueSeries.push(Math.round(cumXcb * rate));
+      }
+
+      if (state.chartInstances.breakEven) {
+        state.chartInstances.breakEven.destroy();
+      }
+      state.chartInstances.breakEven = new Chart(beCanvas.getContext("2d"), {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: `累積採掘評価額 (${currency})`,
+              data: valueSeries,
+              borderColor: "#10b981",
+              backgroundColor: "rgba(16, 185, 129, 0.12)",
+              fill: true,
+              tension: 0.25,
+              pointRadius: 0,
+              borderWidth: 2
+            },
+            {
+              label: `累積総コスト: 機材＋電気代 (${currency})`,
+              data: costSeries,
+              borderColor: "#ef4444",
+              borderDash: [6, 4],
+              fill: false,
+              tension: 0.1,
+              pointRadius: 0,
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: { legend: { position: "top" } },
+          scales: {
+            x: { ticks: { maxTicksLimit: 8 } },
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // Period Comparison (7d vs prev 7d, 30d vs prev 30d)
+    const compBody = document.getElementById("miningPeriodCompareBody");
+    if (compBody) {
+      const calcPair = (n, label) => {
+        const cur = txsDesc.slice(0, n);
+        const prev = txsDesc.slice(n, n * 2);
+        const curSum = cur.reduce((a, r) => a + (Number(r.day_amount) || 0), 0);
+        const prevSum = prev.reduce((a, r) => a + (Number(r.day_amount) || 0), 0);
+        const pct = prevSum > 0 ? ((curSum - prevSum) / prevSum) * 100 : null;
+        const pctColor = pct === null ? "var(--text-muted)" : (pct >= 0 ? "var(--success)" : "#ef4444");
+        const pctText = pct === null ? "-" : `${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%`;
+        return `
+          <tr>
+            <td style="font-weight: 600;">${label}</td>
+            <td style="text-align: right; font-family: var(--font-mono);">${formatNumber(curSum, 2)} XCB</td>
+            <td style="text-align: right; font-family: var(--font-mono); color: var(--text-muted);">${prev.length ? formatNumber(prevSum, 2) + " XCB" : "データ不足"}</td>
+            <td style="text-align: right; font-weight: 700; color: ${pctColor};">${pctText}</td>
+          </tr>
+        `;
+      };
+      compBody.innerHTML = [
+        calcPair(7, "直近7日 vs 前7日"),
+        calcPair(30, "直近30日 vs 前30日"),
+        calcPair(90, "直近90日 vs 前90日")
+      ].join("");
+    }
+
+    const cadenceEl = document.getElementById("miningCadenceSummary");
+    if (cadenceEl) {
+      const ev = state.onchainEvidence || {};
+      const parts = [];
+      if (typeof ev.earnedXcb24h === "number") parts.push(`直近24h着金: <strong>${formatNumber(ev.earnedXcb24h, 4)} XCB</strong>`);
+      if (typeof ev.payoutIntervalMeasuredH === "number") parts.push(`平均着金周期: <strong>約 ${ev.payoutIntervalMeasuredH} 時間</strong>`);
+      if (ev.lastPayoutAtJst) parts.push(`最終着金: ${ev.lastPayoutAtJst}`);
+      cadenceEl.innerHTML = parts.length ? parts.join(" ｜ ") : "オンチェーン実測ペースを待機中...";
+    }
+
+    // XCB Supply & CTN 1B Tokenomics
+    const netStats = state.networkStats || {};
+    const height = Number(netStats.blockHeight || 0);
+    if (height > 0) {
+      const deltaBlocks = Math.max(0, height - 18891676);
+      const totalSup = Math.round(397677423 + deltaBlocks * 1.65);
+      const circSup = Math.round(98681863 + deltaBlocks * 1.65);
+      const ratio = ((circSup / totalSup) * 100).toFixed(1);
+      const cEl = document.getElementById("miningXcbCircSupply");
+      const tEl = document.getElementById("miningXcbTotalSupply");
+      const bEl = document.getElementById("miningXcbCircBar");
+      if (cEl) cEl.textContent = `${comma3(circSup)} XCB (${ratio}%)`;
+      if (tEl) tEl.textContent = `総供給推算: ${comma3(totalSup)} XCB (Block #${height.toLocaleString()})`;
+      if (bEl) bEl.style.width = `${Math.min(100, Number(ratio))}%`;
+    }
+
+    const ctnCanvas = document.getElementById("ctnTokenomicsChart");
+    if (ctnCanvas && typeof Chart !== "undefined" && !state.chartInstances.ctnTokenomics) {
+      state.chartInstances.ctnTokenomics = new Chart(ctnCanvas.getContext("2d"), {
+        type: "doughnut",
+        data: {
+          labels: ["CorePass報酬/インセンティブ", "エコシステム・パートナー", "流動性・トレジャリー", "チーム・開発長期ロック"],
+          datasets: [{
+            data: [40, 25, 20, 15],
+            backgroundColor: ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b"],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          cutout: "60%"
+        }
+      });
+    }
+  }
+
+  window.renderMiningTaxSummary = function() {
+    const sel = document.getElementById("miningTaxYearSelect");
+    const year = sel ? sel.value : "2026";
+    const cfg = loadMiningConfig();
+    const currency = state.currency || "JPY";
+    const rate = state.tokenRates && state.tokenRates.xcb ? Number(state.tokenRates.xcb.rate) : 4.71;
+    const txs = Array.isArray(state.dailyTransactions) ? state.dailyTransactions : [];
+    const filtered = year === "all"
+      ? txs
+      : txs.filter(r => (r.day || "").startsWith(year));
+
+    const rangeEl = document.getElementById("taxPeriodRange");
+    const minedEl = document.getElementById("taxMinedTotal");
+    const grossEl = document.getElementById("taxGrossFiat");
+    const netEl = document.getElementById("taxNetFiat");
+
+    if (filtered.length === 0) {
+      if (rangeEl) rangeEl.textContent = `${year}年 (記録なし)`;
+      if (minedEl) minedEl.textContent = "0.00 XCB";
+      if (grossEl) grossEl.textContent = `0 ${currency}`;
+      if (netEl) netEl.textContent = `0 ${currency}`;
+      return;
+    }
+
+    const asc = [...filtered].sort((a, b) => new Date(a.day) - new Date(b.day));
+    const sumXcb = asc.reduce((a, r) => a + (Number(r.day_amount) || 0), 0);
+    const grossFiat = sumXcb * rate;
+    const elecFiat = ((cfg.watts / 1000) * cfg.hoursPerDay * cfg.kwhPrice) * asc.length;
+    const netFiat = grossFiat - elecFiat;
+
+    if (rangeEl) rangeEl.textContent = `${(asc[0].day || "").slice(0, 10)} 〜 ${(asc[asc.length - 1].day || "").slice(0, 10)} (${asc.length}日)`;
+    if (minedEl) minedEl.textContent = `${formatNumber(sumXcb, 4)} XCB`;
+    if (grossEl) grossEl.textContent = `${formatNumber(grossFiat, 0)} ${currency}`;
+    if (netEl) {
+      netEl.textContent = `経費 -${formatNumber(elecFiat, 0)} / 純損益 ${netFiat >= 0 ? "+" : ""}${formatNumber(netFiat, 0)} ${currency}`;
+      netEl.style.color = netFiat >= 0 ? "var(--success)" : "#ef4444";
+    }
+  };
+
+  window.exportMiningTaxCsv = function() {
+    const sel = document.getElementById("miningTaxYearSelect");
+    const year = sel ? sel.value : "2026";
+    const cfg = loadMiningConfig();
+    const currency = state.currency || "JPY";
+    const rate = state.tokenRates && state.tokenRates.xcb ? Number(state.tokenRates.xcb.rate) : 4.71;
+    const dailyElec = (cfg.watts / 1000) * cfg.hoursPerDay * cfg.kwhPrice;
+    const txs = Array.isArray(state.dailyTransactions) ? state.dailyTransactions : [];
+    const filtered = (year === "all" ? txs : txs.filter(r => (r.day || "").startsWith(year)))
+      .slice()
+      .sort((a, b) => new Date(a.day) - new Date(b.day));
+
+    if (filtered.length === 0) {
+      showToast("出力対象のデータがありません");
+      return;
+    }
+
+    const lines = [["日付", "採掘XCB", `概算評価額(${currency})`, `電気代経費(${currency})`, `差引純損益(${currency})`, "累積保有XCB"].join(",")];
+    for (const r of filtered) {
+      const amt = Number(r.day_amount) || 0;
+      const gross = amt * rate;
+      const net = gross - dailyElec;
+      lines.push([
+        (r.day || "").slice(0, 10),
+        amt.toFixed(6),
+        gross.toFixed(2),
+        dailyElec.toFixed(2),
+        net.toFixed(2),
+        (Number(r.all_amount) || 0).toFixed(6)
+      ].join(","));
+    }
+
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `corestation_mining_${year}.csv`;
+    a.click();
+    showToast(`corestation_mining_${year}.csv をダウンロードしました`);
+  };
+
   function renderMiningView() {
     const wallet = state.walletAddress;
     if (el.coreminerCmd) {
@@ -2387,6 +2773,9 @@
     if (el.srbminerCmd) {
       el.srbminerCmd.textContent = `./SRBMiner-MULTI --algorithm pode --pool sg.catchthatrabbit.com:8008 --wallet ${wallet}.worker1 --cpu-threads 0`;
     }
+
+    renderMiningAnalytics();
+    window.renderMiningTaxSummary();
 
     if (!el.miningPoolsBody) return;
 

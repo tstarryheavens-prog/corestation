@@ -824,6 +824,205 @@
           </div>
         </div>
 
+        <!-- ================================================================== -->
+        <!-- 1. Mining P&L, Electricity Cost & Break-Even (ROI) Tracker         -->
+        <!-- ================================================================== -->
+        <section class="card" id="miningRoiSection" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h2 class="card-title">⚡ マイニング損益・電気代コスト・損益分岐点（Break-Even）分析</h2>
+              <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
+                オンチェーン実測の獲得XCBと、機材投資額・消費電力・電気単価から実質純利益と回収率をリアルタイム算出（設定はブラウザに自動保存）
+              </p>
+            </div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button type="button" class="btn-secondary btn-sm" onclick="window.applyMiningPreset(0, 142, 31.0, 24)" title="Ryzen 9 7950X Eco 105W (実測142W / 31円)">7950X Eco (142W)</button>
+              <button type="button" class="btn-secondary btn-sm" onclick="window.applyMiningPreset(0, 228, 31.0, 24)" title="Ryzen 9 7950X Stock (実測228W / 31円)">7950X Stock (228W)</button>
+              <button type="button" class="btn-secondary btn-sm" onclick="window.applyMiningPreset(0, 8, 31.0, 24)" title="CorePulse スマホ採掘 (8W / 31円)">スマホ採掘 (8W)</button>
+              <button type="button" class="btn-secondary btn-sm" onclick="window.applyMiningPreset(150000, 142, 16.3, 24)" title="機材15万円 / 142W / 深夜単価16.3円">深夜電力 (16.3円)</button>
+            </div>
+          </div>
+          <div class="card-content">
+            <!-- Input Controls -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 18px; background: var(--bg-surface); padding: 14px; border-radius: 10px; border: 1px solid var(--border-color);">
+              <div>
+                <label for="miningRigCostInput" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">機材初期投資額 (<span class="mining-currency-label">JPY</span>)</label>
+                <input type="number" id="miningRigCostInput" class="form-input" min="0" step="1000" value="0" style="width: 100%; padding: 7px 10px; font-family: var(--font-mono);" oninput="window.onMiningConfigChange()">
+              </div>
+              <div>
+                <label for="miningWattsInput" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">実測消費電力 (W)</label>
+                <input type="number" id="miningWattsInput" class="form-input" min="0" step="1" value="142" style="width: 100%; padding: 7px 10px; font-family: var(--font-mono);" oninput="window.onMiningConfigChange()">
+              </div>
+              <div>
+                <label for="miningKwhPriceInput" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">電気料金単価 (<span class="mining-currency-label">JPY</span>/kWh)</label>
+                <input type="number" id="miningKwhPriceInput" class="form-input" min="0" step="0.1" value="31.0" style="width: 100%; padding: 7px 10px; font-family: var(--font-mono);" oninput="window.onMiningConfigChange()">
+              </div>
+              <div>
+                <label for="miningHoursInput" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">1日の稼働時間 (h)</label>
+                <input type="number" id="miningHoursInput" class="form-input" min="1" max="24" step="1" value="24" style="width: 100%; padding: 7px 10px; font-family: var(--font-mono);" oninput="window.onMiningConfigChange()">
+              </div>
+              <div>
+                <label for="miningWindowSelect" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">損益計算の基準期間</label>
+                <select id="miningWindowSelect" class="form-select" style="width: 100%; padding: 7px 10px;" onchange="window.onMiningConfigChange()">
+                  <option value="30">直近30日間 (月次)</option>
+                  <option value="7">直近7日間 (週次)</option>
+                  <option value="90">直近90日間 (四半期)</option>
+                  <option value="all" selected>全記録期間 (累積)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 4 KPI Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 20px;">
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 16px;">
+                <div style="font-size: 12.5px; color: var(--text-muted); font-weight: 600;">期間粗収益 vs 電気代</div>
+                <div id="miningKpiGross" style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin: 4px 0;">--</div>
+                <div id="miningKpiElec" style="font-size: 12.5px; color: var(--text-muted);">電気代: --</div>
+              </div>
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 16px;">
+                <div style="font-size: 12.5px; color: var(--text-muted); font-weight: 600;">電気代差引後の純利益</div>
+                <div id="miningKpiNet" style="font-size: 1.35rem; font-weight: 800; margin: 4px 0;">--</div>
+                <div id="miningKpiNetDaily" style="font-size: 12.5px; color: var(--text-muted);">日平均: --</div>
+              </div>
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 16px;">
+                <div style="font-size: 12.5px; color: var(--text-muted); font-weight: 600;">1 XCB あたり採掘原価</div>
+                <div id="miningKpiCostPerXcb" style="font-size: 1.35rem; font-weight: 800; color: var(--primary); margin: 4px 0;">--</div>
+                <div id="miningKpiMarketCompare" style="font-size: 12.5px; color: var(--text-muted);">市場単価比較: --</div>
+              </div>
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 16px;">
+                <div style="font-size: 12.5px; color: var(--text-muted); font-weight: 600;">損益分岐点 (Break-Even) 回収率</div>
+                <div id="miningKpiBreakEvenPct" style="font-size: 1.35rem; font-weight: 800; color: var(--accent-blue); margin: 4px 0;">--</div>
+                <div style="width: 100%; height: 7px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin: 6px 0;">
+                  <div id="miningKpiBreakEvenBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); transition: width 0.3s ease;"></div>
+                </div>
+                <div id="miningKpiBreakEvenEta" style="font-size: 12px; color: var(--text-muted);">--</div>
+              </div>
+            </div>
+
+            <!-- Break-Even Chart -->
+            <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                <div>
+                  <strong style="font-size: 14.5px; color: var(--text-main);">📈 損益分岐点（Break-Even）累積推移チャート</strong>
+                  <span style="font-size: 12.5px; color: var(--text-muted); margin-left: 8px;">累積総コスト（機材費＋累積電気代） vs 累積採掘XCB評価額</span>
+                </div>
+                <span id="miningBreakEvenChartNote" style="font-size: 12px; color: var(--text-muted);">--</span>
+              </div>
+              <div style="position: relative; height: 260px; width: 100%;">
+                <canvas id="miningBreakEvenChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================== -->
+        <!-- 2. Period Comparison & XCB/CTN Supply Tokenomics Grid              -->
+        <!-- ================================================================== -->
+        <div class="dashboard-grid" style="margin-bottom: 24px;">
+          <div class="dashboard-col-left">
+            <section class="card" style="height: 100%;">
+              <div class="card-header">
+                <h2 class="card-title">📊 マイニング実績・期間比較 (前期比)</h2>
+              </div>
+              <div class="card-content">
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: 0; margin-bottom: 12px;">
+                  オンチェーン着金履歴の実測データから「直近期間」と「その前の同期間」を比較し、採掘ペースやネットワーク難易度の影響を可視化します。
+                </p>
+                <div class="table-responsive">
+                  <table class="daily-table" style="font-size: 13.5px;">
+                    <thead>
+                      <tr>
+                        <th>比較ウィンドウ</th>
+                        <th style="text-align: right;">直近期間</th>
+                        <th style="text-align: right;">前の期間</th>
+                        <th style="text-align: right;">増減率</th>
+                      </tr>
+                    </thead>
+                    <tbody id="miningPeriodCompareBody">
+                      <tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 18px;">集計中...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div id="miningCadenceSummary" style="margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg-surface); border: 1px solid var(--border-color); font-size: 12.5px; color: var(--text-muted);">
+                  オンチェーン実測ペースを取得中...
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="dashboard-col-right">
+            <section class="card" style="height: 100%;">
+              <div class="card-header">
+                <h2 class="card-title">🪙 XCB 流通供給量 ＆ CTN (10億枚) 配分</h2>
+              </div>
+              <div class="card-content">
+                <div style="display: grid; grid-template-columns: 1fr 140px; gap: 14px; align-items: center;">
+                  <div>
+                    <div style="font-size: 12.5px; color: var(--text-muted); font-weight: 600;">XCB 流通供給量（ブロック高ベース実測推算）</div>
+                    <div id="miningXcbCircSupply" style="font-size: 1.25rem; font-weight: 800; color: var(--success); margin: 4px 0;">--</div>
+                    <div id="miningXcbTotalSupply" style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px;">総供給推算: --</div>
+                    <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 10px;">
+                      <div id="miningXcbCircBar" style="width: 0%; height: 100%; background: #10b981;"></div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+                      <strong>CTN 最大供給量:</strong> 1,000,000,000 CTN（固定）<br>
+                      右図は CoreToken 公式トークノミクスに基づく配分枠です（全量が市場流通中という意味ではありません）。
+                    </div>
+                  </div>
+                  <div style="position: relative; height: 140px; width: 140px; margin: 0 auto;">
+                    <canvas id="ctnTokenomicsChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- ================================================================== -->
+        <!-- 3. Annual Tax / Accounting Snapshot & CSV Export                   -->
+        <!-- ================================================================== -->
+        <section class="card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h2 class="card-title">🧾 確定申告・年次マイニング収支サマリー ＆ CSV出力</h2>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+                年別の採掘XCB合計・期首/期末累計・概算評価額・電気代経費を一覧化し、税務・会計用のCSVとして出力します。
+              </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <select id="miningTaxYearSelect" class="form-select" style="padding: 6px 10px; font-size: 13.5px;" onchange="window.renderMiningTaxSummary()">
+                <option value="2026">2026年</option>
+                <option value="2025">2025年</option>
+                <option value="2024">2024年</option>
+                <option value="all">全期間</option>
+              </select>
+              <button type="button" class="btn-primary btn-sm" onclick="window.exportMiningTaxCsv()">
+                📥 収支CSVをダウンロード
+              </button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;" id="miningTaxSummaryGrid">
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                <div style="font-size: 12px; color: var(--text-muted);">対象期間</div>
+                <div id="taxPeriodRange" style="font-size: 14.5px; font-weight: 700; margin-top: 4px;">--</div>
+              </div>
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                <div style="font-size: 12px; color: var(--text-muted);">年間採掘合計 (XCB)</div>
+                <div id="taxMinedTotal" style="font-size: 14.5px; font-weight: 700; color: var(--primary); margin-top: 4px;">--</div>
+              </div>
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                <div style="font-size: 12px; color: var(--text-muted);">概算評価額 (現在レート換算)</div>
+                <div id="taxGrossFiat" style="font-size: 14.5px; font-weight: 700; margin-top: 4px;">--</div>
+              </div>
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                <div style="font-size: 12px; color: var(--text-muted);">電気代経費 / 差引純損益</div>
+                <div id="taxNetFiat" style="font-size: 14.5px; font-weight: 700; margin-top: 4px;">--</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- CPU Optimization & Recommended Presets -->
         <section class="card" style="margin-bottom: 24px;">
           <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
