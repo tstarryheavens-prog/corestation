@@ -578,13 +578,13 @@
           <!-- Featured Technical Knowledge Pickup -->
           <div class="card">
             <div class="card-header">
-              <h2 class="card-title">📚 ピックアップ技術ガイド (NAS保存版)</h2>
-              <button class="btn-secondary btn-sm" onclick="window.navigateToDetailsSub('subview-articles');">
-                全34記事 ↗
+              <h2 class="card-title">📚 最新・ピックアップ技術ガイド</h2>
+              <button class="btn-secondary btn-sm" id="pickupArticlesCountBtn" onclick="window.navigateToDetailsSub('subview-articles');">
+                全記事一覧 ↗
               </button>
             </div>
             <div class="card-content" style="padding: 12px 16px;">
-              <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div id="dashboardPickupList" style="display: flex; flex-direction: column; gap: 8px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); cursor: pointer;" onclick="window.openArticleModal('comparative-analysis-enterprise-blockchains');">
                   <span style="font-size: 14.5px; font-weight: 600; color: var(--primary);">🌐 実需型チェーン徹底比較 (VeChain/Hedera等対比)</span>
                   <span style="font-size: 13.5px; color: var(--primary); font-weight: 600;">NEW 読む →</span>
@@ -1981,10 +1981,10 @@ swap=0</code></pre>
         <section class="card" style="margin-bottom: 24px;">
           <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <div>
-              <h2 class="card-title">📚 Core 公式技術・運用ガイドアーカイブ (全34記事)</h2>
-              <p style="font-size: 14.5px; color: var(--text-muted); margin-top: 4px;">Asustor NAS上に永続アーカイブ済み（完全オフラインでいつでも全文閲覧可能）</p>
+              <h2 class="card-title">📚 Core 公式技術・運用ガイドアーカイブ (<span id="archiveArticlesCountLabel">全記事</span>)</h2>
+              <p style="font-size: 14.5px; color: var(--text-muted); margin-top: 4px;">CoreStation ナレッジベースに永続アーカイブ済み（新しい記事が自動で追加されます）</p>
             </div>
-            <span class="badge-online" style="background: var(--success); font-size: 13.5px;">🔒 自サーバー永続保存</span>
+            <span class="badge-online" style="background: var(--success); font-size: 13.5px;">🌐 永続アーカイブ</span>
           </div>
           <div class="card-content">
             <div class="article-grid" id="articlesArchiveContainer">

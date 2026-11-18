@@ -2866,9 +2866,44 @@
       `).join("");
     }
 
-    const articles = (window.__CORE_LOCAL_ARTICLES__ && window.__CORE_LOCAL_ARTICLES__.length > 0)
+    const rawArticles = (window.__CORE_LOCAL_ARTICLES__ && window.__CORE_LOCAL_ARTICLES__.length > 0)
       ? window.__CORE_LOCAL_ARTICLES__
       : (state.articlesArchive || []);
+    const articles = rawArticles.slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+
+    const pickupBtn = document.getElementById("pickupArticlesCountBtn");
+    if (pickupBtn && articles.length > 0) {
+      pickupBtn.textContent = `全${articles.length}記事 ↗`;
+    }
+    const archiveCountEl = document.getElementById("archiveArticlesCountLabel");
+    if (archiveCountEl && articles.length > 0) {
+      archiveCountEl.textContent = `全${articles.length}記事`;
+    }
+
+    const pickupList = document.getElementById("dashboardPickupList");
+    if (pickupList && articles.length > 0) {
+      const topItems = articles.slice(0, 7).map((art, idx) => {
+        const isNewest = idx === 0;
+        const rowStyle = isNewest
+          ? "background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25);"
+          : "background: var(--bg-surface);";
+        const titleColor = isNewest ? "var(--primary)" : "var(--text-main)";
+        const actionText = isNewest ? `NEW (${art.date || ""}) 読む →` : `${art.date || ""} 読む →`;
+        return `
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; border-radius: 6px; ${rowStyle} cursor: pointer;" onclick="window.openArticleModal('${art.id}');">
+            <span style="font-size: 14px; font-weight: 600; color: ${titleColor}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${art.title}</span>
+            <span style="font-size: 12.5px; color: var(--primary); font-weight: 600; white-space: nowrap;">${actionText}</span>
+          </div>
+        `;
+      }).join("");
+      const wslGuideRow = `
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 6px; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); cursor: pointer;" onclick="window.navigateToDetailsSub('subview-guide');">
+          <span style="font-size: 14px; font-weight: 700; color: var(--primary);">🚀 【必読】Windows WSL2 CoreMiner導入手順</span>
+          <span style="font-size: 12.5px; color: var(--primary); font-weight: 700; white-space: nowrap;">手順を見る →</span>
+        </div>
+      `;
+      pickupList.innerHTML = topItems + wslGuideRow;
+    }
 
     if (el.articlesArchiveContainer && articles.length > 0) {
       el.articlesArchiveContainer.innerHTML = articles.map(art => `
@@ -2876,7 +2911,7 @@
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <span class="badge-online" style="font-size: 11px; padding: 2px 8px;">${art.categoryName || "ガイド"}</span>
-              <span style="font-size: 11px; color: var(--text-light);">🔒 NAS永続保存</span>
+              <span style="font-size: 11px; color: var(--text-light);">📄 ナレッジ記事</span>
             </div>
             <h3 class="article-card-title">${art.title}</h3>
             <p class="article-card-desc">${art.summary || ""}</p>
