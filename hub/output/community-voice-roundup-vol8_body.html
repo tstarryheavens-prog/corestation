@@ -1,0 +1,219 @@
+<div class="article-lead" style="background: rgba(59, 130, 246, 0.08); border-left: 4px solid #3b82f6; padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 28px;">
+  <p style="margin: 0; font-size: 15.5px; line-height: 1.8;">
+    こんにちは、自作PCと省電力マイニングの検証を続けている<strong>リコロ（Ricolo）</strong>です！🎮✨<br>
+    2026年11月に入り、Core Blockchain（XCB）のコミュニティでは「スマホ1台で完結するオープンソースマイナー <strong>CorePulse 1.1.0</strong>」「Intel Macまで広がった <strong>CoreStarter 1.1.0</strong>」「<strong>CorePass 1.72.78</strong> のKYB強化」「<strong>CorePass QRスキャンによるパスワードレス資産ダッシュボード</strong>」、さらにはYouTubeで公開されているCoDeTech公式の <strong>Core Chronicle #15・#16（CorePass KYB / Ping Exchange法人取引）</strong> まで、実務と日常の両面で注目トピックが一気に出そろいました。<br>
+    今回は X（fxtwitter経由で取得した最新ポスト）と YouTube の実測データをもとに、CoreXCBコミュニティの現在地を定点観測 Vol.8 として整理します。
+  </p>
+</div>
+
+<h2>1. 2026年11月 CoreXCB トピックス総括：XとYouTubeで見えた「3つの前進」</h2>
+<p>
+  最近のX（旧Twitter）とYouTubeの動向を並べてみると、価格の値動きを追う話題以上に「<strong>実際に動かせるツールが増えていること</strong>」が目立ちます。特に次の3つの方向性がはっきり表れています。
+</p>
+<ul>
+  <li><strong>① エントリー障壁の徹底的な引き下げ（モバイル＆既存PCでのノード・採掘参加）</strong>：専用リグやLinuxの黒い画面を使わなくても、引き出しに眠っているAndroid端末でXCBを掘れる「CorePulse 1.1.0」や、Windows・Linux・Apple Silicon Macに加えてIntel Mac（macOS 15以降）にも対応した「CoreStarter 1.1.0」が登場しました。</li>
+  <li><strong>② パスワード不要（CorePass QR認証）と法人KYBの実用化</strong>：オランダのコミュニティ開発者 Ingrid de Bock 氏が公開した「Core資産ダッシュボード」は、メールアドレスや2FAを使わずCorePassのQRコードを読み取るだけでログインできます。公式側でもCorePass 1.72.78で個人事業主KYBが簡素化され、Ping Exchangeの法人取引拡張（Core Chronicle #16）と噛み合い始めています。</li>
+  <li><strong>③ 日本語圏マイナーの粘り強いコミュニティ活動と分散化への意識</strong>：X上の日本語ハッシュタグ（<code>#XCB</code> / <code>#CoreBlockchain</code>）では、少人数チームでマイニングを継続する報告や、Luna Mesh（分散型メッシュ通信）への期待、中央集権型取引所とPingの直接取引市場を比較する投稿など、技術と運用に根ざした議論が続いています。</li>
+</ul>
+
+<div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 18px 20px; margin: 24px 0;">
+  <h3 style="margin-top: 0; font-size: 16px; color: #059669;">📊 今回ピックアップした一次ソース一覧（2026年10月〜11月実測）</h3>
+  <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px;">
+    <thead>
+      <tr style="border-bottom: 2px solid rgba(16, 185, 129, 0.3); text-align: left;">
+        <th style="padding: 8px;">媒体</th>
+        <th style="padding: 8px;">発信元 / タイトル</th>
+        <th style="padding: 8px;">日付</th>
+        <th style="padding: 8px;">注目ポイント</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid rgba(148, 163, 184, 0.2);">
+        <td style="padding: 8px;">X</td>
+        <td style="padding: 8px;">@TellMeAboutCORE（CorePulse 1.1.0）</td>
+        <td style="padding: 8px;">2026-11-17</td>
+        <td style="padding: 8px;">Android採掘アプリUI刷新・50℃温度停止・6言語対応</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(148, 163, 184, 0.2);">
+        <td style="padding: 8px;">X</td>
+        <td style="padding: 8px;">@IngriddeBock（Core資産ダッシュボード）</td>
+        <td style="padding: 8px;">2026-11-17〜18</td>
+        <td style="padding: 8px;">CorePass QRログイン・電力差引収益・日本語対応</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(148, 163, 184, 0.2);">
+        <td style="padding: 8px;">X</td>
+        <td style="padding: 8px;">@CorePassCC（CorePass 1.72.78）</td>
+        <td style="padding: 8px;">2026-11-12</td>
+        <td style="padding: 8px;">個人事業主KYB簡素化・BTC残高修正・決済精度改善</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(148, 163, 184, 0.2);">
+        <td style="padding: 8px;">X</td>
+        <td style="padding: 8px;">@TellMeAboutCORE（CoreStarter 1.1.0）</td>
+        <td style="padding: 8px;">2026-11-09</td>
+        <td style="padding: 8px;">Intel Mac対応・PCノード＆XCB採掘の4OS展開</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(148, 163, 184, 0.2);">
+        <td style="padding: 8px;">X</td>
+        <td style="padding: 8px;">@majiryokutya / @bosscom1sa / @00100maru</td>
+        <td style="padding: 8px;">2026-11-11〜18</td>
+        <td style="padding: 8px;">日本コミュニティの採掘報告・Luna Mesh・Ping市場論</td>
+      </tr>
+      <tr style="border-bottom: 1px solid rgba(148, 163, 184, 0.2);">
+        <td style="padding: 8px;">YouTube</td>
+        <td style="padding: 8px;">CoDeTech「Core Chronicle #16」</td>
+        <td style="padding: 8px;">2026-10-15</td>
+        <td style="padding: 8px;">Ping Exchange 法人取引（Business Trading）導入</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px;">YouTube</td>
+        <td style="padding: 8px;">CoDeTech「Core Chronicle #15」</td>
+        <td style="padding: 8px;">2026-10-10</td>
+        <td style="padding: 8px;">CorePass KYB ローンチ（DAO/RWA・組織権限基盤）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>2. 【X (fxtwitter) 注目トピック①】CorePulse 1.1.0 と CoreStarter 1.1.0 が変える分散化の裾野</h2>
+<p>
+  11月中旬のXタイムラインで特に反応が大きかったのが、コミュニティプロジェクト「Tell Me More About CORE（<code>@TellMeAboutCORE</code> / TMMAC）」が立て続けにリリースした2つのオープンソースツールです。11月17日の投稿では、AndroidスマートフォンでXCBをマイニングできるアプリ <strong>CorePulse 1.1.0</strong> の公開がアナウンスされ、いいね22・リポスト10・インプレッション584を記録しました。
+</p>
+<p>
+  CorePulse 1.1.0 の設計で興味深いのは、「1画面につき1つのメッセージ、1つの数値、1つのボタン」という徹底したシンプルさです。初期設定はわずか5ステップで終わり、アカウント登録やメールアドレス、さらにはCorePassによる本人確認すら不要で、自分のXCBウォレットアドレス（<code>cb...</code>）を入力またはスキャンするだけでマイニングに参加できます。
+</p>
+<p>
+  自作PCやハードウェアを扱う立場から見ても、スマホ向けマイニングアプリで最も怖いのは「発熱によるバッテリー劣化」と「嘘の収益予測」ですが、CorePulseはその点にかなり誠実なガードを入れています。
+</p>
+<ul>
+  <li><strong>50℃サーマルカットオフとバッテリー20%停止</strong>：端末温度が50℃に達すると自動で採掘を一時停止し、冷却後に再開します。充電ケーブルを外した状態ではバッテリー残量20%で自動停止するため、日常使いのスマホを壊しにくい設計です。</li>
+  <li><strong>「約束」ではなく「実測と推計」を提示</strong>：稼働中は現在のハッシュレートが最上部に表示され、そのすぐ下に1日あたりの獲得推計が出ますが、公式投稿でも「An estimate, not a promise（あくまで推計であり保証ではない）」と明言しています。各セッション終了時にはレシート（実行履歴）も残ります。</li>
+  <li><strong>6言語対応と既存設定の引き継ぎ</strong>：1.1.0では新たにトルコ語が加わり、日本語や英語を含む6言語で利用できます。1.0.0からの上書きアップデートでも payout address や設定はそのまま引き継がれます。</li>
+</ul>
+<p>
+  さらに11月18日のフォローアップ投稿では、<code>@TellMeAboutCORE</code> が「なぜ今スマホや家庭用PCでの参加が重要なのか」を次のように説明しています。
+</p>
+<blockquote style="border-left: 3px solid #6366f1; padding: 10px 16px; margin: 16px 0; background: rgba(99, 102, 241, 0.06); border-radius: 0 8px 8px 0;">
+  「Coreのマイニングプールはまだ十分に小さく、新しいアドレスが1つ増えるだけでも目に見えて違いが出る。数十台のスマホが参加することは誤差ではなく、ネットワークを誰が支えているかを実際に変える力になる」（@TellMeAboutCORE 2026年11月17日投稿より要旨）
+</blockquote>
+<p>
+  加えて11月9日には、PC向けノード＆マイナー起動ツール <strong>CoreStarter 1.1.0</strong> も更新され、従来の Windows・Linux・Apple Silicon Mac に加えて <strong>Intel Mac（macOS 15以降）</strong> に対応しました。さらに11月3日の 1.0.1 更新では、Windows 11でウィンドウをバックグラウンドに回すとOSがマイナーの電力を絞ってしまい、ベンチマークでは 8.3 kH/s 出る16スレッドPCが 1.2 kH/s まで落ち込む問題に対処するため、Windowsのスロットリングをオプトアウトする修正も入っています。
+</p>
+<p>
+  こうした「既にあるPCや古いスマホをそのままノードやPoDEマイナーにする」アプローチは、大型GPUリグや専用ASICを前提とする他チェーンと違い、電力単価の高い日本や欧州の個人ユーザーでも参加しやすいのが強みです。CorePulseでは「まずスマホで掘ったXCBを使って、必要になったときに後からCorePass認証の手数料を賄うこともできる」という導線まで意識されており、参加の順番を逆にしている点がとても現実的です。
+</p>
+
+<h2>3. 【X (fxtwitter) 注目トピック②】CorePass 1.72.78 と「パスワードゼロ」の資産ダッシュボード</h2>
+<p>
+  アプリ・インフラ層では、11月12日に公式アカウント <code>@CorePassCC</code> が <strong>CorePass 1.72.78</strong> のリリースを発表しました（いいね53・リポスト28・閲覧1,829）。派手な新機能というよりは、法人導入や日常決済で引っかかりやすかった細部を潰し込む実務寄りのアップデートです。
+</p>
+<ul>
+  <li><strong>Sole-owner KYB（個人事業主・1人法人のKYB）の簡素化</strong>：10月に始まったCorePass KYBを、個人オーナーがより少ない手間で通過できるよう改善。</li>
+  <li><strong>企業認証リトライの簡略化</strong>：法人審査で差し戻しや再提出が発生した際のフローを整理。</li>
+  <li><strong>BTC残高表示の修正と決済精度の向上</strong>：マルチチェーンウォレットとしての基本品質を底上げ。</li>
+  <li><strong>ウォレットニックネーム変更機能</strong>：複数ウォレットを使い分けるユーザーが自分で識別しやすい名前を付けられるように改善。</li>
+</ul>
+<p>
+  そして、この CorePass の認証基盤が「外部の個人開発者にも使われ始めている」実例として11月17日〜18日に話題を集めたのが、オランダの <code>@IngriddeBock</code> 氏による <strong>Core Vermogensdashboard（Core資産ダッシュボード）</strong> です。
+</p>
+<p>
+  Ingrid氏の11月18日の投稿は、「なぜ2026年になってもパスワードが必要なのか？」という問いかけから始まります。彼女が構築したダッシュボードは無料で利用でき、XCB・CTN・マイニングリグの評価額や、電気代を差し引いた後のマイナー純利益までユーロ換算などで可視化できます。しかも特筆すべきはログイン体験です。
+</p>
+<ul>
+  <li>パスワード不要</li>
+  <li>SMSやメールによる2段階認証コード不要</li>
+  <li>GoogleやAppleなどのBig Techアカウント連携不要</li>
+  <li><strong>CorePassアプリで画面のQRコードをスキャンし、スマホ上で承認するだけでログイン完了</strong></li>
+</ul>
+<p>
+  さらに11月17日のアップデート報告では、1月1日・12月31日時点の過去レート参照（確定申告・税務向け）、XCBの実際の循環供給量と増加推移、10億CTNのエコシステム配分、XCB/CTNトランザクション推移グラフ（2026年11月11日からネットワーク計測を蓄積中）に加え、<strong>オランダ語・英語・ドイツ語・日本語の4言語対応</strong>まで実装したことが報告されています。「誰が作ったアプリか」だけでなく「CorePass ConnectorのOAuth 2.0 / パスワードレス認証を使えば、個人開発者でもここまでのWebアプリをすぐ作れる」という実証例になっています。
+</p>
+
+<h2>4. 【X (fxtwitter) 注目トピック③】日本語コミュニティのリアルな声と市場観</h2>
+<p>
+  X上の日本語コミュニティも、規模はまだ大きくないものの熱量の高い発信が続いています。今回取得した11月11日〜18日の投稿からは、日本のユーザーがどこに注目しているかがよく見えます。
+</p>
+<ul>
+  <li><strong><code>@majiryokutya</code>（Green Tea_ ₡ORE🇯🇵）</strong>：11月12日の投稿で「緑茶軍、現在4人の戦士が休まず奮闘中」とマイニング継続を報告し、11月18日には <strong>LUNA MESH（<code>@CoDeTechCC</code>関連のメッシュネットワーク構想）</strong> に触れて「通信はもっと自由に、接続はもっと身近に、ブロックチェーンはもっと日常へ。広がるNODE！」と発信しています。また、前述のTMMAC（<code>@TellMeAboutCORE</code>）がGIPHY公式クリエイター認定を受けた流れで、<code>@Daniel_StotheC</code> 氏とコラボしたXCB/CTN応援GIFの公開も行われました。</li>
+  <li><strong><code>@bosscom1sa</code>（スーパーマジ牛乳）</strong>：11月17日の投稿では、米CFTCがBackpackのデリバティブ取引所（DCM）と清算機関（DCO）を承認したニュースを取り上げ、「取引所・清算機関・マーケットメーカーが全員手数料の席に座っている従来型の問屋街」と評したうえで、<strong>「スマホで掘ったXCBが流れるPingは、真ん中に店がおらん。売るのはマイナー、買うのは使う人。本人同士の直接市場や」</strong> と対比して語っています。</li>
+  <li><strong><code>@00100maru</code>（マルコ＠不死鳥の考察垢）</strong>：11月11日の投稿で「大きなチャンスは誰もが注目する場所にあるとは限らない。まだ市場が気づいていない可能性があるからこそ追い続ける」と述べ、短期の値動きより技術とビジョンを長期で追うスタンスを示しています。</li>
+</ul>
+<p>
+  私自身（リコロ）が自宅で Ryzen 9 7950X の Eco モード（105W制限）や HEMS と組み合わせて CoreStation のライブ計測を回している感覚とも重なりますが、日本のXCBユーザーは「一攫千金の投機」よりも「省電力でコツコツノードやマイナーを回しながら、CorePassやPing・Luna Meshの実用化を待つ」スタンスの人が多いのが印象的です。
+</p>
+
+<h2>5. 【YouTube 最新トピック】CoDeTech公式「Core Chronicle #15・#16」とマイニング解説の現在地</h2>
+<p>
+  続いてYouTube側の動向です。CoDeTech公式チャンネル（<code>@CoDeTech</code> / チャンネルID: <code>UCRvIwSXU04Yaw4rkRzkJNHQ</code>）の最新フィードと、YouTube上のXCB関連動画の検索トレンドを確認すると、開発ロードマップの軸が明確に浮かび上がります。
+</p>
+
+<h3>5-1. Core Chronicle #16：Ping Exchange の「Business Trading（法人取引）」拡張（2026年10月15日公開）</h3>
+<p>
+  YouTube動画「<a href="https://www.youtube.com/watch?v=min56wg2HQU" target="_blank" rel="noopener">Core Chronicle #16 Ping Exchange Introduces Business Trading</a>」および同日の公式X投稿で発表されたのが、<strong>Ping Exchange における法人・組織向け取引機能の大幅拡張</strong>です。
+</p>
+<p>
+  ポイントは、単なる「法人名義の口座が作れる」という話にとどまらない点です。CorePass KYBで実在性と代表者・権限を検証した組織が、そのまま Ping Exchange へ接続し、「誰が取引でき、誰が承認し、どの権限を持つか（Your business. Your people. Your rules.）」を組織構造に沿って運用できる仕組みになっています。X上で <code>@bosscom1sa</code> 氏が語っていた「本人同士の直接市場」というPingの思想に、企業実務で必須となるガバナンスが載った形です。
+</p>
+
+<h3>5-2. Core Chronicle #15：CorePass KYB ローンチ（2026年10月10日公開）</h3>
+<p>
+  その5日前に公開された「<a href="https://www.youtube.com/watch?v=7FJUZLEGhjE" target="_blank" rel="noopener">Core Chronicle #15 CorePass KYB Launch</a>」では、CorePassのデジタルアイデンティティが「個人（KYC）」から「法人・組織（KYB：Know Your Business）」へ拡張された背景が解説されています。
+</p>
+<p>
+  CoDeTech CEO の Ockert Loubser 氏が語る通り、個人の本人確認だけでなく、法人の登記情報や役員権限をオンチェーン／分散IDで証明できれば、DAOの法人口座連携やRWA（現実資産トークン化）のコンプライアンス要件を、中央集権サーバーに書類コピーを溜め込まずに満たせます。11月12日の CorePass 1.72.78 で個人事業主KYBがさらに簡素化されたのも、この #15 の流れを一般事業者まで広げるための改善です。
+</p>
+
+<h3>5-3. Wall Money・MoneyX（STC1）と公開延期の判断（2026年7月〜9月）</h3>
+<p>
+  少し遡りますが、CoDeTech公式YouTubeでは <strong>Wall Money</strong>（自己管理型ハイブリッドバンキング／カード基盤）と <strong>MoneyX</strong>（STC1規格の法定通貨連動トークン USDX / EURX 等）の進捗もシリーズで公開されています。特に9月14日の動画（<code>PncTsHmJl8s</code>）および9月29日のショート動画「<a href="https://www.youtube.com/shorts/wDvHVD6Ruas" target="_blank" rel="noopener">CC Wall Money Update 29/09/26</a>」では、「ローンチスケジュールよりもユーザーの信頼を優先し、Wall Moneyの一般公開を延期する」という判断が率直に語られました。
+</p>
+<p>
+  一方で、Swaptopia（DEX）、CorePay、CorePort、そして今回の CorePass Connector / KYB / Ping法人取引は止まらず動いており、スケジュールありきで未完成の金融サービスを出さない姿勢はコミュニティからも一定の評価を得ています。
+</p>
+
+<h3>5-4. YouTubeのマイニング解説動画と「Core DAO」混同への注意</h3>
+<p>
+  YouTube上で「Core Blockchain XCB mining」を検索すると、CoreMiner（Catch That Rabbit系プール）の <code>pool.cfg</code> 設定や Ubuntu / Termux（Android）での <code>mine.sh</code> 実行手順を紹介するチュートリアル動画が引き続き参照されています。ただしYouTube検索では、名称が似ている別プロジェクト <strong>「Core DAO（ティッカー: CORE / BTCFi）」</strong> の動画が同じ検索結果に混ざるケースが多いため、初心者の方は必ず <strong>「XCB」「Core Coin」「PoDE / RandomY」「cbから始まるICANアドレス」</strong> を目印に見分けるようにしてください。
+</p>
+
+<h2>6. リコロの実測メモ：マイナー＆開発者が今チェックすべきポイント</h2>
+<p>
+  最後に、CoreStation のライブダッシュボード（<a href="https://corestation.pages.dev/#dashboard">https://corestation.pages.dev/#dashboard</a>）を運用している視点から、今回のトピックスを踏まえた実用チェックポイントをまとめます。
+</p>
+<ol>
+  <li><strong>Catch That Rabbit のプールAPI現状と代替確認</strong>：現在、<code>api.catchthatrabbit.com</code> 側は 522 / TLS 証明書失効で応答が不安定な状態が続いていますが、Core Blockchain のブロックエクスプローラー（<code>blockindex.net/api/v2</code>）上の着金トランザクションや、ローカルリグの <code>worker_reporter</code> 実測は正常に動いています。プールWebが重いときはオンチェーン着金間隔を確認するのが確実です。</li>
+  <li><strong>古いAndroid端末やMacの有効活用</strong>：もし自宅に眠っているAndroid端末（Galaxy S20 FE等の旧世代機でも可）やIntel Macがあるなら、CorePulse 1.1.0 や CoreStarter 1.1.0 を試す良いタイミングです。50℃停止・バッテリー20%停止の保護があるため、実験用ノード・テストマイナーとして安全に検証できます。</li>
+  <li><strong>CorePass Connector / パスワードレス認証の検証</strong>：Webサービス開発者であれば、Ingrid氏のダッシュボードのように「CorePassのQR認証でログインできるWebアプリ」を小規模に試せる環境がすでに整っています。<code>connector.corepass.net</code> のOAuth 2.0仕様とあわせて追っておくと、今後のCoreエコシステムアプリ開発の勘所がつかめます。</li>
+</ol>
+
+<div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 10px; padding: 16px 20px; margin-top: 28px;">
+  <h3 style="margin-top: 0; font-size: 16px;">📝 まとめ</h3>
+  <p style="margin-bottom: 0; line-height: 1.8;">
+    2026年11月の CoreXCB コミュニティは、公式側が <strong>CorePass 1.72.78・KYB・Ping Business Trading</strong> で法人・決済インフラの足場を固めつつ、コミュニティ側が <strong>CorePulse 1.1.0・CoreStarter 1.1.0・CorePass連携資産ダッシュボード</strong> で「誰でも触れる・繋がれる入り口」を一気に広げている段階にあります。派手な煽りよりも実装の積み上げが前に出ている今こそ、技術と運用の両面から定点観測を続けていく価値がありそうです。それでは、また次回のレポートでお会いしましょう！🎮⚡
+  </p>
+</div>
+
+
+<h2>7. 全体像の整理：PoDE・RandomY・CoreID・Ping・MoneyX はどうつながるのか？</h2>
+<p>
+  X（fxtwitter）や YouTube の最新トピックを追っていると、「CorePulse」「CorePass」「CoreStarter」「Ping Exchange」「MoneyX」「Luna Mesh」など多くの固有名詞が同時に出てきます。初めて Core Blockchain（XCB）に触れる方や、マイニングだけ回していて周辺サービスのつながりを整理したい方向けに、それぞれの役割と相互関係を1枚の設計図として整理しておきます。
+</p>
+<ul>
+  <li><strong>基盤レイヤー（Core Blockchain / RandomY・PoDE）</strong>：すべての取引やスマートコントラクト、認証ログが記録されるL1ブロックチェーンです。コンセンサスには計算資源の総量だけでなく電力効率・分散性を重視する <strong>PoDE（Proof-of-Distributed-Efficiency）</strong> と CPU 向けの <strong>RandomY</strong> を採用しており、ここに <strong>CoreStarter</strong>（PCノード・採掘）や <strong>CorePulse</strong>（Android採掘）が直接つながります。ネイティブ通貨は <strong>XCB（Core Coin）</strong> で、取引手数料やネットワークセキュリティの基盤を担います。</li>
+  <li><strong>アイデンティティ・認証レイヤー（CorePass / CoreID / CorePass Connector / KYB）</strong>：個人や法人の本人確認（KYC / KYB）を中央集権サーバーに個人情報コピーを預けずに証明できる分散ID基盤です。<strong>CorePass Connector</strong>（OAuth 2.0対応）を経由することで、Ingrid氏の「Core資産ダッシュボード」のような外部Webアプリや、<strong>Ping Exchange</strong> の法人取引アカウントへ「パスワードなし・QRスキャン1回」で安全にログイン・権限連携ができます。ここで利用者がデータ提供の対価やユーティリティとして扱うのが <strong>CTN（Core Token）</strong> です。</li>
+  <li><strong>金融・決済・取引レイヤー（Ping Exchange / MoneyX・STC1 / Swaptopia / Wall Money）</strong>：XCB や CTN、さらに STC1規格の法定通貨連動トークン（USDX / EURX 等）が実際に流通・交換されるレイヤーです。取引所の仲介を最小化する直接取引型の Ping Exchange に加え、企業向けの法人取引（Core Chronicle #16）や、自己管理型バンキングを目指す Wall Money（信頼性優先で一般公開は延期・検証継続中）、分散型取引所 Swaptopia がこの層を構成します。</li>
+  <li><strong>通信・エッジ拡張レイヤー（Luna Mesh）</strong>：今回の X 投稿（<code>@majiryokutya</code> 氏など）でも期待が寄せられていた、インターネットや既存キャリア回線に依存しにくい分散型メッシュ通信構想です。ノードやモバイル端末が広がるほど、決済やID認証をオフライン・局所ネットワークに近い環境でも維持しやすくなります。</li>
+</ul>
+
+<h2>8. よくある質問（FAQ）：2026年11月時点の疑問をまとめて解消</h2>
+<p>
+  <strong>Q1. スマホ（CorePulse）や古いPC（CoreStarter）で今から XCB を掘る意味はありますか？</strong><br>
+  A. 収益単価だけで見れば専用構成の高性能CPU（Ryzen 9 7950X 等）に比べハッシュレートは控えめですが、CorePulse は 50℃温度停止・バッテリー20%停止の保護があり、古いAndroid端末の遊休時間を活かして「取引所を経由せず最初の XCB を手に入れる」「ネットワークのノード・アドレス分散に貢献する」という点に実用的な価値があります。
+</p>
+<p>
+  <strong>Q2. YouTube や X で見かける「CORE（Core DAO）」と「XCB（Core Blockchain）」は同じですか？</strong><br>
+  A. <strong>まったく別のプロジェクトです。</strong> YouTube 検索では BTCFi 系 EVM チェーンの「Core DAO（ティッカー: CORE）」が多くヒットしますが、本記事で扱っているのは <strong>Core Blockchain（ティッカー: XCB / CTN、CoDeTech・CorePass・Ping Exchange・PoDE/RandomY）</strong> です。ウォレットアドレスも XCB は <code>cb</code> から始まる ICAN 形式を使うため、送金や設定の際は必ずティッカーとアドレス形式を確認してください。
+</p>
+<p>
+  <strong>Q3. CorePass 1.72.78 の KYB や Ping Exchange の法人取引は一般ユーザーにも関係ありますか？</strong><br>
+  A. 直接法人アカウントを開設しない個人ユーザーにとっても無関係ではありません。個人事業主（Sole-owner）向けの KYB 簡素化が進んだほか、Ingrid 氏の資産ダッシュボードのように「CorePass の QR ログインだけで使える外部サービス」が増える土台になるため、パスワード管理や個人情報流出リスクを減らす恩恵が個人の使い勝手にも直結します。
+</p>
