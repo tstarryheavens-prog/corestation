@@ -1,8 +1,8 @@
 {
  "schema": "corestation-lan/1",
- "measuredAt": "2026-11-19T00:20:09.632683+00:00",
+ "measuredAt": "2026-11-19T06:37:05.960831+00:00",
  "subnet": "192.168.2.0/24",
- "aliveCount": 46,
+ "aliveCount": 49,
  "hosts": [
   {
    "ip": "192.168.2.1",
@@ -93,6 +93,24 @@
    "identitySource": null
   },
   {
+   "ip": "192.168.2.108",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.109",
+   "pingMs": null,
+   "openPorts": [
+    80
+   ],
+   "tailnet": null,
+   "identity": "404 Not Found",
+   "identitySource": "http:80 title"
+  },
+  {
    "ip": "192.168.2.11",
    "pingMs": null,
    "openPorts": [
@@ -110,6 +128,14 @@
    "sshBanner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.20"
   },
   {
+   "ip": "192.168.2.112",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
    "ip": "192.168.2.114",
    "pingMs": null,
    "openPorts": [
@@ -118,14 +144,6 @@
    "tailnet": null,
    "identity": "NEC クイック設定Web | Aterm",
    "identitySource": "http:80 title"
-  },
-  {
-   "ip": "192.168.2.116",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
   },
   {
    "ip": "192.168.2.12",
@@ -180,6 +198,19 @@
    "identitySource": null
   },
   {
+   "ip": "192.168.2.13",
+   "pingMs": null,
+   "openPorts": [
+    135,
+    139,
+    445,
+    3389
+   ],
+   "tailnet": null,
+   "identity": "Z690",
+   "identitySource": "rdp certificate CN"
+  },
+  {
    "ip": "192.168.2.133",
    "pingMs": null,
    "openPorts": [],
@@ -193,7 +224,6 @@
    "openPorts": [
     80,
     139,
-    443,
     445,
     631
    ],
@@ -207,14 +237,6 @@
    "openPorts": [
     80
    ],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
-   "ip": "192.168.2.138",
-   "pingMs": null,
-   "openPorts": [],
    "tailnet": null,
    "identity": null,
    "identitySource": null
@@ -311,9 +333,7 @@
   {
    "ip": "192.168.2.154",
    "pingMs": null,
-   "openPorts": [
-    80
-   ],
+   "openPorts": [],
    "tailnet": null,
    "identity": null,
    "identitySource": null
@@ -322,14 +342,12 @@
    "ip": "192.168.2.155",
    "pingMs": null,
    "openPorts": [
-    22,
     8080,
     9090
    ],
    "tailnet": null,
-   "identity": "SSH-2.0-OpenSSH_10.6",
-   "identitySource": "ssh banner",
-   "sshBanner": "SSH-2.0-OpenSSH_10.6"
+   "identity": null,
+   "identitySource": null
   },
   {
    "ip": "192.168.2.156",
@@ -385,6 +403,14 @@
   },
   {
    "ip": "192.168.2.168",
+   "pingMs": null,
+   "openPorts": [],
+   "tailnet": null,
+   "identity": null,
+   "identitySource": null
+  },
+  {
+   "ip": "192.168.2.169",
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
