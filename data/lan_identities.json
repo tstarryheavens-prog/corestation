@@ -1,8 +1,8 @@
 {
  "schema": "corestation-lan/1",
- "measuredAt": "2026-11-19T06:37:05.960831+00:00",
+ "measuredAt": "2026-11-19T18:58:25.348338+00:00",
  "subnet": "192.168.2.0/24",
- "aliveCount": 49,
+ "aliveCount": 47,
  "hosts": [
   {
    "ip": "192.168.2.1",
@@ -13,19 +13,6 @@
    "tailnet": null,
    "identity": null,
    "identitySource": null
-  },
-  {
-   "ip": "192.168.2.10",
-   "pingMs": null,
-   "openPorts": [
-    22,
-    445,
-    5900
-   ],
-   "tailnet": null,
-   "identity": "SSH-2.0-OpenSSH_10.5",
-   "identitySource": "ssh banner",
-   "sshBanner": "SSH-2.0-OpenSSH_10.5"
   },
   {
    "ip": "192.168.2.100",
@@ -59,6 +46,21 @@
    "identity": "Not Found - CUPS v1.7.2",
    "identitySource": "http:631 title",
    "sshBanner": "SSH-2.0-OpenSSH_7.9"
+  },
+  {
+   "ip": "192.168.2.102",
+   "pingMs": null,
+   "openPorts": [
+    22,
+    80,
+    139,
+    445,
+    631
+   ],
+   "tailnet": null,
+   "identity": "Not Found - CUPS v2.3.3",
+   "identitySource": "http:631 title",
+   "sshBanner": "SSH-2.0-OpenSSH_9.8"
   },
   {
    "ip": "192.168.2.103",
@@ -128,14 +130,6 @@
    "sshBanner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.20"
   },
   {
-   "ip": "192.168.2.112",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.114",
    "pingMs": null,
    "openPorts": [
@@ -198,19 +192,6 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.13",
-   "pingMs": null,
-   "openPorts": [
-    135,
-    139,
-    445,
-    3389
-   ],
-   "tailnet": null,
-   "identity": "Z690",
-   "identitySource": "rdp certificate CN"
-  },
-  {
    "ip": "192.168.2.133",
    "pingMs": null,
    "openPorts": [],
@@ -224,6 +205,7 @@
    "openPorts": [
     80,
     139,
+    443,
     445,
     631
    ],
@@ -333,7 +315,9 @@
   {
    "ip": "192.168.2.154",
    "pingMs": null,
-   "openPorts": [],
+   "openPorts": [
+    80
+   ],
    "tailnet": null,
    "identity": null,
    "identitySource": null
@@ -342,12 +326,14 @@
    "ip": "192.168.2.155",
    "pingMs": null,
    "openPorts": [
+    22,
     8080,
     9090
    ],
    "tailnet": null,
-   "identity": null,
-   "identitySource": null
+   "identity": "SSH-2.0-OpenSSH_10.6",
+   "identitySource": "ssh banner",
+   "sshBanner": "SSH-2.0-OpenSSH_10.6"
   },
   {
    "ip": "192.168.2.156",
@@ -410,22 +396,6 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.169",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
-   "ip": "192.168.2.176",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.177",
    "pingMs": null,
    "openPorts": [],
@@ -443,6 +413,32 @@
    },
    "identity": null,
    "identitySource": null
+  },
+  {
+   "ip": "192.168.2.184",
+   "pingMs": null,
+   "openPorts": [
+    22,
+    445,
+    5900
+   ],
+   "tailnet": null,
+   "identity": "SSH-2.0-OpenSSH_10.5",
+   "identitySource": "ssh banner",
+   "sshBanner": "SSH-2.0-OpenSSH_10.5"
+  },
+  {
+   "ip": "192.168.2.185",
+   "pingMs": null,
+   "openPorts": [
+    22,
+    445,
+    5900
+   ],
+   "tailnet": null,
+   "identity": "SSH-2.0-OpenSSH_10.5",
+   "identitySource": "ssh banner",
+   "sshBanner": "SSH-2.0-OpenSSH_10.5"
   },
   {
    "ip": "192.168.2.250",
