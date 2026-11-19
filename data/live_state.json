@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-19T04:53:19.575523+00:00",
-  "generated_at_jst": "2026-11-19 13:53:19 JST",
+  "generated_at": "2026-11-19T05:10:20.063343+00:00",
+  "generated_at_jst": "2026-11-19 14:10:20 JST",
   "schema": "corestation-live/1",
   "chain": {
     "ok": true,
     "source": "https://blockindex.net/api/v2",
-    "measured_at": "2026-11-19T04:54:23.286671+00:00",
+    "measured_at": "2026-11-19T05:11:24.018349+00:00",
     "data": {
-      "blockHeight": 19782999,
-      "difficulty": "341874448",
-      "difficulty_display": "341.87 M",
-      "lastBlockTime": "2026-11-19T04:53:34.130219808Z",
+      "blockHeight": 19783126,
+      "difficulty": "339534785",
+      "difficulty_display": "339.53 M",
+      "lastBlockTime": "2026-11-19T05:10:37.202129052Z",
       "inSync": true,
       "coin": "Core Coin",
       "backendVersion": "Gocore/v2.2.2-a091fe2d-20260116/linux-amd64/go1.25.6",
@@ -21,10 +21,10 @@
       "txWindowOldestAtJst": "2026-10-13 19:16 JST",
       "earnedWindowLabel": "ローリング実測 (24h/7d/30d, epoch 基準)",
       "payoutIntervalMeasuredH": 4.0,
-      "payoutGapNowH": 1.39,
+      "payoutGapNowH": 1.67,
       "payoutGapExceedsCadence": false,
       "lastPayoutAtJst": "2026-11-19 12:31 JST",
-      "lastPayoutAgeMin": 83,
+      "lastPayoutAgeMin": 100,
       "earnedXcb24h": 8.8051,
       "earnedXcb7d": 68.284,
       "earnedXcb30d": 207.9809,
@@ -32,21 +32,21 @@
       "blocksFoundPerDay7dEstimate": 5.912,
       "addressFetchError": null,
       "circulatingSupplyRaw": null,
-      "bestBlockHash": "0x513e98d353c02d9602b1afbd582f01f794a0dd08ee5fcf4e160f1c6251fe1e14",
+      "bestBlockHash": "0xd2a0b9e48d8fd6bcfd4a9341cfc0035c9c079d99fc2d5d639e21162b740afafb",
       "freshness": {
-        "lastBlockAgeSeconds": 49,
-        "lastBlockAgeLabel": "49秒前",
-        "ownTxMeasuredAgoMinutes": 83.2,
-        "ownTxMeasuredAgoLabel": "83分前",
-        "blockIntervalMeasuredAgoMinutes": 83.2,
-        "blockIntervalMeasuredAgoLabel": "83分前"
+        "lastBlockAgeSeconds": 46,
+        "lastBlockAgeLabel": "46秒前",
+        "ownTxMeasuredAgoMinutes": 100.2,
+        "ownTxMeasuredAgoLabel": "100分前",
+        "blockIntervalMeasuredAgoMinutes": 100.2,
+        "blockIntervalMeasuredAgoLabel": "100分前"
       }
     }
   },
   "pool": {
     "ok": false,
     "source": "https://api.catchthatrabbit.com/api/v2",
-    "measured_at": "2026-11-19T04:53:26.842798+00:00",
+    "measured_at": "2026-11-19T05:10:27.484302+00:00",
     "reason": "プール API が応答しない（522/404・TLS 証明期限切れの実測）",
     "attempts": [
       {
@@ -70,7 +70,7 @@
   "db": {
     "ok": true,
     "source": "/Volumes/Docker/CoreGeeksEXp/data/wallet.db",
-    "measured_at": "2026-11-19T04:53:24.914719+00:00",
+    "measured_at": "2026-11-19T05:10:25.767220+00:00",
     "data": {
       "dbPath": "/volume1/Docker/CoreGeeksEXp/data/wallet.db",
       "fileSizeBytes": 11005952,
@@ -199,7 +199,7 @@
   "content": {
     "ok": true,
     "source": "articles/, hub/output/, hub/config/last_seen_*.json, data/local_articles.js",
-    "measured_at": "2026-11-19T04:53:25.461057+00:00",
+    "measured_at": "2026-11-19T05:10:26.268264+00:00",
     "data": {
       "articlesDirCount": 45,
       "articlesNewest": [
@@ -294,13 +294,13 @@
       "watcherSeenPosts": 25,
       "shortfallCount": 0,
       "shortfallNewest": [],
-      "gitLastCommit": "00070ac 2026-11-19 13:37 chore(live): dashboard 実測スナップショット b108053a5634"
+      "gitLastCommit": "be3e327 2026-11-19 13:54 chore(live): dashboard 実測スナップショット 76585ddab607"
     }
   },
   "watcher": {
     "ok": true,
     "source": "hub/config/last_seen_*.json + hub/output mtime + NAS crontab (if readable)",
-    "measured_at": "2026-11-19T04:53:24.444256+00:00",
+    "measured_at": "2026-11-19T05:10:25.216363+00:00",
     "data": {
       "lastHubOutputAtJst": "2026-11-19 10:04 JST",
       "crontabEntriesVisibleToCollector": [],
@@ -310,7 +310,7 @@
   "machines": {
     "ok": true,
     "source": "local proc + inference HTTP probes + NAS HUD + tailnet + machine_metrics/*.json",
-    "measured_at": "2026-11-19T04:53:23.541325+00:00",
+    "measured_at": "2026-11-19T05:10:24.180070+00:00",
     "data": {
       "nodes": [
         {
@@ -320,22 +320,22 @@
             "hostname": "MacBook.local",
             "os": "Darwin 27.2.0",
             "cpuLogical": 8,
-            "measured_at": "2026-11-19T04:53:19.705246+00:00",
+            "measured_at": "2026-11-19T05:10:20.243204+00:00",
             "loadAvg": [
-              1.86,
-              3.25,
-              3.27
+              3.58,
+              3.85,
+              3.31
             ],
             "ramBytes": 8589934592,
-            "ramUsedBytes": 932732928,
-            "ramFreeBytes": 32796672,
-            "uptimeSeconds": 496886,
-            "diskFreeBytes": 2884311928832,
+            "ramUsedBytes": 909996032,
+            "ramFreeBytes": 37502976,
+            "uptimeSeconds": 497907,
+            "diskFreeBytes": 2884309999616,
             "diskTotalBytes": 3991400349696,
             "topProcesses": [
               "0.7 launchd",
-              "0.4 logd",
-              "0.0 UserEventAgent",
+              "1.5 logd",
+              "0.1 UserEventAgent",
               "0.0 fseventsd",
               "0.0 mediaremoted"
             ]
@@ -346,21 +346,21 @@
           "id": "NAS (Asustor) HUD",
           "role": "運用 HUD / wallet.db ホスト",
           "kind": "nas",
-          "measured_at": "2026-11-19T04:53:20.983833+00:00",
+          "measured_at": "2026-11-19T05:10:21.645500+00:00",
           "online": true,
           "status": {
-            "pending_approval": 14,
+            "pending_approval": 15,
             "working": 0,
             "working_non_idea_files": 0,
             "working_stale": [],
-            "outbox_ready": 83,
-            "outbox_published": 1,
+            "outbox_ready": 84,
+            "outbox_published": 0,
             "outbox_draft": 0,
             "rejected": 148,
-            "archived": 457,
+            "archived": 460,
             "trash": 47,
             "duplicate_reappearing": 0,
-            "server_time": "2026-11-19 13:53:20",
+            "server_time": "2026-11-19 14:10:21",
             "rev": "2026-11-15a",
             "root_dir": "/app"
           },
@@ -371,7 +371,7 @@
           "id": "CoreStation NAS サーバー (8088)",
           "role": "server.py 常駐（巡回・data_sync・live_blocks ワーカー）",
           "kind": "nas_service",
-          "measured_at": "2026-11-19T04:53:22.633407+00:00",
+          "measured_at": "2026-11-19T05:10:23.372995+00:00",
           "online": false,
           "status": null,
           "error": "URLError: <urlopen error [Errno 61] Connection refused>",
@@ -382,7 +382,7 @@
           "id": "X600 (採掘リグ)",
           "role": "LAN 192.168.2.14 — TCP 到達性のみ実測（認証情報なし）",
           "kind": "rig",
-          "measured_at": "2026-11-19T04:53:23.040386+00:00",
+          "measured_at": "2026-11-19T05:10:23.679263+00:00",
           "identityStatus": "確定",
           "identityEvidence": "X600",
           "identitySource": "rdp certificate CN",
@@ -434,7 +434,7 @@
             3389,
             22
           ],
-          "latencyMs": 8.1,
+          "latencyMs": 13.0,
           "tailnetWindowsPeers": [],
           "mac": "9C-6B-00-65-F8-61",
           "wolReady": true,
@@ -462,7 +462,7 @@
           "minerProcessCount": 0,
           "minerWorkerNames": [],
           "stratumSessions": 0,
-          "rigMeasuredAt": "2026-11-19T04:50:01.391Z",
+          "rigMeasuredAt": "2026-11-19T05:10:01.399Z",
           "rigSource": "worker_reporter.ps1 (read-only: CIM + nvidia-smi + WMI + logs + TCP + NetAdapter)",
           "rigUnavailable": [
             "マイナープロセスが見つからない（採掘が走っていない or 別名で実行中）",
@@ -481,16 +481,16 @@
             "FC-70-2E-88-58-CB",
             "FC-70-2E-88-58-CC"
           ],
-          "uptimeHours": 0.73,
+          "uptimeHours": 1.06,
           "cpuName": "AMD Ryzen 9 7950X 16-Core Processor",
-          "cpuLoadPercent": 2,
+          "cpuLoadPercent": 4,
           "cpuCores": 16,
           "gpuCount": 0,
           "lanIdentityVerified": true,
           "lanIdentitySource": "worker_reporter が報告した IPv4 ['169.254.50.3', '169.254.2.214', '169.254.83.107', '192.168.2.14'] に 192.168.2.14 が含まれる（リグ側実測）",
           "macSource": "worker_reporter (Get-NetAdapter) 実測 — NIC イーサネット（候補: 9C-6B-00-65-F8-61, FC-70-2E-88-58-CB, FC-70-2E-88-58-CC）",
           "hasRigReport": true,
-          "miningState": "採掘プロセス無し（マイナー 0・stratum 接続 0・CPU 負荷 2%）"
+          "miningState": "採掘プロセス無し（マイナー 0・stratum 接続 0・CPU 負荷 4%）"
         }
       ],
       "rigReporters": [
@@ -498,7 +498,7 @@
           "schema": "corestation-rig/1",
           "machine_id": "X600",
           "computer_name": "X600",
-          "measured_at": "2026-11-19T04:50:01.391Z",
+          "measured_at": "2026-11-19T05:10:01.399Z",
           "source": "worker_reporter.ps1 (read-only: CIM + nvidia-smi + WMI + logs + TCP + NetAdapter)",
           "miners": [],
           "minerCount": 0,
@@ -509,7 +509,7 @@
           "gpus": [],
           "cpu": {
             "name": "AMD Ryzen 9 7950X 16-Core Processor            ",
-            "loadPercent": 2,
+            "loadPercent": 4,
             "temperatureC": null,
             "cores": 16
           },
@@ -601,14 +601,14 @@
             "FC-70-2E-88-58-CC",
             "9C-6B-00-65-F8-61"
           ],
-          "uptimeHours": 0.73,
+          "uptimeHours": 1.06,
           "unavailable_reason": [
             "マイナープロセスが見つからない（採掘が走っていない or 別名で実行中）",
             "ログから H/s を見つけられない（null のまま）",
             "WMI thermal zone が無い/読めない（CPU 温度 null。正確に測るなら HWiNFO/LibreHardwareMonitor 側が必要）"
           ],
           "remoteEncoding": "utf-8-sig",
-          "pulledAt": "2026-11-19T04:53:19.067338+00:00",
+          "pulledAt": "2026-11-19T05:10:19.334828+00:00",
           "pulledVia": "OpenSSH over 192.168.2.14 (kazukimacbook-air -> X600)",
           "pulledSource": "C:/corestation/corestation_metrics.json"
         }
@@ -636,7 +636,7 @@
           "lan": "192.168.2.14",
           "status": "X600（リグ報告で身元実測）",
           "verifiedByRigReport": true,
-          "miningOnX600": "採掘プロセス無し（マイナー 0・stratum 接続 0・CPU 負荷 2%）",
+          "miningOnX600": "採掘プロセス無し（マイナー 0・stratum 接続 0・CPU 負荷 4%）",
           "source": "wallet.db workers 実測（worker 7950X @ as.catchthatrabbit.com / status 0 / 0 H/s / 2026-11-07 22:00:49）。どの物理 PC かの対応は実測で確定できていない。2026-11-08 の「192.168.2.13 = X600」申告は 2026-11-09 に本人が取り下げ（192.168.2.13 = RDP 証明書 CN 実測で Z690、192.168.2.11 = tailscale direct endpoint 実測で z790-al） + worker_reporter が 192.168.2.14 を自マシンの IPv4 として報告（実測で確定） + X600 のリグ報告で CPU 名 = AMD Ryzen 9 7950X 16-Core Processor を実測（プール worker 名 7950X と同名）"
         }
       },
@@ -1145,19 +1145,19 @@
   },
   "tls": {
     "note": "verified:/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/certifi/cacert.pem",
-    "measured_at": "2026-11-19T04:54:23.728299+00:00"
+    "measured_at": "2026-11-19T05:11:24.473756+00:00"
   },
   "staleness": {
     "articles_newest_age_days": null,
-    "archive_newest_date_age_days": 0.2,
-    "watcher_last_run_age_days": 0.16,
+    "archive_newest_date_age_days": 0.22,
+    "watcher_last_run_age_days": 0.17,
     "db_last_sync_age_days": null,
     "db_file_age_days": null,
-    "last_payout_age_minutes": 83
+    "last_payout_age_minutes": 100
   },
   "deployGate": {
     "minIntervalMin": 15,
     "deployFlag": true
   },
-  "signature": "76585ddab6075e58"
+  "signature": "103e0b3b5fb617f6"
 }
