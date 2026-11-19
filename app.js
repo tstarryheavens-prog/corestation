@@ -32,7 +32,7 @@
     miningPools: [],
     communityLinks: [],
     articlesArchive: [],
-    currentView: "view-dashboard",
+    currentView: "view-home",
     recentViewMode: "live",
     isWorkersExpanded: false,
     chartInstances: { xcb: null, ranking: null },
@@ -652,7 +652,10 @@
     if (!targetViewId) return;
 
     // Normalization & Backward compatibility mapping
-    if (targetViewId === "view-wallet" || targetViewId === "wallet" || targetViewId === "dashboard" || targetViewId === "view-dashboard") {
+    if (targetViewId === "view-home" || targetViewId === "home") {
+      targetViewId = "view-home";
+      targetSubviewId = null;
+    } else if (targetViewId === "view-wallet" || targetViewId === "wallet" || targetViewId === "dashboard" || targetViewId === "view-dashboard") {
       targetViewId = "view-dashboard";
       targetSubviewId = null;
     } else if (targetViewId === "view-tax" || targetViewId === "tax" || targetViewId === "subview-tax" || targetViewId === "ledger") {
@@ -735,7 +738,9 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     // 7. View-specific renders / resizes
-    if (targetViewId === "view-dashboard") {
+    if (targetViewId === "view-home") {
+      renderHomeView();
+    } else if (targetViewId === "view-dashboard") {
       setTimeout(() => {
         if (state.chartInstances.xcb) state.chartInstances.xcb.resize();
         renderCharts();
@@ -1132,6 +1137,7 @@
       renderMiningView();
       renderArticlesView();
       renderCsvPreview();
+      renderHomeView();
     }
   }
 
@@ -1372,6 +1378,7 @@
     const avg30 = last30.length > 0 ? sum30 / last30.length : 0;
     if (el.thirtyDaysTotal) el.thirtyDaysTotal.textContent = `${formatNumber(sum30, 2)} XCB`;
     if (el.thirtyDaysAvg) el.thirtyDaysAvg.textContent = `(日均 ${formatNumber(avg30, 2)})${coveredRange(last30)}`;
+    renderHomeView();
   }
 
   // --- Workers Rendering (100% Real Live Data, Zero Dummy Data) ---
@@ -2246,6 +2253,7 @@
         ? `${comma3(estimatedCircSupply)} XCB (${circRatio}%) (推算)`
         : "推算不可";
     }
+    renderHomeView();
 
     // 2. Subview-Network elements update
     const netDiff = document.getElementById("netDifficulty");
@@ -2837,6 +2845,83 @@
   };
 
   // --- View 5: Articles & Community Hub Renderer ---
+  function renderHomeView() {
+    const heightEl = document.getElementById("homeBlockHeight");
+    const stats = state.networkStats || {};
+    const currentHeight = Number(stats.blockHeight || 0);
+    if (heightEl) {
+      heightEl.textContent = currentHeight > 0 ? `#${currentHeight.toLocaleString()}` : "未取得";
+    }
+
+    const txs = state.dailyTransactions || [];
+    const rate = state.tokenRates && state.tokenRates.xcb ? state.tokenRates.xcb.rate : 4.985332;
+    const currency = state.currency || "JPY";
+    const ev = state.onchainEvidence || {};
+    const todayTx = txs[0];
+
+    const todayXcb = typeof ev.earnedXcb24h === "number"
+      ? ev.earnedXcb24h
+      : (todayTx ? todayTx.day_amount : null);
+    const homeTodayEl = document.getElementById("homeTodayXcb");
+    const homeTodaySubEl = document.getElementById("homeTodaySub");
+    if (homeTodayEl) {
+      homeTodayEl.textContent = typeof todayXcb === "number" ? `${formatNumber(todayXcb, 4)} XCB` : "読込中...";
+    }
+    if (homeTodaySubEl) {
+      homeTodaySubEl.textContent = typeof todayXcb === "number"
+        ? `約 ${formatNumber(todayXcb * rate, 2)} ${currency}`
+        : "実測ウォレット残高ベース";
+    }
+
+    const totalXcb = (typeof state.liveBalanceXcb === "number" && state.liveBalanceXcb > 0)
+      ? state.liveBalanceXcb
+      : (todayTx ? todayTx.all_amount : null);
+    const homeTotalEl = document.getElementById("homeTotalXcb");
+    const homeTotalFiatEl = document.getElementById("homeTotalFiatSub");
+    if (homeTotalEl) {
+      homeTotalEl.textContent = typeof totalXcb === "number" ? `${formatNumber(totalXcb, 2)} XCB` : "読込中...";
+    }
+    if (homeTotalFiatEl) {
+      homeTotalFiatEl.textContent = typeof totalXcb === "number"
+        ? `約 ${formatNumber(totalXcb * rate, 0)} ${currency}`
+        : "円換算評価額";
+    }
+
+    const rawArticles = (window.__CORE_LOCAL_ARTICLES__ && window.__CORE_LOCAL_ARTICLES__.length > 0)
+      ? window.__CORE_LOCAL_ARTICLES__
+      : (state.articlesArchive || []);
+    const sortedArticles = rawArticles.slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+
+    const artCountEl = document.getElementById("homeArticleCount");
+    if (artCountEl) {
+      artCountEl.textContent = sortedArticles.length > 0 ? `全 ${sortedArticles.length} 本` : "読込中...";
+    }
+
+    const grid = document.getElementById("homeLatestArticlesGrid");
+    if (grid && sortedArticles.length > 0) {
+      grid.innerHTML = sortedArticles.slice(0, 6).map((art, idx) => `
+        <button type="button" class="cs-home-art-card" data-home-article-id="${art.id}">
+          <div>
+            <div class="cs-home-art-meta">
+              ${idx === 0 ? `<span class="cs-new-pill">NEW</span>` : ""}
+              <span>${art.categoryName || "ガイド"}</span>
+              <span>· ${art.date || ""}</span>
+            </div>
+            <h3>${art.title}</h3>
+            <p>${art.summary || ""}</p>
+          </div>
+          <span class="cs-home-art-cta">記事を読む &rarr;</span>
+        </button>
+      `).join("");
+      grid.querySelectorAll("[data-home-article-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const artId = btn.getAttribute("data-home-article-id");
+          if (artId) openArticleModal(artId);
+        });
+      });
+    }
+  }
+
   function renderArticlesView() {
     if (el.communitySectionsContainer && state.communityLinks && state.communityLinks.length > 0) {
       el.communitySectionsContainer.innerHTML = state.communityLinks.map(section => `
@@ -3173,8 +3258,8 @@
 
   // --- Event Listeners & Interactions ---
   function setupEvents() {
-    // 1. Navigation Tabs & Drawer Switching
-    document.querySelectorAll(".tab-btn, .drawer-link").forEach(btn => {
+    // 1. Navigation Tabs, Drawer Switching & Home CTA Triggers
+    document.querySelectorAll(".tab-btn, .drawer-link, .home-nav-trigger").forEach(btn => {
       const target = btn.getAttribute("data-target");
       const sub = btn.getAttribute("data-subview");
       if (target) {
@@ -3533,8 +3618,10 @@
       switchView("view-details", "subview-articles");
     } else if (h.includes("details")) {
       switchView("view-details", "subview-tax");
-    } else {
+    } else if (h.includes("dashboard") || h.includes("wallet")) {
       switchView("view-dashboard");
+    } else {
+      switchView("view-home");
     }
   }
 

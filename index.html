@@ -26,7 +26,10 @@
     });
   </script>
   <link rel="icon" type="image/svg+xml" href="assets/core-icon.svg">
-  <link rel="stylesheet" href="style.css?v=20261018_2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20261119_1">
   <!-- Chart.js CDN (with built-in pure Canvas fallback) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Pre-bundled local SQLite data for instant zero-latency loading -->
@@ -69,7 +72,11 @@
       </div>
       <nav class="drawer-nav">
         <div class="nav-section-title">メインメニュー</div>
-        <a href="#dashboard" class="drawer-link active" data-target="view-dashboard">
+        <a href="#home" class="drawer-link active" data-target="view-home">
+          <span class="nav-icon">🏠</span>
+          <span>ホーム（トップ）</span>
+        </a>
+        <a href="#dashboard" class="drawer-link" data-target="view-dashboard">
           <span class="nav-icon">📊</span>
           <span>ダッシュボード</span>
         </a>
@@ -151,7 +158,7 @@
           </svg>
         </button>
         <div class="navbar-brand">
-          <a href="#dashboard" class="brand-link">
+          <a href="#home" class="brand-link home-nav-trigger" data-target="view-home">
             <div class="brand-icon-wrapper">
               <img src="data:image/jpeg;base64,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" alt="CoreStation" class="brand-logo-img">
             </div>
@@ -165,7 +172,11 @@
 
       <!-- Main Desktop Navigation Tabs -->
       <nav class="main-tabs-nav" id="mainTabsNav">
-        <a href="#dashboard" class="tab-btn active" data-target="view-dashboard">
+        <a href="#home" class="tab-btn active" data-target="view-home">
+          <span class="tab-icon">🏠</span>
+          <span>ホーム</span>
+        </a>
+        <a href="#dashboard" class="tab-btn" data-target="view-dashboard">
           <span class="tab-icon">📊</span>
           <span>ダッシュボード</span>
         </a>
@@ -218,9 +229,139 @@
   <main class="main-container">
 
     <!-- =========================================================================
+         VIEW 0: ホーム (CoreStation Swiss Technical-Editorial Top Page)
+         ========================================================================= -->
+    <div id="view-home" class="app-view active">
+      <section class="cs-home-hero">
+        <div class="cs-home-hero-text">
+          <div class="cs-micro-label">CORE BLOCKCHAIN (XCB) TELEMETRY &amp; RESEARCH STATION</div>
+          <h1 class="cs-home-title">XCBのノード稼働・採掘損益・税務計算をひとつのデスクに。</h1>
+          <p class="cs-home-lead">
+            Core Blockchain（XCB）のリアルタイム着金監視、Ryzen / EPYC によるワットパフォーマンス分析、Break-Even損益計算、日本円評価の確定申告用CSV出力まで。運用に直結する計測ツールと検証記事を公開しています。
+          </p>
+          <div class="cs-home-cta-row">
+            <a href="#dashboard" class="cs-btn-primary home-nav-trigger" data-target="view-dashboard">
+              ライブダッシュボードを開く (#dashboard) &rarr;
+            </a>
+            <a href="#mining" class="cs-btn-secondary home-nav-trigger" data-target="view-details" data-subview="subview-mining">
+              採掘損益・Break-Even計算 (#mining)
+            </a>
+            <a href="#tax" class="cs-btn-ghost home-nav-trigger" data-target="view-details" data-subview="subview-tax">
+              確定申告・CSV台帳 (#tax)
+            </a>
+          </div>
+        </div>
+        <figure class="cs-home-hero-art">
+          <img src="assets/corestation-editorial-hero.png" alt="CoreStation オープンフレームCPUワークステーションとノード解析イラスト" />
+          <figcaption>PoDE (Proof of Distributed Efficiency) CPUワークステーション検証拠点</figcaption>
+        </figure>
+      </section>
+
+      <!-- リアルタイム オンチェーン・テレメトリ 4指標 -->
+      <section class="cs-telemetry-strip" aria-label="ライブテレメトリ概要">
+        <div class="cs-tel-card">
+          <span class="cs-tel-label">実測ブロック高 (Mainnet)</span>
+          <strong id="homeBlockHeight" class="cs-tel-value">読込中...</strong>
+          <span class="cs-tel-sub">30秒自動ポーリング連動</span>
+        </div>
+        <div class="cs-tel-card">
+          <span class="cs-tel-label">最新日 / 24h 採掘着金</span>
+          <strong id="homeTodayXcb" class="cs-tel-value">読込中...</strong>
+          <span id="homeTodaySub" class="cs-tel-sub">実測ウォレット残高ベース</span>
+        </div>
+        <div class="cs-tel-card">
+          <span class="cs-tel-label">監視アドレス総残高</span>
+          <strong id="homeTotalXcb" class="cs-tel-value">読込中...</strong>
+          <span id="homeTotalFiatSub" class="cs-tel-sub">円換算評価額</span>
+        </div>
+        <div class="cs-tel-card">
+          <span class="cs-tel-label">公開ナレッジ記事</span>
+          <strong id="homeArticleCount" class="cs-tel-value">読込中...</strong>
+          <span class="cs-tel-sub">技術検証・導入手順・定例観測</span>
+        </div>
+      </section>
+
+      <!-- 不均等 Bento Grid: 主要4モジュールへの導線 -->
+      <section class="cs-home-section">
+        <div class="cs-sec-head">
+          <div>
+            <div class="cs-micro-label">CORE MODULES · BENTO INDEX</div>
+            <h2>目的別ワークステーション機能</h2>
+          </div>
+        </div>
+        <div class="cs-bento-grid">
+          <button type="button" class="cs-bento-card is-wide home-nav-trigger" data-target="view-dashboard">
+            <div>
+              <span class="cs-bento-tag">01 / LIVE DASHBOARD (#dashboard)</span>
+              <h3>リアルタイム資産・着金監視</h3>
+              <p>30秒周期のオンチェーン残高・最新着金トランザクション・日次収益チャート・AI Watcher巡回状況を一画面で監視します。</p>
+            </div>
+            <span class="cs-bento-link">ダッシュボードへ移動 &rarr;</span>
+          </button>
+
+          <button type="button" class="cs-bento-card home-nav-trigger" data-target="view-details" data-subview="subview-mining">
+            <div>
+              <span class="cs-bento-tag">02 / PROFITABILITY &amp; TOKENOMICS</span>
+              <h3>採掘損益・Break-Even計算 (#mining)</h3>
+              <p>ハッシュレートと電気代（16.3円/36円等）から損益分岐点を算出し、7日・30日・90日推移とXCB供給カーブを確認。</p>
+            </div>
+            <span class="cs-bento-link">損益分析を開く &rarr;</span>
+          </button>
+
+          <button type="button" class="cs-bento-card home-nav-trigger" data-target="view-details" data-subview="subview-tax">
+            <div>
+              <span class="cs-bento-tag">03 / TAX LEDGER &amp; CSV EXPORT</span>
+              <h3>確定申告・日本円評価CSV台帳 (#tax)</h3>
+              <p>取得日ごとの時価評価額を紐づけた日次・トランザクション別帳簿を閲覧し、確定申告向けCSVを即ダウンロード。</p>
+            </div>
+            <span class="cs-bento-link">税務台帳を開く &rarr;</span>
+          </button>
+
+          <button type="button" class="cs-bento-card is-wide home-nav-trigger" data-target="view-details" data-subview="subview-guide">
+            <div>
+              <span class="cs-bento-tag">04 / WSL2 &amp; COREMINER SETUP GUIDE</span>
+              <h3>Windows WSL2 CoreMiner 導入＆CPU Eco運用手順 (#guide)</h3>
+              <p>Ryzen 9 7950X / 7900 等でのEcoモード最適化、HugePages設定、Windows環境での安定運用ガイド。</p>
+            </div>
+            <span class="cs-bento-link">導入手順を読む &rarr;</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 最新ナレッジ記事ピックアップ -->
+      <section class="cs-home-section">
+        <div class="cs-sec-head">
+          <div>
+            <div class="cs-micro-label">LATEST TECHNICAL &amp; COMMUNITY ARTICLES</div>
+            <h2>最新ナレッジ記事ピックアップ</h2>
+          </div>
+          <button type="button" class="cs-btn-ghost home-nav-trigger" data-target="view-details" data-subview="subview-articles">
+            全記事一覧を開く &rarr;
+          </button>
+        </div>
+        <div id="homeLatestArticlesGrid" class="cs-articles-grid"></div>
+      </section>
+
+      <!-- コントリビューター & 編集方針カード -->
+      <section class="cs-contributor-card">
+        <div class="cs-contrib-left">
+          <img src="assets/ricolo_icon.jpg" alt="リコロ アイコン" class="cs-contrib-avatar" />
+          <div>
+            <div class="cs-micro-label">EDITORIAL &amp; COMMUNITY WATCHER</div>
+            <h3>リコロ（自作PC・技術記事担当） / CoreStation 運営</h3>
+            <p>Core Blockchain公式コミュニティ・X（@CoreBlockchain 等）・技術フォーラムの一次情報をもとに、実際のCPU検証とエコシステム動向をわかりやすく整理しています。</p>
+          </div>
+        </div>
+        <div class="cs-contrib-banner">
+          <img src="assets/horizontal_banner_logo.jpg" alt="CoreStation バナー" />
+        </div>
+      </section>
+    </div>
+
+    <!-- =========================================================================
          VIEW 1: ダッシュボード (Dashboard - Central Command Center)
          ========================================================================= -->
-    <div id="view-dashboard" class="app-view active">
+    <div id="view-dashboard" class="app-view">
       
       <!-- AI Auto-Watcher Status Banner (NAS Background System) -->
 <div class="card ai-watcher-card" style="margin-bottom: 20px; border-left: 4px solid #8b5cf6; background: linear-gradient(135deg, rgba(139, 92, 246, 0.04) 0%, rgba(56, 189, 248, 0.04) 100%);">
