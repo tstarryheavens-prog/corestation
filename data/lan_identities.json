@@ -1,8 +1,8 @@
 {
  "schema": "corestation-lan/1",
- "measuredAt": "2026-11-19T18:58:25.348338+00:00",
+ "measuredAt": "2026-11-20T01:08:53.411457+00:00",
  "subnet": "192.168.2.0/24",
- "aliveCount": 47,
+ "aliveCount": 42,
  "hosts": [
   {
    "ip": "192.168.2.1",
@@ -25,10 +25,7 @@
     8520,
     8899
    ],
-   "tailnet": {
-    "tailnetName": "tokage-1",
-    "source": "tailscale ping via endpoint"
-   },
+   "tailnet": null,
    "identity": "AIカンパニー 2Dドット絵リアルタイムオフィス",
    "identitySource": "http:8899 title",
    "sshBanner": "SSH-2.0-OpenSSH_9.8"
@@ -71,14 +68,6 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.104",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.105",
    "pingMs": null,
    "openPorts": [],
@@ -103,16 +92,6 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.109",
-   "pingMs": null,
-   "openPorts": [
-    80
-   ],
-   "tailnet": null,
-   "identity": "404 Not Found",
-   "identitySource": "http:80 title"
-  },
-  {
    "ip": "192.168.2.11",
    "pingMs": null,
    "openPorts": [
@@ -121,10 +100,7 @@
     5900,
     47832
    ],
-   "tailnet": {
-    "tailnetName": "z790-al",
-    "source": "tailscale ping via endpoint"
-   },
+   "tailnet": null,
    "identity": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.20",
    "identitySource": "ssh banner",
    "sshBanner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.20"
@@ -145,13 +121,9 @@
    "openPorts": [
     135,
     445,
-    3389,
-    8080
+    3389
    ],
-   "tailnet": {
-    "tailnetName": "z790",
-    "source": "tailscale ping via endpoint"
-   },
+   "tailnet": null,
    "identity": "Z790",
    "identitySource": "rdp certificate CN"
   },
@@ -289,14 +261,6 @@
    "identitySource": null
   },
   {
-   "ip": "192.168.2.150",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.151",
    "pingMs": null,
    "openPorts": [],
@@ -315,9 +279,7 @@
   {
    "ip": "192.168.2.154",
    "pingMs": null,
-   "openPorts": [
-    80
-   ],
+   "openPorts": [],
    "tailnet": null,
    "identity": null,
    "identitySource": null
@@ -370,14 +332,6 @@
    "sshBanner": "SSH-2.0-OpenSSH_7.1"
   },
   {
-   "ip": "192.168.2.165",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
    "ip": "192.168.2.167",
    "pingMs": null,
    "openPorts": [
@@ -400,17 +354,6 @@
    "pingMs": null,
    "openPorts": [],
    "tailnet": null,
-   "identity": null,
-   "identitySource": null
-  },
-  {
-   "ip": "192.168.2.179",
-   "pingMs": null,
-   "openPorts": [],
-   "tailnet": {
-    "tailnetName": "iphone182",
-    "source": "tailscale ping via endpoint"
-   },
    "identity": null,
    "identitySource": null
   },
