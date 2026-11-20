@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-11-20T12:16:30.340697+00:00",
-  "generated_at_jst": "2026-11-20 21:16:30 JST",
+  "generated_at": "2026-11-20T12:35:45.765579+00:00",
+  "generated_at_jst": "2026-11-20 21:35:45 JST",
   "schema": "corestation-live/1",
   "chain": {
     "ok": false,
     "source": "https://blockindex.net/api/v2",
-    "measured_at": "2026-11-20T12:18:35.348980+00:00",
+    "measured_at": "2026-11-20T12:38:10.898973+00:00",
     "error": "TimeoutError: The read operation timed out"
   },
   "pool": {
     "ok": false,
     "source": "https://api.catchthatrabbit.com/api/v2",
-    "measured_at": "2026-11-20T12:17:02.435216+00:00",
+    "measured_at": "2026-11-20T12:36:17.257328+00:00",
     "reason": "プール API が応答しない（522/404・TLS 証明期限切れの実測）",
     "attempts": [
       {
@@ -35,7 +35,7 @@
   "db": {
     "ok": true,
     "source": "/Volumes/Docker/CoreGeeksEXp/data/wallet.db",
-    "measured_at": "2026-11-20T12:17:01.855874+00:00",
+    "measured_at": "2026-11-20T12:35:45.887323+00:00",
     "data": {
       "dbPath": "/volume1/Docker/CoreGeeksEXp/data/wallet.db",
       "fileSizeBytes": 11018240,
@@ -164,10 +164,14 @@
   "content": {
     "ok": true,
     "source": "articles/, hub/output/, hub/config/last_seen_*.json, data/local_articles.js",
-    "measured_at": "2026-11-20T12:17:02.223609+00:00",
+    "measured_at": "2026-11-20T12:36:12.759881+00:00",
     "data": {
-      "articlesDirCount": 51,
+      "articlesDirCount": 52,
       "articlesNewest": [
+        {
+          "file": "articles/community-voice-roundup-vol16.html",
+          "mtimeJst": "2026-11-20 21:21 JST"
+        },
         {
           "file": "articles/community-voice-roundup-vol15.html",
           "mtimeJst": "2026-11-20 16:14 JST"
@@ -187,13 +191,13 @@
         {
           "file": "articles/community-voice-roundup-vol11.html",
           "mtimeJst": "2026-11-20 07:02 JST"
-        },
-        {
-          "file": "articles/community-voice-roundup-vol10.html",
-          "mtimeJst": "2026-11-19 16:01 JST"
         }
       ],
       "hubOutputNewest": [
+        {
+          "file": "hub/output/community-voice-roundup-vol16.html",
+          "mtimeJst": "2026-11-20 21:21 JST"
+        },
         {
           "file": "hub/output/community-voice-roundup-vol15.html",
           "mtimeJst": "2026-11-20 16:14 JST"
@@ -213,15 +217,16 @@
         {
           "file": "hub/output/community-voice-roundup-vol11.html",
           "mtimeJst": "2026-11-20 07:02 JST"
-        },
-        {
-          "file": "hub/output/community-voice-roundup-vol10.html",
-          "mtimeJst": "2026-11-19 16:01 JST"
         }
       ],
-      "archiveCount": 50,
+      "archiveCount": 51,
       "archiveNewestDate": "2026-11-20",
       "archiveLatestItems": [
+        {
+          "id": "community-voice-roundup-vol16",
+          "title": "【リコロのコミュニティ定点観測 Vol.16】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リ",
+          "date": "2026-11-20"
+        },
         {
           "id": "community-voice-roundup-vol15",
           "title": "【リコロのコミュニティ定点観測 Vol.15】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リ",
@@ -246,28 +251,23 @@
           "id": "community-voice-roundup-vol11",
           "title": "【リコロのコミュニティ定点観測 Vol.11】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リ",
           "date": "2026-11-20"
-        },
-        {
-          "id": "community-voice-roundup-vol10",
-          "title": "【リコロのコミュニティ定点観測 Vol.10】マイナー＆ホルダーの生の声まとめ！CorePass KYBの反響・Ryzen採掘効率の議論・リ",
-          "date": "2026-11-19"
         }
       ],
-      "archiveFileMtimeJst": "2026-11-20 16:14 JST",
+      "archiveFileMtimeJst": "2026-11-20 21:21 JST",
       "watcherLastCheckedChronicle": "2026-11-20T10:00:32.751521",
       "watcherLastPublishedCommunity": "2026-11-20",
       "watcherSeenPosts": 25,
       "shortfallCount": 0,
       "shortfallNewest": [],
-      "gitLastCommit": "3ccd43c 2026-11-20 20:47 chore(live): dashboard 実測スナップショット f04f63bc6bf7"
+      "gitLastCommit": "d8b8815 2026-11-20 21:18 chore(live): dashboard 実測スナップショット 9fe37a1438c4"
     }
   },
   "watcher": {
     "ok": true,
     "source": "hub/config/last_seen_*.json + hub/output mtime + NAS crontab (if readable)",
-    "measured_at": "2026-11-20T12:16:31.088057+00:00",
+    "measured_at": "2026-11-20T12:36:12.357353+00:00",
     "data": {
-      "lastHubOutputAtJst": "2026-11-20 16:14 JST",
+      "lastHubOutputAtJst": "2026-11-20 21:21 JST",
       "crontabEntriesVisibleToCollector": [],
       "note": "巡回の間隔は crontab 実体から。crontab が見えないマシンで実行中は null。"
     }
@@ -275,7 +275,7 @@
   "machines": {
     "ok": true,
     "source": "local proc + inference HTTP probes + NAS HUD + tailnet + machine_metrics/*.json",
-    "measured_at": "2026-11-20T12:17:03.962930+00:00",
+    "measured_at": "2026-11-20T12:36:19.376204+00:00",
     "data": {
       "nodes": [
         {
@@ -285,24 +285,24 @@
             "hostname": "KAZUKInoMacBook-Pro.local",
             "os": "Darwin 27.2.0",
             "cpuLogical": 11,
-            "measured_at": "2026-11-20T12:16:30.445341+00:00",
+            "measured_at": "2026-11-20T12:35:45.866223+00:00",
             "loadAvg": [
-              3.85,
-              3.38,
-              2.79
+              1.44,
+              2.62,
+              2.56
             ],
             "ramBytes": 38654705664,
-            "ramUsedBytes": 4535197696,
-            "ramFreeBytes": 24821760,
-            "uptimeSeconds": 88559,
-            "diskFreeBytes": 2883799932928,
+            "ramUsedBytes": 4448935936,
+            "ramFreeBytes": 114847744,
+            "uptimeSeconds": 89714,
+            "diskFreeBytes": 2883792117760,
             "diskTotalBytes": 3991400349696,
             "topProcesses": [
-              "0.4 launchd",
-              "0.7 logd",
+              "0.8 launchd",
+              "0.5 logd",
               "0.0 smd",
-              "0.4 UserEventAgent",
-              "0.4 fseventsd"
+              "0.0 UserEventAgent",
+              "0.2 fseventsd"
             ]
           },
           "kind": "local"
@@ -311,7 +311,7 @@
           "id": "NAS (Asustor) HUD",
           "role": "運用 HUD / wallet.db ホスト",
           "kind": "nas",
-          "measured_at": "2026-11-20T12:17:02.194819+00:00",
+          "measured_at": "2026-11-20T12:36:17.612425+00:00",
           "online": false,
           "status": null,
           "error": "TimeoutError: timed out",
@@ -321,7 +321,7 @@
           "id": "CoreStation NAS サーバー (8088)",
           "role": "server.py 常駐（巡回・data_sync・live_blocks ワーカー）",
           "kind": "nas_service",
-          "measured_at": "2026-11-20T12:17:03.885253+00:00",
+          "measured_at": "2026-11-20T12:36:19.304704+00:00",
           "online": false,
           "status": null,
           "error": "URLError: <urlopen error [Errno 61] Connection refused>",
@@ -332,7 +332,7 @@
           "id": "X600 (採掘リグ)",
           "role": "LAN IP 未確定 — 身元を特定できるまで測定しない",
           "kind": "rig",
-          "measured_at": "2026-11-20T12:17:03.906840+00:00",
+          "measured_at": "2026-11-20T12:36:19.335871+00:00",
           "identityStatus": "未確定",
           "identityEvidence": null,
           "identitySource": null,
@@ -1079,12 +1079,12 @@
   },
   "tls": {
     "note": "verified:/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/certifi/cacert.pem",
-    "measured_at": "2026-11-20T12:18:35.822284+00:00"
+    "measured_at": "2026-11-20T12:38:11.227192+00:00"
   },
   "staleness": {
     "articles_newest_age_days": null,
-    "archive_newest_date_age_days": 0.51,
-    "watcher_last_run_age_days": 0.47,
+    "archive_newest_date_age_days": 0.53,
+    "watcher_last_run_age_days": 0.48,
     "db_last_sync_age_days": null,
     "db_file_age_days": null,
     "last_payout_age_minutes": null
@@ -1093,5 +1093,5 @@
     "minIntervalMin": 15,
     "deployFlag": true
   },
-  "signature": "9fe37a1438c45432"
+  "signature": "b1bb9b42204b3cbc"
 }
