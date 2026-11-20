@@ -1,0 +1,321 @@
+
+<!-- CoreStation Official Brand Header Banner -->
+<div style="text-align: center; margin-bottom: 25px;">
+  <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;">
+    <img src="https://corestation.pages.dev/assets/horizontal_banner_logo.jpg" alt="CoreStation - Core Blockchain Mining & Node Hub" style="width: 100%; max-width: 820px; height: auto; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); display: block; margin: 0 auto;">
+  </a>
+</div>
+
+<div style="line-height: 1.8; font-size: 16px; color: #333;">
+
+<p>どうも！自作PC大好きゲーム女子、リコロです！✍🏻🎮💻✨</p>
+
+<p>最近は深夜にゲーミングPCのファンカーブを微調整しながら、裏で稼働しているマイニングリグのCPU温度を眺めるのが日課になってきました（笑）。さてさて、今回お届けするのは大好評連載の第15弾、<strong>【リコロのコミュニティ定点観測 Vol.15】</strong>です！</p>
+
+<p>Core Blockchain（XCB）の世界では、公式からの大型アップデート発表ももちろん大事なんですが、それ以上にプロジェクトの「本当の健康状態」や「熱量」を測るバロメーターになるのが、世界中のマイナーやホルダーたちが集うコミュニティの生の声なんですよね！今回は公式DiscordやTelegramコミュニティチャット（@corecoincc、@Core_Blockchain_Japan）、X（旧Twitterの #XCB #CoreBlockchain #PoDE タグ）、海外のReddit（r/gpumining、r/CryptoCurrency）、さらにはマイナーたちの情報交換の場となっているCatch That Rabbitプール周辺の議論まで、リコロが隅々まで潜入＆定点観測して集めた「リアルな本音・口コミ・ガチ検証データ」をたっぷりお届けします！</p>
+
+<p>「今、みんな何に期待してて、何に悩んでるの？」「最新のRyzen環境だとどれくらい効率よく掘れるの？」そんな疑問をすべてスッキリ解決できるよう、技術的な背景からマイナーの収支計算、そして今後どう動くべきかの戦略まで、超濃密に深掘りしていきますよ〜！それじゃ、さっそくいってみましょう！🚀✨</p>
+
+<h2>【今週のハイライト】Core Blockchainコミュニティで今もっとも熱い3大トピックとは？</h2>
+
+<p>ここ数週間のCore Blockchainコミュニティを眺めていてリコロがまず感じたのは、<strong>「投機的なふわふわした話題が減って、めちゃくちゃ地に足のついた議論が増えたな！」</strong>という空気感です。暗号資産の世界って、価格が上がればお祭り騒ぎ、下がればお通夜ムードになりがちなんですけど、今のXCBコミュニティはちょっとフェーズが違うんですよね。開発の進捗と実社会での利用シーン、そしてマイニングインフラの最適化という、まさにブロックチェーンの本質に関わる会話が毎日活発に交わされています。</p>
+
+<p>今回の定点観測で特に話題が集中していたのは、大きく分けて以下の3つのトピックです！まずは全体の見取り図として、今週の注目ポイントをギュッと整理しておきますね。</p>
+
+<ul>
+  <li><strong>トピック1：CorePass KYB（企業認証）＆Ping Exchangeビジネス取引への熱狂と実需への期待</strong><br>個人のデジタルID（DID）にとどまらず、ついに法人向けのKYB（Know Your Business）が稼働したこと、そしてPing Exchangeでのビジネス取引が視野に入ってきたことへの大きな反響。</li>
+  <li><strong>トピック2：【マイナー座談会】Ryzen 7000番台・EPYCのEcoモード設定＆WSL2運用＆プール着金のリアル検証</strong><br>Difficulty（採掘難易度）が上昇傾向にある中、どうやって消費電力を抑えつつハッシュレートを維持するかという自作PC勢ならではのガチ検証と、Catch That Rabbitプールのペイアウト仕様についての情報交換。</li>
+  <li><strong>トピック3：「パブリックステルス（Public Stealth）」開発思想への本音と、初心者参入の温かいサポート文化</strong><br>VC（ベンチャーキャピタル）による初期売り圧がないフェアローンチへの深い信頼感と、「もっと世間に知られてほしい！流動性も欲しい！」というジレンマ、さらに新規マイナーを歓迎するコミュニティの優しさ。</li>
+</ul>
+
+<p>どれもこれも、Core Blockchainというエコシステムの現在地を知るうえで絶対に外せないテーマばかりです。単に「〇〇さんがこう言ってました〜」と口コミを並べるだけでなく、「なぜ現場からそういう声が上がっているのか」「それが私たちマイナーやホルダーの資産・運用にどう跳ね返ってくるのか」までロジカルに解き明かしていきますので、ぜひコーヒーでも片手にじっくり読み進めてみてくださいね☕💻</p>
+
+<h2>CorePass KYB（企業認証）稼働への熱狂！Web3と実社会ビジネスが繋がる瞬間</h2>
+
+<p>まず最初に取り上げたいのが、DiscordやTelegram、そしてXのタイムラインで大きな歓声が上がっていた<strong>「CorePass KYB（Know Your Business）」</strong>に関する話題です！これまでCorePassといえば、個人の本人確認と暗号化ID管理を担う「DID（分散型ID）」アプリの文脈で語られることが多かったですが、ついに企業・法人向けの認証システムであるKYBが稼働し始めたことで、コミュニティの視線が一気に「BtoBの実用フェーズ」へとシフトしました。</p>
+
+<p>コミュニティ内では、特に技術系やビジネス系のバックグラウンドを持つメンバーから熱いコメントが相次いでいます。</p>
+
+<blockquote style="background: #f8f9fa; border-left: 5px solid #4a90e2; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 ホルダーAさんの声（Telegram @corecoincc より）</p>
+  <p style="margin: 0;">「ついに個人のDIDだけじゃなくて、企業のKYBが稼働したか！正直、これまでのWeb3プロジェクトって『法人向け』って口では言いつつ、実態はただのウォレット接続だけってパターンが多かったんだよね。CorePass上で企業の正当性を証明できるようになれば、実際の商取引や契約で本当に使えるインフラになるはず！」</p>
+</blockquote>
+
+<blockquote style="background: #f8f9fa; border-left: 5px solid #4a90e2; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 長期投資家Bさんの声（X #CoreBlockchain タグより）</p>
+  <p style="margin: 0;">「ミームコインとか短期の投機目的で作られたチェーンとは違って、法規制や企業コンプライアンスをクリアできる土台をコツコツ作っているのが本当に頼もしい。地味に見えるかもしれないけど、大企業がブロックチェーンを採用するときに一番ネックになる『身元保証』を最初からプロトコルレベルで解決しようとしている点はもっと評価されていいと思う。」</p>
+</blockquote>
+
+<h3>なぜ「個人のKYC」ではなく「企業のKYB」がゲームチェンジャーになるのか？</h3>
+
+<p>ここでリコロ流に「なぜコミュニティがここまでKYBの稼働に興奮しているのか」を技術・実務の両面から解説しておきますね！暗号資産の世界に詳しい方なら「KYC（Know Your Customer：顧客確認）」という言葉は耳タコレベルで聞いたことがあると思います。取引所で口座を作るときに免許証やマイナンバーカードを撮影するアレですね。</p>
+
+<p>でも、実際のビジネス（BtoB）の世界でお金を動かしたり、スマートコントラクトで契約を結んだりするときに本当に必要なのは、個人の認証だけじゃないんです。<strong>「取引相手であるその会社は、実在する正当な法人なのか？」「そのウォレットを操作している担当者は、本当にその会社から権限を与えられた人物なのか？」</strong>を証明する<strong>KYB（Know Your Business）</strong>が不可欠になります。</p>
+
+<p>これまでのパブリックブロックチェーンの多くは「匿名・仮名」が前提だったので、法人がブロックチェーン上で請求書を発行したり、大口の決済を行おうとすると、「送金先のアドレスが本当に取引先企業の管理下にあるか証明できない」「コンプライアンス監査に通らない」という致命的な壁にぶつかっていました。CorePassが企業向けのKYB機能を備え、しかもそれがゼロ知識証明や分散型IDのプライバシー保護思想と両立する形で動き出したことは、Web3とレガシーな企業社会を繋ぐ巨大な架け橋が完成に近づいたことを意味します。</p>
+
+<p>だからこそ、長期ホルダーの皆さんは「一過性の話題作りではなく、実需のパイプラインを作っている」と高く評価しているわけですね。読者の皆さんも、今後の公式発表やロードマップを追う際は、単なるパートナーシップの「ロゴ並べ」ではなく、「CorePass KYBを通じた法人アカウント数がどれだけ増えるか」「実際の商流にどう組み込まれるか」という視点で見てみると、プロジェクトの本気度がよりクリアに見えてきますよ！</p>
+
+<h2>Ping Exchangeビジネス取引の解禁がもたらす「実需フロー」と市場の本音</h2>
+
+<p>CorePass KYBの話題とセットで語られることが非常に多かったのが、エコシステムの中核を担う取引プラットフォーム<strong>「Ping Exchange」におけるビジネス取引（法人取引）</strong>への期待と議論です。個人同士がチャートを見て売買するだけの一般的な暗号資産取引所とは一線を画し、「企業がビジネス上の決済や資金移動、資産管理のために取引所を利用する」という構想が具体化してくるにつれ、日本のTelegramコミュニティ（@Core_Blockchain_Japan）や海外Discordでも、より現実的な視点からの意見交換が増えてきました。</p>
+
+<blockquote style="background: #f8f9fa; border-left: 5px solid #27ae60; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 コミュニティメンバーCさんの声（Telegram @Core_Blockchain_Japan より）</p>
+  <p style="margin: 0;">「CorePassのKYB認証がそのままPing Exchangeの法人アカウント審査や取引権限に直結するなら、企業側の導入ハードルが一気に下がるよね。これまでの暗号資産取引所って法人口座を開くだけで書類の山を何週間もかけてやり取りするのが当たり前だったから、そこがスマートになるだけでも革命的。」</p>
+</blockquote>
+
+<blockquote style="background: #f8f9fa; border-left: 5px solid #27ae60; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 アナリスト志向ホルダーDさんの声（Discord より）</p>
+  <p style="margin: 0;">「ビジネス取引が回り始めると、XCBの需要構造が『誰かが買ったら売るゼロサムゲーム』から『決済や手数料・担保として恒常的に使われる実需フロー』に変わる可能性が出てくる。もちろん実際にどれだけの企業が参加するかはこれから見極める必要があるけど、インフラが繋がったこと自体のインパクトはデカい。」</p>
+</blockquote>
+
+<h3>「実需ベース」がマイナーとホルダーの心理にもたらす安定感</h3>
+
+<p>リコロがこれらの声を聞いていて強く共感したのは、<strong>「実需の存在がネットワークの持続可能性を決める」</strong>という点です。実はこれ、私たちマイナーの収支にもめちゃくちゃ関係してくる話なんですよ！</p>
+
+<p>考えてみてください。世の中にはたくさんのマイニング可能コイン（PoW系やハイブリッド系）がありますが、その多くは「マイナーが電気代を払って掘る→取引所で即売りして法定通貨に換える→誰も実需で買わないので価格がじり貧になる→採算が合わずマイナーが撤退する」という負のスパイラルに陥りがちです。ところが、Core Blockchainのように「CorePass KYBで身元が保証された企業が、Ping Exchangeを通じてビジネス取引を行い、その基盤としてネットワークが使われる」という循環ができあがれば、マイナーが掘ったXCBやネットワークのセキュリティ（PoDEによる分散効率証明）に対して、投機以外の明確な買い需要・利用需要が生まれることになります。</p>
+
+<p>もちろん、コミュニティ内でも「とはいえ、法人が実際に暗号資産やブロックチェーン決済を日常業務に組み込むには、各国の税制や会計処理の課題もあるし、一朝一夕に取引量が爆発するわけではないよね」という冷静なリアリストの声もちゃんと存在します。こうした過度な妄想に走らず、現実的なハードルも理解したうえで応援している点こそが、Coreコミュニティの成熟度の高さを物語っているな〜と感じました！</p>
+
+<h2>【マイナー座談会①】Ryzen 9 7950X / 7900X / EPYCのハッシュレート＆ワットパフォーマンス徹底検証</h2>
+
+<p>さあ、ここからは自作PC大好き女子リコロの大好物ゾーン、<strong>マイナーたちのハードウェア＆採掘効率ガチ談義</strong>にいっちゃいましょう！！🔧⚡</p>
+
+<p>Core Blockchainのコンセンサスメカニズムである<strong>PoDE（Proof of Distributed Efficiency）</strong>は、特定のASIC（専用採掘機）による中央集権化を防ぎ、汎用的なCPU（特にマルチスレッド性能とキャッシュ設計に優れた最新CPU）で効率よくネットワークに貢献できるように設計されています。そのため、公式DiscordのマイニングチャンネルやRedditのr/gpumining周辺では、日々「どのCPUが一番コスパ・ワッパ（ワットパフォーマンス）がいいのか？」という熱いベンチマーク大会が繰り広げられているんです！</p>
+
+<p>最近のトレンドとして圧倒的に名前が挙がるのが、AMDのZen 4アーキテクチャ世代である<strong>Ryzen 9 7950X</strong>、<strong>Ryzen 9 7900X</strong>、そしてサーバー向けのモンスターCPUである<strong>EPYCシリーズ</strong>です。特に今コミュニティで鉄板のテクニックになっているのが、定格（フルパワー）でブン回すのではなく、<strong>「Ecoモード（65W / 105W制限）」やPBO（Precision Boost Overdrive）の電力・温度制限を巧みに使ってスイートスポットを攻めるチューニング</strong>なんです！</p>
+
+<blockquote style="background: #fff8e7; border-left: 5px solid #f39c12; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 ガチ勢マイナーEさんの声（Discord マイニングチャンネルより）</p>
+  <p style="margin: 0;">「7950Xをデフォルト（TDP 170W / PPT 230W）で動かすと部屋がサウナになるし電気代もキツいんだけど、BIOSでEcoモード105W（PPT 142W相当）に落とすと、消費電力がガクッと減るのにハッシュレートは定格の90〜93%くらい（要確認）を余裕で維持できる！さらに65W制限まで絞っても効率の落ち方が驚くほど緩やかで、電気代が高い日本の環境だと間違いなくEcoモード運用一択だね。」</p>
+</blockquote>
+
+<blockquote style="background: #fff8e7; border-left: 5px solid #f39c12; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 ラック運用マイナーFさんの声（Reddit r/gpumining より）</p>
+  <p style="margin: 0;">「コンシューマー機の7900Xを複数台並べるのと、中古や型落ちのEPYC（GenoaやMilan世代）1台を組むのとで比較してるけど、純粋なスレッド数とメモリ帯域、L3キャッシュ容量の暴力でEPYCの安定感は異常。ただ、初期投資とマザーボード・ECCメモリの入手性を考えると、個人宅で手軽に始めて売却出口も作りやすいのはRyzen 7950Xや7900Xの方かな。」</p>
+</blockquote>
+
+<h3>リコロが整理！コミュニティ報告ベースのCPU運用プロファイル比較</h3>
+
+<p>なぜRyzen 7000シリーズでEcoモードにするとここまで劇的にワットパフォーマンスが跳ね上がるのか、ハードウェアオタク目線でちょっとだけ補足させてください！</p>
+
+<p>現代のCPU（特に7950Xなどのハイエンドモデル）は、定格状態だとベンチマークスコアをあと数％伸ばすために、電圧を無理やり高く盛って「効率が急激に悪化する高クロック領域」までブーストする仕様になっています。実は半導体の特性上、電力は電圧の2乗に比例して増えるので、クロックをほんの10%下げるだけで消費電力を30〜40%も削減できる「美味しいスイートスポット」が存在するんです。</p>
+
+<p>コミュニティ内でマイナーたちが共有している設定傾向と検証イメージを、比較しやすいようにテーブルにまとめてみました（※環境やBIOS、メモリ速度、シリコンの個体差によって数値は変動するため、コミュニティ報告ベースの目安・『（要確認）』としてご覧ください）。</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;">
+  <thead>
+    <tr style="background-color: #2c3e50; color: #ffffff;">
+      <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">CPU / 設定プロファイル</th>
+      <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">電力目安（PPT/システム全体）</th>
+      <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">ハッシュレート維持率の傾向</th>
+      <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">コミュニティでの評価・メリット</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #ddd;"><strong>Ryzen 9 7950X (定格)</strong></td>
+      <td style="padding: 10px; border: 1px solid #ddd;">TDP 170W / PPT 230W前後（要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">100%（基準値・要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">絶対性能は最高だが発熱（95℃張り付き）と電気代が課題。</td>
+    </tr>
+    <tr style="background-color: #f9f9f9;">
+      <td style="padding: 10px; border: 1px solid #ddd;"><strong>Ryzen 9 7950X (Eco 105W)</strong></td>
+      <td style="padding: 10px; border: 1px solid #ddd;">TDP 105W / PPT 142W前後（要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">約90〜94%前後を維持（要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">性能と省エネの黄金バランス！空冷クーラーでも静かに運用可能。</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #ddd;"><strong>Ryzen 9 7950X (Eco 65W)</strong></td>
+      <td style="padding: 10px; border: 1px solid #ddd;">TDP 65W / PPT 88W前後（要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">約78〜85%前後を維持（要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">ワットあたりの採掘効率が最強クラス。電気代高騰地域や夏場に大人気。</td>
+    </tr>
+    <tr style="background-color: #f9f9f9;">
+      <td style="padding: 10px; border: 1px solid #ddd;"><strong>Ryzen 9 7900X / 7900 (Eco運用)</strong></td>
+      <td style="padding: 10px; border: 1px solid #ddd;">65W〜105W制限（要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">12コア24スレッド相応の高効率（要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">初期費用が抑えやすく、7900無印は標準で65W設計のため扱いやすい。</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #ddd;"><strong>AMD EPYC シリーズ</strong></td>
+      <td style="padding: 10px; border: 1px solid #ddd;">モデルにより200W〜360W超（要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">圧倒的な多スレッド絶対量（要確認）</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">1システムあたりの密度が最高。本格ファームやサーバー環境向け。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>さらにコミュニティの玄人たちからは、<strong>「Curve Optimizer（CO）で全コアにネガティブオフセット（例：-20〜-30）をかけると、同じ65W・105W枠内でもさらにクロックが伸びてハッシュレートが数％底上げされる！」</strong>というオーバークロックならぬ「低電圧最適化（アンダーボルティング）」のノウハウも共有されています。電気代の高い日本において、マイニングの利益を左右するのは「絶対ハッシュレート」よりも<strong>「1ワットあたりのハッシュ効率（H/W）」</strong>です。これから新規でリグを組む方や既存PCを見直す方は、ぜひBIOSのEcoモード設定とCurve Optimizerの調整を試してみてくださいね！（※安定性テストは必ず行って、エラーや再起動が起きない範囲に留めるのが鉄則ですよ💡）</p>
+
+<h2>【マイナー座談会②】Windows WSL2（Ubuntu）運用とトラブルシューティング最前線</h2>
+
+<p>ハードウェアの話題と並んで、Discordの技術チャットや日本のTelegramで毎日のようにやり取りされているのが、<strong>「OS環境どうしてる？」「WindowsのWSL2（Ubuntu）でCoreMinerを動かすとどうなる？」</strong>というソフトウェア・運用レイヤーのリアルな知見です！</p>
+
+<p>マイニング専用機なら最初からLinux（Ubuntu Serverなど）をネイティブインストールするのが一番シンプルでオーバーヘッドも少ないのですが、自作PC好きやゲーマーの多くは「普段使っているWindowsマシンや、他用途も兼ねたサブPCの空きリソースでCoreMinerを動かしたい！」というニーズを持っていますよね。そこで大活躍しているのが、Windows上で手軽にLinux環境を動かせる<strong>WSL2（Windows Subsystem for Linux 2）</strong>なんです。</p>
+
+<blockquote style="background: #f0f7ff; border-left: 5px solid #3498db; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 兼業マイナーGさんの声（Discord サポートチャンネルより）</p>
+  <p style="margin: 0;">「最初はネイティブUbuntuとWSL2でどれくらい差が出るか心配だったけど、最近のWSL2（Ubuntu 22.04/24.04）はめちゃくちゃ安定してる！自分の環境だとネイティブLinuxと比べても数％程度の差（要確認）に収まってるし、ゲームしたいときだけスレッド数を減らしたり一時停止できるのが最高に便利。」</p>
+</blockquote>
+
+<blockquote style="background: #f0f7ff; border-left: 5px solid #3498db; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 トラブル解決マイナーHさんの声（Telegram @Core_Blockchain_Japan より）</p>
+  <p style="margin: 0;">「WSL2で長時間回してたらメモリ使用量がじわじわ膨らんでWindows側が重くなったり、Windows Updateの自動再起動でマイニングが止まってるのに気づかないことがあった（笑）。でも『.wslconfig』でメモリ上限とスワップ設定をキッチリ書いて、タスクスケジューラで自動起動させるようにしてから完全放置でノンストップ稼働できるようになったよ！」</p>
+</blockquote>
+
+<h3>WSL2でCoreMinerを安定運用するための実践チェックポイント</h3>
+
+<p>コミュニティ内でよく質問に上がるトラブルと、ベテラン勢が回答している解決策をリコロが整理しておきます！これを知っているだけで、夜中にマイニングが止まって泣くリスクを大幅に減らせますよ〜！</p>
+
+<ul>
+  <li><strong>1. `.wslconfig` によるメモリ・CPUリソースの明示的管理</strong><br>WSL2はデフォルトだとホスト側（Windows）のメモリの50%までを上限に確保しようとしますが、長期間キャッシュが溜まるとWindows側のアプリ動作がもっさりすることがあります。ユーザーフォルダ直下に <code>.wslconfig</code> を作成し、割り当てるメモリ上限やスワップサイズ、使用する論理プロセッサ数を適切に定義することで、システム全体のクラッシュや極端なスローダウンを防げます。</li>
+  <li><strong>2. Windows Defenderの除外設定とネットワーク切断対策</strong><br>マイニングソフト関連のバイナリがセキュリティソフトに誤検知されて隔離されたり、PCのスリープ設定（特に「ネットワーク接続がないとき」や「アイドル状態での自動スリープ」）が残っていて夜中にPCが寝てしまうのは超あるあるな罠！電源プランを「高パフォーマンス」またはスリープ「なし」に設定し、NIC（有線LANアダプタ）の省電力機能（Energy Efficient Ethernet等）を切っておくのがベテランの定番テクです。</li>
+  <li><strong>3. ログ出力の監視と自動再起動スクリプトの活用</strong><br>「プロセスが万が一落ちたときに自動復帰させる」ため、Linux側で <code>systemd</code> サービス化するか、シンプルなシェルスクリプトのループ、あるいは <code>tmux</code> / <code>screen</code> でセッション管理していつでもログを確認できるようにしておくと、トラブル時の原因特定が一瞬で終わります。</li>
+</ul>
+
+<p>Windowsネイティブ版とLinux/WSL2版でのパフォーマンス差や挙動の違いについては、使用するOSビルドやCPUキャッシュの割り当て方（HugePagesの有効化の可否など）でも変わってきます。WSL2環境ではカーネルの仮想化レイヤーを挟む分、メモリレイテンシやHugePages周りでネイティブLinuxに一歩譲るケースもありますが、「普段使いのWindows PCをそのまま24時間ノード兼マイナーにできる利便性」は圧倒的です。自分の運用スタイルに合わせてベストな環境を選んでみてくださいね！</p>
+
+<h2>Catch That Rabbitプールの「分割ペイアウト」仕様とDifficulty（440M〜490M）上昇への向き合い方</h2>
+
+<p>続いては、XCBマイナーの多くが利用している主要マイニングプール<strong>「Catch That Rabbit（キャット・ザット・ラビット）」</strong>に関するリアルな声と、ネットワーク全体の<strong>採掘難易度（Difficulty）上昇トレンド</strong>についての議論を深掘りしていきましょう！</p>
+
+<p>最近、TelegramやDiscordで新規参入者からよく飛び出す質問のひとつが、Catch That Rabbitプールの<strong>「ペイアウト（支払い）の仕組み」</strong>についてです。「あれ？着金が1回じゃなくて、ちょっとずつ分かれて入ってくるんだけどバグかな！？」と驚いた経験がある方もいるのではないでしょうか？</p>
+
+<blockquote style="background: #fdf2f8; border-left: 5px solid #e84393; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 新規マイナーIさんの声（Telegram より）</p>
+  <p style="margin: 0;">「Catch That Rabbitで初めて掘ってみたんだけど、ウォレットの履歴を見たら4時間おきくらいにメインの報酬が着金したあと、すぐ後とか別のタイミングに追加の細かい端数着金がポンポン入ってきてる（要確認）。これってどういう仕組みなんだろう？ちゃんと全額もらえてるのかな？」</p>
+</blockquote>
+
+<blockquote style="background: #fdf2f8; border-left: 5px solid #e84393; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 ベテランマイナーJさんの声（Discord より）</p>
+  <p style="margin: 0;">「ああ、それプールの正常な仕様だよ！4時間ごとの定期ペイアウトバッチ（要確認）で確定したメイン報酬が送られたあと、ブロック成熟（Maturity）のタイミングや端数精算・トランザクション処理の都合で追加の端数分が後から送られてくるケースがあるんだ。プールのダッシュボード上の『Paid』と自分のウォレット着金合計を照らし合わせればキッチリ合ってるはずだよ！」</p>
+</blockquote>
+
+<p>このように、ベテランマイナーたちがすぐに仕組みを解説してくれるのも心強いところですよね！プールのペイアウト設計は、トランザクション手数料の最適化や未払い残高の正確な精算のために、定期バッチ処理（例：4時間ごと＝要確認）と端数調整が組み合わさっていることがあります。もし「着金額が気になるな」と思ったら、プールのステータス画面で『Pending Balance（保留中残高）』と『Paid（支払済み履歴）』、そしてトランザクションハッシュを確認する癖をつけておくと安心です！（※プールの正確なバッチ間隔や最小支払閾値などの仕様変更があり得るため、最新値は必ず公式プール画面で要確認です！）</p>
+
+<h3>Difficulty 440M〜490M（要確認）の上昇トレンドが意味するもの</h3>
+
+<p>そしてもうひとつ、マイナーたちの間で最もシビアかつワクワクしながら語られているのが、<strong>ネットワーク全体のDifficulty（採掘難易度）の上昇トレンド</strong>です！コミュニティでの観測報告によると、最近のネットワーク難易度は<strong>440M〜490M付近のレンジまでじわじわと上昇傾向にある（要確認）</strong>との声が上がっており、それに伴って「1台あたりの日産XCB（1日あたりに掘れるXCBの枚数）が以前より減ってきた」というリアルな実感も共有されています。</p>
+
+<blockquote style="background: #fdf2f8; border-left: 5px solid #e84393; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 継続マイナーKさんの声（X #PoDE タグより）</p>
+  <p style="margin: 0;">「気づいたらネットワークのDifficultyが440M〜490Mあたり（要確認）まで上がってきてる！数ヶ月前と比べると同じRyzen 7950Xを使っていても日産XCB（要確認）は目に見えて減ったけど、これはそれだけ世界中のマイナーがCore BlockchainにCPUリソースを投入し始めてる証拠だよね。ライバルが増えるのは複雑だけど、チェーンの安全性が上がってるのは嬉しい悲鳴！」</p>
+</blockquote>
+
+<p>この「難易度が上がって1台あたりの日産が減る」という現象は、暗号資産のマイニングをやっていると避けて通れない宿命みたいなものです。じゃあ、この状況下で私たちマイナーはどう考えて、どう動くべきなんでしょうか？リコロなりの分析ポイントを3つに整理してみました。</p>
+
+<ol>
+  <li><strong>「ネットワークの信頼性向上」のサインとしてポジティブに捉える</strong><br>Difficultyの上昇＝世界中のハッシュパワー（計算資源・電力コスト）がより多くこのチェーンに注ぎ込まれていることを意味します。マイナーはボランティアではないので、「将来価値がある」「セキュリティに参加するメリットがある」と判断したからこそ新規参入したりリグを増設したりしているわけです。誰も掘っていないゴーストチェーンはセキュリティが脆いですが、難易度が右肩上がりのチェーンはそれだけ強固になっている証拠です。</li>
+  <li><strong>「枚数ベース」から「電力効率＆長期期待値ベース」へ思考を切り替える</strong><br>日産XCBが減少すると、どうしても「前の半分しか掘れなくなった…」と落ち込みがちですが、ここで無理して高消費電力の旧世代CPUをフル稼働させると赤字リスクが高まります。だからこそ先ほど紹介した「Ecoモードでのワットパフォーマンス最大化」が効いてくるんです！電気代というキャッシュアウトを最小限に抑えながら、コツコツと枚数を積み上げる（いわゆる電気代によるドルコスト平均法的な蓄積）戦略が、難易度上昇局面では最も生き残りやすい王道パターンになります。</li>
+  <li><strong>日産推移と損益分岐点の定期的な見直し（要確認データのアップデート）</strong><br>自分の環境における「1日の消費電力量（kWh）× 電気代単価」と「現在のDifficulty（440M〜490M等の最新値＝要確認）における推定日産XCB（要確認）」をスプレッドシート等で月1回は見直しましょう。「今の電気代で買うより掘る方が安いのか、それとも今は電気代を抑えて現物購入と併用すべきか」を冷静に数字で判断できるマイナーこそが、長期戦で勝ち残れるプロフェッショナルです！</li>
+</ol>
+
+<h2>「パブリックステルス（Public Stealth）」開発思想への本音：安心感ともどかしさの境界線</h2>
+
+<p>さて、技術やマイニングの話から少し視点を広げて、Core Blockchainというプロジェクトのアイデンティティそのものである<strong>「パブリックステルス（Public Stealth）」</strong>という開発思想に対する、コミュニティのリアルな本音にも迫ってみたいと思います！</p>
+
+<p>Core Blockchainは、いわゆる「VC（ベンチャーキャピタル）から何十億円も調達して、プレセールでトークンをばら撒き、インフルエンサーに高額な報酬を払ってSNSで煽りまくり、上場直後に初期投資家が売り抜けて暴落する」という、近年のWeb3業界で横行しがちな手法を徹底的に避けてきました。オープンで誰でも参加できる（Public）でありながら、派手な誇大宣伝はせず静かに堅実に基盤を作り上げる（Stealth）――このスタンスに対して、コミュニティ内では<strong>「深い信頼感」</strong>と<strong>「ちょっとだけもどかしい本音」</strong>の2つの感情が絶妙に入り混じっています。</p>
+
+<blockquote style="background: #f4f6f7; border-left: 5px solid #7f8c8d; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 フェアローンチ支持派Lさんの声（Reddit r/CryptoCurrency より）</p>
+  <p style="margin: 0;">「最近のアルトコインはどれもこれもVCのイグジット流動性（出口戦略の餌）にされるばっかりでうんざりしてた。Core BlockchainはVCの初期大量売り圧がないから、マイナーが自分の電気代と時間を使って掘ったコインの価値が理不尽に希薄化されない。このフェアな設計があるからこそ、安心してリグを回し続けられるんだよね。」</p>
+</blockquote>
+
+<blockquote style="background: #f4f6f7; border-left: 5px solid #7f8c8d; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 もどかしさを語るホルダーMさんの声（X #XCB タグより）</p>
+  <p style="margin: 0;">「開発チームが誠実でステルスにすごい技術（ED448暗号やCorePass KYBなど）を作ってるのは100%リスペクトしてる！ただ、本音を言うと『もっと多くの人にこの凄さを知ってほしい！』っていうもどかしさもあるんだよね。あと、大きな取引所への展開とか流動性がもう少し厚くなってくれると、大口の参入や価格発見もスムーズになるのにな〜とは思う。」</p>
+</blockquote>
+
+<h3>なぜ「安心感」と「もどかしさ」は表裏一体なのか？</h3>
+
+<p>リコロはこの2つの声、どっちもめちゃくちゃよく分かります！！投資家やマイナーなら誰もが一度は感じる、すごく人間味のあるリアルな葛藤ですよね。</p>
+
+<p>少し冷静に経済メカニズムの観点から紐解いてみると、実は<strong>「VCの大型マーケティングがないこと」と「知名度の広がりが緩やかなこと」はコインの裏表</strong>なんです。大手取引所への派手なリスティングや大規模なエアドロップキャンペーンを打つには、莫大な資金（マーケティング予算やマーケットメイカーへの貸出トークン）が必要になります。多くのプロジェクトはその資金をVCからの出資や、チームが最初から自分たちに割り当てた大量のプレマイン（事前採掘枠）から捻出します。でも、それをやれば当然、後から一般のマイナーやホルダーに巨大な売り圧となって降りかかってくるわけです。</p>
+
+<p>一方で、Core Blockchainが貫いているパブリックステルスとフェアローンチの道は、「お金で注目を集めて短期的なバブルを作る」のではなく、「マイナーによる分散型ネットワークの構築（PoDE）」と「CorePass KYBやPing Exchangeのような実用アプリケーションの完成度」によって、<strong>時間をかけて有機的（オーガニック）に価値を積み上げていく王道ルート</strong>です。だからこそ初期は地味に見えますし、流動性の拡大にも時間がかかります。でもその分、一度実需が回り始めたときのファンダメンタルズの強固さは、マーケティングだけで作られた張りボテのプロジェクトとは比較になりません。</p>
+
+<p>コミュニティの皆さんの中には、「公式が派手に宣伝しない分、自分たち草の根のユーザーが検証記事を書いたり、CorePassの使い方やマイニングガイドをシェアしてエコシステムを盛り上げよう！」と動いている方もたくさんいます。受け身で「誰か価格を上げてくれないかな」と待つのではなく、コミュニティ自らが技術の価値を翻訳して広めていく空気があること自体が、フェアローンチプロジェクトならではの美しい姿だな〜とリコロは思います✨</p>
+
+<h2>初心者のマイニング初挑戦が急増中！温かいコミュニティサポートの現場から</h2>
+
+<p>今回の定点観測でリコロが一番ほっこりしたのが、<strong>「最近初めてCore BlockchainのCPUマイニングに挑戦しました！」「CorePassをスマホに入れてみたけどめちゃくちゃスムーズだった！」という初心者さんの報告が増えていること</strong>、そしてそれをベテラン勢がめちゃくちゃ優しくサポートしている光景です！</p>
+
+<p>暗号資産のコミュニティって、プロジェクトによっては古参メンバーが閉鎖的だったり、「そんなことも知らないの？ググれよ」みたいな殺伐とした雰囲気のところも正直ありますよね……。でも、Core BlockchainのTelegram（特に@Core_Blockchain_Japanをはじめとするローカルコミュニティ）や公式Discordを覗いていると、驚くほどオープンで親切なやり取りが日常茶飯事なんです！</p>
+
+<blockquote style="background: #eafaf1; border-left: 5px solid #2ecc71; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 初心者マイナーNさんの声（Telegram @Core_Blockchain_Japan より）</p>
+  <p style="margin: 0;">「暗号資産のマイニング自体が人生初で、コマンドラインとか全然わからなかったけど、コミュニティで質問したら親切な方が設定ファイルの書き方からCorePassとの連携手順まで丁寧に教えてくれました！自分のゲーム用PCのRyzenから初めてプールにハッシュレートが反映された瞬間は感動した〜！CorePassの登録も直感的で驚くほどスムーズでした。」</p>
+</blockquote>
+
+<blockquote style="background: #eafaf1; border-left: 5px solid #2ecc71; padding: 15px 20px; margin: 20px 0; border-radius: 4px;">
+  <p style="margin: 0 0 8px 0; font-weight: bold; color: #2c3e50;">💬 サポート有志Oさんの声（Discord より）</p>
+  <p style="margin: 0;">「PoDEは『分散効率の証明』なんだから、一部の大規模ファームだけじゃなくて、世界中のいろんな家庭のPCがちょっとずつ参加してくれるのが一番理想なんだよね。初心者がつまずきやすいICANアドレスの形式違いとか、CoreMinerの引数ミスなんかは自分たちも最初通った道だから、困ってる人がいたら気軽に助け合える空気を大事にしたいと思ってる！」</p>
+</blockquote>
+
+<h3>初心者が最初にハマりやすい3つの落とし穴と回避アドバイス</h3>
+
+<p>ここで、これからマイニングやCorePassデビューをしてみたいという初心者さん向けに、コミュニティの質疑応答ログから見つけた「初心者が最初にハマりやすい3つの落とし穴」を先回りしてシェアしておきますね！これを知っておけばスムーズにスタートできるはずです👇</p>
+
+<ul>
+  <li><strong>落とし穴①：アドレス形式（ICANフォーマット）の確認不足</strong><br>Core Blockchainでは、一般的なEthereum等の「0x…」から始まるアドレスではなく、国際銀行口座番号（IBAN）をベースに誤り検出機能を持たせた独自の「ICANアドレス（cb…やab…など、ネットワークに応じたプレフィックス）」が採用されています。コピペのミスや別チェーンのアドレスとの混同を防ぐために設計された優れた仕組みですが、初めて見る方は「あれ、いつもの0xじゃない！？」と戸惑うことも。設定ファイルに自分のウォレットアドレスを貼り付ける際は、スペースが紛れ込んでいないか、正しいXCB用ICANアドレスか（CorePassや公式ウォレットで確認）を必ずチェックしましょう！</li>
+  <li><strong>落とし穴②：CPU温度の監視忘れ（冷却不足）</strong><br>普段のゲームやWebブラウジングではCPU使用率が100%に張り付き続けることはあまりありません。そのため、初めてマイニングを回したときに「思ったよりファンが爆音になってCPU温度が90℃超えた！」と焦る方が続出します（笑）。特にノートPCや純正の小型CPUクーラーを使っている場合は要注意！まずは <code>HWiNFO64</code>（Windows）や <code>sensors</code>（Linux）で温度をリアルタイム監視しつつ、使用するスレッド数を半分〜7割程度に抑えて様子を見ることから始めるのが安全です。</li>
+  <li><strong>落とし穴③：スキャム（詐欺）DMへの警戒</strong><br>これはどの暗号資産コミュニティでも共通ですが、TelegramやDiscordで質問を投稿した直後に、運営やサポートメンバーを装った詐欺師が「助けてあげるからこのリンクでウォレットを同期して」「シードフレーズを教えて」とダイレクトメッセージ（DM）を送ってくることがあります！本物の有志や公式モデレーターが、DMで秘密鍵・リカバリーフレーズを聞いたり怪しいリンクを踏ませたりすることは100%ありません。質問と回答は必ず「公開チャンネル上」で行うようにしてくださいね！</li>
+</ul>
+
+<p>有志の皆さんが惜しみなくノウハウを共有してくれる温かい土壌があるからこそ、新規のCPUマイナーが定着し、結果として先ほど見たようなネットワーク難易度の上昇（セキュリティの強化）にも繋がっている――すごく良い好循環が起きているなと感じました！</p>
+
+<h2>リコロの総括＆戦略提案：激化するマイニング環境と実需拡大の中でどう動くべきか？</h2>
+
+<p>ここまで、CorePass KYB＆Ping Exchangeへの熱い期待、Ryzen/EPYCの採掘効率検証、WSL2とプールのリアル、パブリックステルスへの本音、そして初心者サポート文化まで、コミュニティのあらゆる角度の声を追い続けてきました。最後にアナリスト「リコロ」として、今回の定点観測から見えてきた<strong>全体像の客観的な総括と、読者の皆さんがこれから取るべき具体的なアクション・戦略</strong>をまとめてみたいと思います！</p>
+
+<h3>今回の定点観測から見えるCore Blockchainの「現在地」</h3>
+
+<p>一言でまとめるなら、今のCore Blockchainコミュニティは<strong>「理想論のフェーズを抜け、インフラ稼働と経済合理性のシビアな検証フェーズに入った」</strong>と言えます。</p>
+
+<p>一方では、CorePass KYBの稼働やPing Exchangeのビジネス取引準備によって「企業が使って価値が生まれるブロックチェーン」としての輪郭がハッキリと見えてきました。他方では、Difficulty（440M〜490M付近＝要確認）の上昇に伴い、「ただ適当にPCを繋いでいればザクザク掘れるボーナスタイム」から、「Ecoモードやアンダーボルティング、電気代単価、冷却コストを緻密に計算して最適化するマイナー同士の知恵比べ」へとフェーズが移行しています。さらにパブリックステルスゆえの「派手さはないが信頼できる土台」という性質を、ホルダー自身がどう評価し支えていくかが問われている時期でもあります。</p>
+
+<h3>立場別！リコロが提案するこれからの立ち回り方</h3>
+
+<p>では、この状況を踏まえて私たちはどう動くべきでしょうか？あなたのスタンスに合わせて、3つの戦略を提案します！</p>
+
+<ol>
+  <li><strong>【すでにマイニング中の人】「ワットパフォーマンス」と「安定稼働率」を徹底追求しよう</strong><br>Difficultyが上昇していく中、収益性を守る最大の武器は消費電力の削減です。まだ定格電力でPCを回している方は、ぜひ今週末にでもBIOSを開いてEcoモード（65W/105W）や電力制限のテストを行ってみてください。消費電力を30〜40%削りつつハッシュレートを9割前後（要確認）維持できれば、それは実質的に「電気代が劇的に安くなった」のと同じ効果をもたらします。また、Catch That Rabbit等のプールの着金履歴を定期的にエクスポートして、将来の確定申告や収支管理に備えておくこともプロの実務としておすすめします！</li>
+  <li><strong>【これからマイニングを始めたい人】既存PCの空きリソース×低負荷設定からテストスタート！</strong><br>最初から何十万円もかけて新規リグ（Ryzen 7950XやEPYCマシン）を組む前に、まずは手元にあるPCやゲーミングPCを使って「Windows WSL2（Ubuntu）」またはサブPCでCoreMinerを動かしてみましょう。Difficultyの上昇トレンド（要確認）や自分の住んでいる地域の電気代単価を肌で体感したうえで、「このワッパと期待値なら増設しても勝てる」と自分なりの確信を持ててからハードウェア投資に踏み切るのが、一番失敗しない賢いやり方です。</li>
+  <li><strong>【ホルダー＆エコシステム応援派の人】「技術指標」と「実需アカウントの伸び」を定点観測しよう</strong><br>短期的な価格チャートや取引所の板の薄さに一喜一憂するだけでなく、「CorePassのKYBを通過したビジネス利用がどう広がっているか」「Ping Exchangeでの実取引ボリュームや流動性が改善しているか」「ネットワークのアクティブノード数やDifficultyが健全に推移しているか」というファンダメンタルズ指標をチェックしてみてください。さらに余裕があれば、CorePassを実際に触ってUXを確かめたり、コミュニティで自分の気づきを発信してみることで、エコシステム全体の成長を内側から体感できますよ！</li>
+</ol>
+
+<p>どのポジションで関わるにせよ、大切なのは「コミュニティの生の熱量を感じ取りつつ、自分の数字（電気代・コスト・リスク許容度）は冷静に計算すること」です。熱狂とロジックのバランスをうまく取って、楽しく安全にWeb3ライフを謳歌していきましょうね！</p>
+
+<h2>Core Blockchainエコシステムをもっと深く知るなら「CoreStation」をチェック！</h2>
+
+<p>「今回のコミュニティの話題に出てきたCorePass KYBとかPoDEとか、もっと基礎から体系的に学びたい！」「CoreMinerの設定方法やハードウェア選びの参考資料を一箇所でまとめて見たい！」というそこのあなた！</p>
+
+<p>そんなときにリコロが自信を持っておすすめしたいのが、Core Blockchainの最新情報・技術解説・マイニングノウハウ・エコシステムガイドをわかりやすく網羅している総合情報ポータル<strong>「CoreStation」</strong>です！✨</p>
+
+<p>公式ドキュメントだけだと英語だったり専門用語が難しかったりして「うっ…」となりがちなポイントも、CoreStationなら日本語でスッキリ整理されていて、初心者さんからガチ勢の自作PCマイナーまでめちゃくちゃ役立つ情報がたくさん詰まっています。今回の定点観測を読んで「よし、Ecoモードの検証やってみようかな」「CorePass使ってみようかな」と思った方は、ぜひ下のリンクから遊びに行ってみてくださいね！</p>
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; text-align: center; margin: 30px 0; color: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+  <h3 style="margin: 0 0 10px 0; color: #ffffff; font-size: 20px;">🚀 Core Blockchain総合情報サイト「CoreStation」</h3>
+  <p style="margin: 0 0 20px 0; font-size: 15px; opacity: 0.95;">PoDEマイニングの始め方、CorePassの活用術、最新アップデート解説まで全部ここに！</p>
+  <a href="https://corestation.pages.dev/" target="_blank" rel="noopener noreferrer" style="display: inline-block; background-color: #ffffff; color: #5a43a5; font-weight: bold; padding: 12px 30px; border-radius: 30px; text-decoration: none; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">CoreStationを今すぐチェックする 👉</a>
+</div>
+
+<p>また、公式DiscordやTelegram（@corecoincc、@Core_Blockchain_Japan）、X（#XCB #CoreBlockchain #PoDE）のコミュニティも、いつでも新しい仲間を大歓迎しています！気になる疑問があれば、まずは過去のログを検索してみたり、思い切って公開チャットで質問してみてください。きっと頼れるマイナー仲間やホルダー仲間が、温かく迎え入れてくれるはずですよ！</p>
+
+<p>今回のVol.15も、世界中の熱いコミュニティの声のおかげでとびきり濃い特集をお届けすることができました！皆さんのマイニングリグの安定稼働と、Core Blockchainエコシステムのさらなる飛躍を心から応援しています💻⚡</p>
+
+<p>それでは、また次回のコミュニティ定点観測でお会いしましょう！リコロでした〜！ばいば〜い！🎮👾✨</p>
+
+</div>
+---END---
+
+<!-- Ricolo Official Author Profile Box -->
+<div style="margin-top: 40px; padding: 20px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(56, 189, 248, 0.08) 100%); border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.25); display: flex; align-items: center; gap: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+  <img src="https://cdn-ak.f.st-hatena.com/images/fotolife/c/corestation/20260919/20260919020141.jpg" alt="リコロ (Ricolo)" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #8b5cf6; box-shadow: 0 2px 10px rgba(139, 92, 246, 0.35); flex-shrink: 0;">
+  <div>
+    <div style="font-size: 16px; font-weight: bold; color: #1e293b; margin-bottom: 4px;">この記事を書いた人：リコロ（Ricolo）🎮💻✨</div>
+    <div style="font-size: 13px; color: #64748b; line-height: 1.6;">自作PCとCore Blockchainが大好きなゲーム女子ライター。公式DiscordやTelegramの最新開発情報、PoDE・マイニング検証をわかりやすく解説中！</div>
+  </div>
+</div>
