@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-20T05:08:18.732536+00:00",
-  "generated_at_jst": "2026-11-20 14:08:18 JST",
+  "generated_at": "2026-11-20T05:24:19.403061+00:00",
+  "generated_at_jst": "2026-11-20 14:24:19 JST",
   "schema": "corestation-live/1",
   "chain": {
     "ok": true,
     "source": "https://blockindex.net/api/v2",
-    "measured_at": "2026-11-20T05:08:22.395026+00:00",
+    "measured_at": "2026-11-20T05:24:24.431950+00:00",
     "data": {
-      "blockHeight": 19795169,
-      "difficulty": "300103519",
-      "difficulty_display": "300.10 M",
-      "lastBlockTime": "2026-11-20T05:08:18.463677932Z",
+      "blockHeight": 19795315,
+      "difficulty": "303040825",
+      "difficulty_display": "303.04 M",
+      "lastBlockTime": "2026-11-20T05:24:08.771639202Z",
       "inSync": true,
       "coin": "Core Coin",
       "backendVersion": "Gocore/v2.2.2-a091fe2d-20260116/linux-amd64/go1.25.6",
@@ -21,10 +21,10 @@
       "txWindowOldestAtJst": "2026-10-14 15:17 JST",
       "earnedWindowLabel": "ローリング実測 (24h/7d/30d, epoch 基準)",
       "payoutIntervalMeasuredH": 4.0,
-      "payoutGapNowH": 5.6,
+      "payoutGapNowH": 5.87,
       "payoutGapExceedsCadence": false,
       "lastPayoutAtJst": "2026-11-20 08:32 JST",
-      "lastPayoutAgeMin": 336,
+      "lastPayoutAgeMin": 352,
       "earnedXcb24h": 8.1958,
       "earnedXcb7d": 63.8455,
       "earnedXcb30d": 199.0856,
@@ -32,21 +32,21 @@
       "blocksFoundPerDay7dEstimate": 5.528,
       "addressFetchError": null,
       "circulatingSupplyRaw": null,
-      "bestBlockHash": "0xa60879723d98b020e2435a755d2407808d74835e2aff1bbc990feb6e074e0744",
+      "bestBlockHash": "0x48f4077e06a0b82fa73ab78cb34cb8093e1e7740319df43b1fb91caaf3d12be8",
       "freshness": {
-        "lastBlockAgeSeconds": 3,
-        "lastBlockAgeLabel": "3秒前",
-        "ownTxMeasuredAgoMinutes": 336.2,
-        "ownTxMeasuredAgoLabel": "5.6時間前",
-        "blockIntervalMeasuredAgoMinutes": 336.2,
-        "blockIntervalMeasuredAgoLabel": "5.6時間前"
+        "lastBlockAgeSeconds": 15,
+        "lastBlockAgeLabel": "15秒前",
+        "ownTxMeasuredAgoMinutes": 352.3,
+        "ownTxMeasuredAgoLabel": "5.9時間前",
+        "blockIntervalMeasuredAgoMinutes": 352.3,
+        "blockIntervalMeasuredAgoLabel": "5.9時間前"
       }
     }
   },
   "pool": {
     "ok": false,
     "source": "https://api.catchthatrabbit.com/api/v2",
-    "measured_at": "2026-11-20T05:08:25.660699+00:00",
+    "measured_at": "2026-11-20T05:24:26.418208+00:00",
     "reason": "プール API が応答しない（522/404・TLS 証明期限切れの実測）",
     "attempts": [
       {
@@ -70,7 +70,7 @@
   "db": {
     "ok": true,
     "source": "/Volumes/Docker/CoreGeeksEXp/data/wallet.db",
-    "measured_at": "2026-11-20T05:08:23.645182+00:00",
+    "measured_at": "2026-11-20T05:24:24.246055+00:00",
     "data": {
       "dbPath": "/volume1/Docker/CoreGeeksEXp/data/wallet.db",
       "fileSizeBytes": 11018240,
@@ -199,7 +199,7 @@
   "content": {
     "ok": true,
     "source": "articles/, hub/output/, hub/config/last_seen_*.json, data/local_articles.js",
-    "measured_at": "2026-11-20T05:08:24.504376+00:00",
+    "measured_at": "2026-11-20T05:24:24.838142+00:00",
     "data": {
       "articlesDirCount": 49,
       "articlesNewest": [
@@ -294,13 +294,13 @@
       "watcherSeenPosts": 25,
       "shortfallCount": 0,
       "shortfallNewest": [],
-      "gitLastCommit": "c71e599 2026-11-20 13:52 chore(live): dashboard 実測スナップショット 6175001447cb"
+      "gitLastCommit": "a29160b 2026-11-20 14:08 chore(live): dashboard 実測スナップショット e23d755bfc03"
     }
   },
   "watcher": {
     "ok": true,
     "source": "hub/config/last_seen_*.json + hub/output mtime + NAS crontab (if readable)",
-    "measured_at": "2026-11-20T05:08:23.857821+00:00",
+    "measured_at": "2026-11-20T05:24:24.137084+00:00",
     "data": {
       "lastHubOutputAtJst": "2026-11-20 13:03 JST",
       "crontabEntriesVisibleToCollector": [],
@@ -310,7 +310,7 @@
   "machines": {
     "ok": true,
     "source": "local proc + inference HTTP probes + NAS HUD + tailnet + machine_metrics/*.json",
-    "measured_at": "2026-11-20T05:08:26.596203+00:00",
+    "measured_at": "2026-11-20T05:24:33.156328+00:00",
     "data": {
       "nodes": [
         {
@@ -320,20 +320,20 @@
             "hostname": "MacBook.local",
             "os": "Darwin 27.2.0",
             "cpuLogical": 8,
-            "measured_at": "2026-11-20T05:08:18.833117+00:00",
+            "measured_at": "2026-11-20T05:24:19.577750+00:00",
             "loadAvg": [
-              2.05,
-              2.35,
-              2.36
+              2.29,
+              2.63,
+              2.49
             ],
             "ramBytes": 8589934592,
-            "ramUsedBytes": 1000366080,
-            "ramFreeBytes": 20656128,
-            "uptimeSeconds": 584185,
-            "diskFreeBytes": 2883907530752,
+            "ramUsedBytes": 1003524096,
+            "ramFreeBytes": 21688320,
+            "uptimeSeconds": 585146,
+            "diskFreeBytes": 2883906912256,
             "diskTotalBytes": 3991400349696,
             "topProcesses": [
-              "0.3 launchd",
+              "0.4 launchd",
               "0.0 TrustedPeersHelper",
               "0.0 com.apple.sbd",
               "0.3 logd",
@@ -346,32 +346,17 @@
           "id": "NAS (Asustor) HUD",
           "role": "運用 HUD / wallet.db ホスト",
           "kind": "nas",
-          "measured_at": "2026-11-20T05:08:24.686162+00:00",
-          "online": true,
-          "status": {
-            "pending_approval": 77,
-            "working": 0,
-            "working_non_idea_files": 0,
-            "working_stale": [],
-            "outbox_ready": 48,
-            "outbox_published": 2,
-            "outbox_draft": 0,
-            "rejected": 157,
-            "archived": 504,
-            "trash": 47,
-            "duplicate_reappearing": 6,
-            "server_time": "2026-11-20 14:08:24",
-            "rev": "2026-11-15a",
-            "root_dir": "/app"
-          },
-          "error": null,
+          "measured_at": "2026-11-20T05:24:31.315984+00:00",
+          "online": false,
+          "status": null,
+          "error": "TimeoutError: timed out",
           "source": "http://192.168.2.100:8899/api/status"
         },
         {
           "id": "CoreStation NAS サーバー (8088)",
           "role": "server.py 常駐（巡回・data_sync・live_blocks ワーカー）",
           "kind": "nas_service",
-          "measured_at": "2026-11-20T05:08:26.424189+00:00",
+          "measured_at": "2026-11-20T05:24:33.020215+00:00",
           "online": false,
           "status": null,
           "error": "URLError: <urlopen error [Errno 61] Connection refused>",
@@ -382,7 +367,7 @@
           "id": "X600 (採掘リグ)",
           "role": "LAN 192.168.2.14 — TCP 到達性のみ実測（認証情報なし）",
           "kind": "rig",
-          "measured_at": "2026-11-20T05:08:26.550084+00:00",
+          "measured_at": "2026-11-20T05:24:33.096211+00:00",
           "identityStatus": "確定",
           "identityEvidence": "X600",
           "identitySource": "rdp certificate CN",
@@ -1112,19 +1097,19 @@
   },
   "tls": {
     "note": "verified:/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/certifi/cacert.pem",
-    "measured_at": "2026-11-20T05:08:27.199720+00:00"
+    "measured_at": "2026-11-20T05:24:33.644171+00:00"
   },
   "staleness": {
     "articles_newest_age_days": null,
-    "archive_newest_date_age_days": 0.21,
-    "watcher_last_run_age_days": 0.17,
+    "archive_newest_date_age_days": 0.23,
+    "watcher_last_run_age_days": 0.18,
     "db_last_sync_age_days": null,
     "db_file_age_days": null,
-    "last_payout_age_minutes": 336
+    "last_payout_age_minutes": 352
   },
   "deployGate": {
     "minIntervalMin": 15,
     "deployFlag": true
   },
-  "signature": "e23d755bfc03dbc8"
+  "signature": "81e029ef82b77f54"
 }
