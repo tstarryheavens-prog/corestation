@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-20T19:16:48.300862+00:00",
-  "generated_at_jst": "2026-11-21 04:16:48 JST",
+  "generated_at": "2026-11-20T19:32:48.433664+00:00",
+  "generated_at_jst": "2026-11-21 04:32:48 JST",
   "schema": "corestation-live/1",
   "chain": {
     "ok": true,
     "source": "https://blockindex.net/api/v2",
-    "measured_at": "2026-11-20T19:16:51.898803+00:00",
+    "measured_at": "2026-11-20T19:32:52.201202+00:00",
     "data": {
-      "blockHeight": 19802464,
-      "difficulty": "330341191",
-      "difficulty_display": "330.34 M",
-      "lastBlockTime": "2026-11-20T19:16:48.00660417Z",
+      "blockHeight": 19802617,
+      "difficulty": "334064685",
+      "difficulty_display": "334.06 M",
+      "lastBlockTime": "2026-11-20T19:32:44.940991291Z",
       "inSync": true,
       "coin": "Core Coin",
       "backendVersion": "Gocore/v2.2.2-a091fe2d-20260116/linux-amd64/go1.25.6",
@@ -21,32 +21,32 @@
       "txWindowOldestAtJst": "2026-10-14 19:52 JST",
       "earnedWindowLabel": "ローリング実測 (24h/7d/30d, epoch 基準)",
       "payoutIntervalMeasuredH": 4.0,
-      "payoutGapNowH": 3.74,
+      "payoutGapNowH": 4.0,
       "payoutGapExceedsCadence": false,
       "lastPayoutAtJst": "2026-11-21 00:32 JST",
-      "lastPayoutAgeMin": 224,
-      "earnedXcb24h": 6.3524,
-      "earnedXcb7d": 61.3782,
+      "lastPayoutAgeMin": 240,
+      "earnedXcb24h": 4.3299,
+      "earnedXcb7d": 59.7403,
       "earnedXcb30d": 200.2628,
-      "blocksFound24hEstimate": 3.85,
-      "blocksFoundPerDay7dEstimate": 5.314,
+      "blocksFound24hEstimate": 2.624,
+      "blocksFoundPerDay7dEstimate": 5.172,
       "addressFetchError": null,
       "circulatingSupplyRaw": null,
-      "bestBlockHash": "0x9fecaf9878450704f57e7ef516a94dc80f4c0e2ad1d25ea18aaf72dfb294760d",
+      "bestBlockHash": "0x16071e64df2154450db8f4a21c13c71ef387095844537a54f8fa92506fe9ca3f",
       "freshness": {
-        "lastBlockAgeSeconds": 3,
-        "lastBlockAgeLabel": "3秒前",
-        "ownTxMeasuredAgoMinutes": 224.1,
-        "ownTxMeasuredAgoLabel": "3.7時間前",
-        "blockIntervalMeasuredAgoMinutes": 224.1,
-        "blockIntervalMeasuredAgoLabel": "3.7時間前"
+        "lastBlockAgeSeconds": 7,
+        "lastBlockAgeLabel": "7秒前",
+        "ownTxMeasuredAgoMinutes": 240.1,
+        "ownTxMeasuredAgoLabel": "4.0時間前",
+        "blockIntervalMeasuredAgoMinutes": 240.1,
+        "blockIntervalMeasuredAgoLabel": "4.0時間前"
       }
     }
   },
   "pool": {
     "ok": false,
     "source": "https://api.catchthatrabbit.com/api/v2",
-    "measured_at": "2026-11-20T19:16:55.317607+00:00",
+    "measured_at": "2026-11-20T19:32:55.388781+00:00",
     "reason": "プール API が応答しない（522/404・TLS 証明期限切れの実測）",
     "attempts": [
       {
@@ -70,7 +70,7 @@
   "db": {
     "ok": true,
     "source": "/Volumes/Docker/CoreGeeksEXp/data/wallet.db",
-    "measured_at": "2026-11-20T19:16:48.795260+00:00",
+    "measured_at": "2026-11-20T19:32:48.799492+00:00",
     "data": {
       "dbPath": "/volume1/Docker/CoreGeeksEXp/data/wallet.db",
       "fileSizeBytes": 11018240,
@@ -199,7 +199,7 @@
   "content": {
     "ok": true,
     "source": "articles/, hub/output/, hub/config/last_seen_*.json, data/local_articles.js",
-    "measured_at": "2026-11-20T19:16:50.566547+00:00",
+    "measured_at": "2026-11-20T19:32:50.102308+00:00",
     "data": {
       "articlesDirCount": 52,
       "articlesNewest": [
@@ -294,13 +294,13 @@
       "watcherSeenPosts": 25,
       "shortfallCount": 0,
       "shortfallNewest": [],
-      "gitLastCommit": "33c51a9 2026-11-21 04:01 chore(live): dashboard 実測スナップショット 581353e795bb"
+      "gitLastCommit": "53a368c 2026-11-21 04:17 chore(live): dashboard 実測スナップショット 0bf66871b4f4"
     }
   },
   "watcher": {
     "ok": true,
     "source": "hub/config/last_seen_*.json + hub/output mtime + NAS crontab (if readable)",
-    "measured_at": "2026-11-20T19:16:49.620885+00:00",
+    "measured_at": "2026-11-20T19:32:49.504249+00:00",
     "data": {
       "lastHubOutputAtJst": "2026-11-20 21:21 JST",
       "crontabEntriesVisibleToCollector": [],
@@ -310,7 +310,7 @@
   "machines": {
     "ok": true,
     "source": "local proc + inference HTTP probes + NAS HUD + tailnet + machine_metrics/*.json",
-    "measured_at": "2026-11-20T19:16:58.759176+00:00",
+    "measured_at": "2026-11-20T19:35:35.245261+00:00",
     "data": {
       "nodes": [
         {
@@ -320,24 +320,24 @@
             "hostname": "KAZUKInoMacBook-Pro.local",
             "os": "Darwin 27.2.0",
             "cpuLogical": 11,
-            "measured_at": "2026-11-20T19:16:48.841008+00:00",
+            "measured_at": "2026-11-20T19:32:48.847697+00:00",
             "loadAvg": [
-              2.28,
-              2.06,
-              2.04
+              2.27,
+              2.3,
+              2.21
             ],
             "ramBytes": 38654705664,
-            "ramUsedBytes": 4299689984,
-            "ramFreeBytes": 477442048,
-            "uptimeSeconds": 113777,
-            "diskFreeBytes": 2883569213440,
+            "ramUsedBytes": 4401221632,
+            "ramFreeBytes": 288022528,
+            "uptimeSeconds": 114737,
+            "diskFreeBytes": 2883582611456,
             "diskTotalBytes": 3991400349696,
             "topProcesses": [
               "0.1 launchd",
-              "0.3 logd",
+              "0.6 logd",
               "0.0 smd",
               "0.0 UserEventAgent",
-              "0.1 fseventsd"
+              "0.3 fseventsd"
             ]
           },
           "kind": "local"
@@ -346,7 +346,7 @@
           "id": "NAS (Asustor) HUD",
           "role": "運用 HUD / wallet.db ホスト",
           "kind": "nas",
-          "measured_at": "2026-11-20T19:16:56.808774+00:00",
+          "measured_at": "2026-11-20T19:32:55.538519+00:00",
           "online": true,
           "status": {
             "pending_approval": 82,
@@ -360,7 +360,7 @@
             "archived": 525,
             "trash": 47,
             "duplicate_reappearing": 6,
-            "server_time": "2026-11-21 04:16:56",
+            "server_time": "2026-11-21 04:32:55",
             "rev": "2026-11-15a",
             "root_dir": "/app"
           },
@@ -371,7 +371,7 @@
           "id": "CoreStation NAS サーバー (8088)",
           "role": "server.py 常駐（巡回・data_sync・live_blocks ワーカー）",
           "kind": "nas_service",
-          "measured_at": "2026-11-20T19:16:58.587046+00:00",
+          "measured_at": "2026-11-20T19:32:57.251637+00:00",
           "online": false,
           "status": null,
           "error": "URLError: <urlopen error [Errno 61] Connection refused>",
@@ -382,13 +382,13 @@
           "id": "X600 (採掘リグ)",
           "role": "LAN IP 未確定 — 身元を特定できるまで測定しない",
           "kind": "rig",
-          "measured_at": "2026-11-20T19:16:58.709585+00:00",
+          "measured_at": "2026-11-20T19:35:35.198012+00:00",
           "identityStatus": "未確定",
           "identityEvidence": null,
           "identitySource": null,
           "lanIP": null,
           "lanScan": {
-            "measuredAt": "2026-11-20T13:23:47.908544+00:00",
+            "measuredAt": "2026-11-20T19:35:35.044069+00:00",
             "aliveCount": 45,
             "error": null
           },
@@ -624,7 +624,7 @@
         }
       },
       "lanIdentities": {
-        "measuredAt": "2026-11-20T13:23:47.908544+00:00",
+        "measuredAt": "2026-11-20T19:35:35.044069+00:00",
         "subnet": "192.168.2.0/24",
         "aliveCount": 45,
         "hosts": [
@@ -653,7 +653,7 @@
             "identity": "AIカンパニー 2Dドット絵リアルタイムオフィス",
             "identitySource": "http:8899 title",
             "sshBanner": "SSH-2.0-OpenSSH_9.8",
-            "tailnetName": "tokage-1"
+            "tailnetName": null
           },
           {
             "ip": "192.168.2.101",
@@ -672,10 +672,15 @@
           {
             "ip": "192.168.2.102",
             "pingMs": null,
-            "openPorts": [],
-            "identity": null,
-            "identitySource": null,
-            "sshBanner": null,
+            "openPorts": [
+              22,
+              139,
+              445,
+              631
+            ],
+            "identity": "Not Found - CUPS v2.3.3",
+            "identitySource": "http:631 title",
+            "sshBanner": "SSH-2.0-OpenSSH_9.8",
             "tailnetName": null
           },
           {
@@ -735,15 +740,6 @@
             "identity": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.20",
             "identitySource": "ssh banner",
             "sshBanner": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.20",
-            "tailnetName": "z790-al"
-          },
-          {
-            "ip": "192.168.2.113",
-            "pingMs": null,
-            "openPorts": [],
-            "identity": null,
-            "identitySource": null,
-            "sshBanner": null,
             "tailnetName": null
           },
           {
@@ -769,7 +765,18 @@
             "identity": "Z790",
             "identitySource": "rdp certificate CN",
             "sshBanner": null,
-            "tailnetName": "z790"
+            "tailnetName": null
+          },
+          {
+            "ip": "192.168.2.121",
+            "pingMs": null,
+            "openPorts": [
+              80
+            ],
+            "identity": null,
+            "identitySource": null,
+            "sshBanner": null,
+            "tailnetName": null
           },
           {
             "ip": "192.168.2.122",
@@ -925,7 +932,7 @@
             "identity": "SSH-2.0-OpenSSH_10.6",
             "identitySource": "ssh banner",
             "sshBanner": "SSH-2.0-OpenSSH_10.6",
-            "tailnetName": "bc250-1"
+            "tailnetName": null
           },
           {
             "ip": "192.168.2.156",
@@ -992,7 +999,7 @@
             "tailnetName": null
           },
           {
-            "ip": "192.168.2.176",
+            "ip": "192.168.2.177",
             "pingMs": null,
             "openPorts": [],
             "identity": null,
@@ -1001,7 +1008,7 @@
             "tailnetName": null
           },
           {
-            "ip": "192.168.2.177",
+            "ip": "192.168.2.179",
             "pingMs": null,
             "openPorts": [],
             "identity": null,
@@ -1012,14 +1019,10 @@
           {
             "ip": "192.168.2.184",
             "pingMs": null,
-            "openPorts": [
-              22,
-              445,
-              5900
-            ],
-            "identity": "SSH-2.0-OpenSSH_10.5",
-            "identitySource": "ssh banner",
-            "sshBanner": "SSH-2.0-OpenSSH_10.5",
+            "openPorts": [],
+            "identity": null,
+            "identitySource": null,
+            "sshBanner": null,
             "tailnetName": null
           },
           {
@@ -1113,19 +1116,19 @@
   },
   "tls": {
     "note": "verified:/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/certifi/cacert.pem",
-    "measured_at": "2026-11-20T19:17:01.692815+00:00"
+    "measured_at": "2026-11-20T19:35:37.075555+00:00"
   },
   "staleness": {
     "articles_newest_age_days": null,
-    "archive_newest_date_age_days": 0.8,
-    "watcher_last_run_age_days": 0.76,
+    "archive_newest_date_age_days": 0.82,
+    "watcher_last_run_age_days": 0.77,
     "db_last_sync_age_days": null,
     "db_file_age_days": null,
-    "last_payout_age_minutes": 224
+    "last_payout_age_minutes": 240
   },
   "deployGate": {
     "minIntervalMin": 15,
     "deployFlag": true
   },
-  "signature": "0bf66871b4f4dba0"
+  "signature": "2777ea64f44cadb9"
 }
